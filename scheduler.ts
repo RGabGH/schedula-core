@@ -1579,6 +1579,16 @@ enum SchedulerView{
             }
         }
     }
+    public resourceFilter(group:number){
+       
+
+            this.settings.groupFilter = group;
+    
+            this.init();
+            
+           
+        
+    }
     public filterItems(filter:string){
             const items=document.querySelectorAll('.svg-item');
             items.forEach((item)=>{

@@ -1348,6 +1348,10 @@ var Scheduler = /** @class */ (function () {
             }
         }
     };
+    Scheduler.prototype.resourceFilter = function (group) {
+        this.settings.groupFilter = group;
+        this.init();
+    };
     Scheduler.prototype.filterItems = function (filter) {
         var items = document.querySelectorAll('.svg-item');
         items.forEach(function (item) {
