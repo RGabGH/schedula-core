@@ -1,0 +1,436 @@
+/* Scheduler 5.0.0
+ *
+ * 
+ * 
+ * 
+ *
+ */
+/* USABLE horizontal GRADIENTS */
+#horizontal-gradient1 stop.start-color {
+  stop-color: #91ff00;
+}
+#horizontal-gradient1 stop.end-color {
+  stop-color: blue;
+}
+#horizontal-gradient2 stop.start-color {
+  stop-color: #91ff00;
+}
+#horizontal-gradient2 stop.end-color {
+  stop-color: blue;
+}
+#horizontal-gradient3 stop.start-color {
+  stop-color: #91ff00;
+}
+#horizontal-gradient3 stop.end-color {
+  stop-color: blue;
+}
+#horizontal-gradient4 stop.start-color {
+  stop-color: #91ff00;
+}
+#horizontal-gradient4 stop.end-color {
+  stop-color: blue;
+}
+#horizontal-gradient5 stop.start-color {
+  stop-color: #91ff00;
+}
+#horizontal-gradient5 stop.end-color {
+  stop-color: blue;
+}
+/* USABLE VERTICAL GRADIENTS */
+#vertical-gradient1 > stop.start-color {
+  stop-color: #ffffff;
+}
+#vertical-gradient1 > stop.end-color {
+  stop-color: #e4e4e4;
+}
+#vertical-gradient2 stop.start-color {
+  stop-color: #faeead;
+}
+#vertical-gradient2 stop.end-color {
+  stop-color: #7fb4d3;
+}
+#vertical-gradient3 stop.start-color {
+  stop-color: #f3f6f8;
+}
+#vertical-gradient3 stop.end-color {
+  stop-color: #7fb4d3;
+}
+#vertical-gradient4 stop.start-color {
+  stop-color: #f3f6f8;
+}
+#vertical-gradient4 stop.end-color {
+  stop-color: #7fb4d3;
+}
+#vertical-gradient5 stop.start-color {
+  stop-color: #f3f6f8;
+}
+#vertical-gradient5 stop.end-color {
+  stop-color: #7fb4d3;
+}
+/* USABLE RADIAL GRADIENTS */
+#radial-gradient1 stop.start-color {
+  stop-color: #f3f6f8;
+}
+#radial-gradient1 stop.end-color {
+  stop-color: #7fb4d3;
+}
+#radial-gradient2 stop.start-color {
+  stop-color: #f3f6f8;
+}
+#radial-gradient2 stop.end-color {
+  stop-color: #7fb4d3;
+}
+text {
+  pointer-events: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* background */
+.bg {
+  fill: url(#vertical-gradient1);
+}
+.bg-hl {
+  stroke: grey;
+  stroke-width: 1;
+}
+/* header */
+.header-bg {
+  fill: white;
+}
+.scheduler-footer {
+  fill: #efefef;
+  stroke: lightgray;
+  stroke-width: 1 ;
+}
+.monthbox {
+  fill: #efefef;
+  stroke: lightgray;
+  stroke-width: 1;
+}
+.header-text {
+  fill: #2f2f7a;
+  stroke: none;
+  stroke-width: 0;
+  font-family: 'Verdana';
+  font-weight: 600;
+  font-size: 20px;
+  opacity: 0.75;
+}
+.week-element {
+  transition: 0.5s;
+  fill: transparent;
+  stroke: lightgrey;
+  fill: #efefef;
+  stroke: lightgray;
+  stroke-width: 1;
+}
+.week-element:hover {
+  fill: #677ee4;
+}
+.week-element-text {
+  fill: lightgray;
+}
+.time-element {
+  fill: lightgray;
+  stroke: #e0e0e0;
+  stroke-width: 1;
+}
+.time-element.today {
+  fill: #c44eb0;
+}
+.time-element-text {
+  fill: gray;
+  stroke: none;
+  stroke-width: 0;
+  font-family: 'Arial';
+  text-anchor: middle;
+  font-weight: bold;
+}
+.time-unit {
+  transition: 0.5s;
+  fill: transparent;
+  fill-opacity: 0;
+}
+.time-unit:hover {
+  fill-opacity: 0.7;
+  fill: #677ee4;
+}
+.info-element {
+  /* fill: url(#obliqueLines); */
+  fill: transparent;
+}
+.info-unit:hover {
+  fill-opacity: 0.2;
+  fill: #677ee4;
+}
+/******************************************* scheduler elements */
+.box-element {
+  fill: white;
+  transition: 0.3s;
+  opacity: 0.7;
+  /* stroke:#5c38fc;
+    stroke-width: 0.06;
+    ry:1.5; */
+}
+.box-element.sunday {
+  fill: lightgray;
+}
+.box-element.today {
+  fill: #c44eb0;
+}
+.box-element:hover {
+  opacity: 0.5;
+  fill: #dbecf8;
+  stroke-width: 1;
+  stroke: lightskyblue;
+}
+/********************************************* sidebar */
+.sb-rbg {
+  fill: lightgray;
+  /* resource background */
+}
+.sb-hbg {
+  fill: lightgray;
+  /* resource header */
+}
+svg.sb-hbg > text {
+  font-family: 'Arial';
+  font-size: "15px";
+  stroke: #00ff00;
+}
+svg.sb-hbg > image {
+  width: '30';
+  height: "30";
+}
+/*************************************  split bar */
+.splitter {
+  transition: 0.3s;
+  transition-property: fill, opacity;
+  fill: #9095c2;
+}
+.splitter-area {
+  transition: 0.5s;
+  transition-property: fill, opacity;
+  fill: #852066;
+  opacity: 0.1;
+}
+.splitter:hover {
+  opacity: 1;
+  fill: #00ff00;
+}
+.splitter.sizing {
+  fill: #00ff00;
+}
+.toggle {
+  transition: 0.3s;
+  fill: #faf7f7;
+  stroke: #7ba8e4;
+  stroke-width: 1;
+}
+.toggle:hover {
+  fill: #00ff00;
+  r: 12;
+}
+/***************************************** RESOURCES */
+.resource {
+  transition: 0.5s;
+  opacity: 0.7;
+  fill: white;
+  stroke: lightblue;
+  stroke-width: 1;
+}
+.resource:hover {
+  opacity: 1;
+  fill: #90cbf3;
+  stroke: lightblue;
+  stroke-width: 2;
+}
+.resource-text {
+  fill: #262670;
+  stroke: darkblue;
+  stroke-width: 0;
+  font-family: 'Verdana';
+  font-weight: 600;
+  opacity: 0.75;
+}
+.resource.myclass {
+  fill: #53a073;
+}
+/***************************************** link lines */
+.link-conn {
+  opacity: 1;
+  fill: #00ff00;
+  opacity: 0.5;
+  stroke-width: 1;
+  stroke: #444444;
+}
+.link-conn:hover {
+  opacity: 1;
+}
+.link-wire {
+  transition: 0.5s;
+  opacity: 0.7;
+  stroke: #808080;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.link-wire:hover {
+  stroke: #00ff00;
+  stroke-width: 2;
+  opacity: 1;
+}
+.link-wire-marker-end {
+  stroke: #1f1e1e;
+  fill: #444444;
+}
+.link-point {
+  opacity: 0.6;
+  stroke: #808080;
+  stroke-width: 1;
+  stroke-linecap: round;
+}
+.link-point:hover {
+  opacity: 0.8;
+  stroke: #00ff00;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  r: 7;
+}
+.link-line {
+  opacity: 0.7;
+  stroke: #00ff00;
+  stroke-width: 0.3;
+  stroke-linecap: round;
+}
+.additional-info {
+  opacity: 0.5;
+}
+/* .link-point{
+  
+}
+.link-point:hover{
+    stroke: #00ff00;
+    stroke-width: 0.8;
+    opacity: 1;
+} */
+/***************************************** activity items */
+svg.item-icon > path {
+  opacity: 1;
+  fill: #fbfcfb;
+}
+.item-icon {
+  opacity: 1;
+  fill: #fbfcfb;
+}
+.item-icon:hover {
+  opacity: 1;
+  fill: #01fa01;
+}
+.resource-icon {
+  opacity: 0.5;
+  fill: #262364;
+}
+.item:not(.custom-color) {
+  fill: #5762ca;
+}
+rect.item.moving {
+  stroke: #00ff00;
+  stroke-width: 1.5;
+}
+rect.item.sizing {
+  stroke: #00ff00;
+  stroke-width: 1.5;
+  stroke-dasharray: 4;
+}
+.item:hover {
+  transition: 0.3s;
+  opacity: 0.85;
+}
+.item-text {
+  fill: white;
+  font-family: 'Verdana';
+  font-weight: bold;
+  /* font-size: '40%'; */
+  transform: translate(0px, 0px);
+}
+.item-text2 {
+  fill: white;
+  font-family: 'Verdana';
+  transform: translate(0px, 0px);
+}
+/***************************************** events */
+.event {
+  opacity: 0.4;
+  transition: 0.6s;
+  stroke-width: 0.1;
+  stroke: #535353;
+}
+.event:hover {
+  opacity: 0.7;
+  stroke: brightness(0.85);
+}
+/***************************************** calendar shifters */
+.shifter {
+  opacity: 0.25;
+  fill: white;
+  transition: 0.6s;
+}
+.shifter:hover {
+  opacity: 0.9;
+}
+.shifter.svg-overlay.right {
+  transition: 1s;
+  z-index: 100;
+  position: fixed;
+  top: 50%;
+  float: right;
+  opacity: 0.35;
+  left: 90%;
+  width: 70px;
+  height: 70px;
+}
+.shifter.svg-overlay.right:hover {
+  opacity: 1;
+}
+.shifter.svg-overlay.left {
+  transition: 0.5s;
+  z-index: 100;
+  position: fixed;
+  top: 50%;
+  opacity: 0.35;
+  width: 70px;
+  height: 70px;
+  left: 15%;
+}
+.shifter.svg-overlay.left:hover {
+  opacity: 1;
+}
+.shifter.svg-overlay {
+  filter: drop-shadow(0px 0px 6px rgba(0, 0, 0, 0.25));
+}
+#popupsvg {
+  transition: 0.5s;
+  transition-property: visibility, opacity;
+  transition-delay: 0.5s, 0ms;
+  display: none;
+}
+#popup-rect {
+  fill: white;
+  filter: drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.4));
+  /* display: none; */
+}
+.resize-line {
+  stroke: white;
+  stroke-width: 1;
+}
+.blink {
+  animation: blink 1s infinite;
+}
+@keyframes blink {
+  50% {
+    fill: #0000ff;
+    opacity: 1;
+  }
+}

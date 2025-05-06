@@ -1,0 +1,323 @@
+.theme-dark .bg { fill: #474747; }
+.theme-dark .header-bg { fill: #3a3a3a; }
+.theme-dark .header-text { fill: #f0f0f0; }
+.theme-dark .scheduler-footer { fill: #3a3a3a; }
+.theme-dark .week-element { fill: #3a3a3a; }
+.theme-dark .week-element-text { fill: #f0f0f0; }
+.theme-dark .time-element { fill: #424242; }
+.theme-dark .time-element-text { fill: #f0f0f0; }
+.theme-dark .box-element { fill: #424242; }
+.theme-dark .resource { fill: #383838; }
+.theme-dark .resource-text { fill: #ffffff; }
+.theme-dark .item:not(.custom-color) { fill: #009688; }
+.theme-dark .item-text { fill: #f0f0f0; }
+.theme-dark .daybox-element { fill: #777777; }
+.theme-dark .daybox-element.sunday { fill: #424242; }
+.theme-dark .daybox-element.saturday { fill: #555555; }
+.theme-dark .monthbox { fill: #3a3a3a; }
+
+.theme-light .bg { fill: #ffffff; }
+.theme-light .header-bg { fill: #f5f5f5; }
+.theme-light .header-text { fill: #2e2e2e; }
+.theme-light .scheduler-footer { fill: #f5f5f5; }
+.theme-light .week-element { fill: #f5f5f5; }
+.theme-light .week-element-text { fill: #2e2e2e; }
+.theme-light .time-element { fill: #e0e0e0; }
+.theme-light .time-element-text { fill: #2e2e2e; }
+.theme-light .box-element { fill: #e0e0e0; }
+.theme-light .resource { fill: #e0e0e0; }
+.theme-light .resource-text { fill: #2e2e2e; }
+.theme-light .item:not(.custom-color) { fill: #2196f3; }
+.theme-light .item-text { fill: #2e2e2e; }
+.theme-light .daybox-element { fill: #e0e0e0; }
+.theme-light .monthbox { fill: #f5f5f5; }
+
+.theme-blue .bg { fill: #e3f2fd; }
+.theme-blue .bg-vl { stroke: #87cbff; }
+.theme-blue .header-bg { fill: #bbdefb; }
+.theme-blue .header-text { fill: #0d47a1; }
+.theme-blue .scheduler-footer { fill: #bbdefb; }
+.theme-blue .week-element { fill: #bbdefb; }
+.theme-blue .week-element-text { fill: #0d47a1; }
+.theme-blue .time-element { fill: #90caf9; }
+.theme-blue .time-element-text { fill: #0d47a1; }
+.theme-blue .box-element { fill: #f4f7fd; }
+.theme-blue .resource { fill: #90caf9; }
+.theme-blue .resource-text { fill: #0d47a1; }
+.theme-blue .item:not(.custom-color) { fill: #1e88e5; }
+.theme-blue .item-text { fill: #0d47a1; }
+.theme-blue .monthbox { fill: #bbdefb; }
+
+.theme-contrast .bg { fill: #000000; }
+.theme-blue .bg-vl { stroke: #004579; }
+.theme-contrast .header-bg { fill: #333333; }
+.theme-contrast .header-text { fill: #ffffff; }
+.theme-contrast .scheduler-footer { fill: #333333; }
+.theme-contrast .week-element { fill: #333333; }
+.theme-contrast .week-element-text { fill: #ffffff; }
+.theme-contrast .time-element { fill: #ffffff; }
+.theme-contrast .time-element-text { fill: #333333; }
+.theme-contrast .box-element { fill: #ffffff; }
+.theme-contrast .resource { fill: #ffffff; }
+.theme-contrast .resource-text { fill: #333333; }
+.theme-contrast .item:not(.custom-color) { fill: #ffeb3b; }
+.theme-contrast .item-text { fill: #ffffff; }
+.theme-contrast .monthbox { fill: #333333; }
+
+
+/*******************************************************************
+/***** 1. TEMA OCEAN BREEZE *****/
+.ocean-breeze .item:not(.custom-color) {
+    fill: #00a8cc;
+}
+.ocean-breeze .item:hover:not(.custom-color) {
+    filter: brightness(110%) opacity(90%);
+}
+
+.ocean-breeze .resource  {
+    fill: #e6f7ff;
+    stroke: #00a8cc;
+}
+.ocean-breeze .resource:hover {
+    fill: #a7e4f2;
+    stroke: #0088a8;
+}
+
+.ocean-breeze .header-bg ,
+.ocean-breeze .monthbox ,
+.ocean-breeze .scheduler-footer  {
+    fill: #e6f7ff;
+}
+
+.ocean-breeze .header-text ,
+.ocean-breeze .resource-text  {
+    fill: #00587a;
+}
+
+.ocean-breeze .time-element.today{
+    fill: #00587a;
+}
+
+.ocean-breeze .week-element:hover {
+    fill: #00a8cc;
+}
+
+.ocean-breeze .bg {
+    fill: #e6f7ff;
+}
+
+.ocean-breeze .daybox-element.sunday,
+.ocean-breeze .time-element.sunday,
+.ocean-breeze .box-element.sunday {
+    fill: #c0e0f0;
+}
+
+.ocean-breeze .daybox-element.saturday {
+    fill: #d8edf7;
+}
+
+
+/***** 2. TEMA SUNSET LUXE *****/
+.sunset-luxe .item:not(.custom-color) {
+    fill: #b83b5e;
+}
+.sunset-luxe .item:hover:not(.custom-color) {
+    filter: brightness(110%) opacity(90%);
+}
+
+.sunset-luxe .resource {
+    fill: #fff8f0;
+    stroke: #f08a5d;
+}
+.sunset-luxe .resource:hover {
+    fill: #fcecd5;
+    stroke: #e05d2e;
+}
+
+.sunset-luxe .header-bg,
+.sunset-luxe .monthbox,
+.sunset-luxe .scheduler-footer {
+    fill: #fff8f0;
+}
+
+.sunset-luxe .header-text,
+.sunset-luxe .resource-text {
+    fill: #6a2c70;
+}
+
+.sunset-luxe .time-element.today {
+    fill: #6a2c70;
+}
+
+.sunset-luxe .week-element:hover {
+    fill: #f08a5d;
+}
+
+.sunset-luxe .bg.sunset-luxe {
+    fill: #fff8f0;
+}
+
+.sunset-luxe .daybox-element.sunday,
+.sunset-luxe .time-element.sunday,
+.sunset-luxe .box-element.sunday {
+    fill: #f5d5c8;
+}
+
+.sunset-luxe .daybox-element.saturday {
+    fill: #f8e1d1;
+}
+
+
+/***** 3. TEMA EMERALD ELEGANCE *****/
+.emerald-elegance .item:not(.custom-color) {
+    fill: #689f38;
+}
+.emerald-elegance .item:hover:not(.custom-color) {
+    filter: brightness(110%) opacity(90%);
+}
+
+.emerald-elegance .resource {
+    fill: #f1f8e9;
+    stroke: #689f38;
+}
+.emerald-elegance .resource:hover {
+    fill: #dcedc8;
+    stroke: #558b2f;
+}
+
+.emerald-elegance .header-bg,
+.emerald-elegance .monthbox,
+.emerald-elegance .scheduler-footer {
+    fill: #f1f8e9;
+}
+
+.emerald-elegance .header-text,
+.emerald-elegance .resource-text {
+    fill: #2e7d32;
+}
+
+.emerald-elegance .time-element.today {
+    fill: #2e7d32;
+}
+
+.emerald-elegance .week-element:hover {
+    fill: #8bc34a;
+}
+
+.emerald-elegance .bg {
+    fill: #f1f8e9;
+}
+
+.emerald-elegance .daybox-element.sunday,
+.emerald-elegance .time-element.sunday,
+.emerald-elegance .box-element.sunday {
+    fill: #d8e8c8;
+}
+
+.emerald-elegance .daybox-element.saturday {
+    fill: #e4efd8;
+}
+
+
+/***** 4. TEMA ROYAL INDIGO *****/
+.royal-indigo .item:not(.custom-color) {
+    fill: #5c6bc0;
+}
+.royal-indigo .item:hover:not(.custom-color) {
+    filter: brightness(110%) opacity(90%);
+}
+
+.royal-indigo .resource {
+    fill: #f3e5f5;
+    stroke: #7e57c2;
+}
+.royal-indigo .resource:hover {
+    fill: #e1bee7;
+    stroke: #5e35b1;
+}
+
+.royal-indigo .header-bg,
+.royal-indigo .monthbox,
+.royal-indigo .scheduler-footer{
+    fill: #f3e5f5;
+}
+
+.royal-indigo .header-text,
+.royal-indigo .resource-text {
+    fill: #4527a0;
+}
+
+.royal-indigo .time-element.today {
+    fill: #4527a0;
+}
+
+.royal-indigo .week-element:hover {
+    fill: #7e57c2;
+}
+
+.royal-indigo .bg {
+    fill: #f3e5f5;
+}
+
+.royal-indigo .daybox-element.sunday,
+.royal-indigo .time-element.sunday,
+.royal-indigo .box-element.sunday{
+    fill: #e6d4ed;
+}
+
+.royal-indigo .daybox-element.saturday {
+    fill: #ece0f2;
+}
+
+
+/***** 5. TEMA SANDY BEACH *****/
+.sandy-beach .item:not(.custom-color) {
+    fill: #4db6ac;
+}
+.sandy-beach .item:hover:not(.custom-color) {
+    filter: brightness(110%) opacity(90%);
+}
+
+.sandy-beach .resource{
+    fill: #f5f5f5;
+    stroke: #a1887f;
+}
+.sandy-beach .resource:hover {
+    fill: #efebe9;
+    stroke: #8d6e63;
+}
+
+.sandy-beach .header-bg ,
+.sandy-beach .monthbox ,
+.sandy-beach .scheduler-footer{
+    fill: #f5f5f5;
+}
+
+.sandy-beach .header-text ,
+.sandy-beach .resource-text {
+    fill: #6d4c41;
+}
+
+.sandy-beach .time-element.today {
+    fill: #6d4c41;
+}
+
+.sandy-beach .week-element:hover {
+    fill: #80cbc4;
+}
+
+.sandy-beach .bg{
+    fill: #f5f5f5;
+}
+
+.sandy-beach .daybox-element.sunday,
+.sandy-beach .time-element.sunday,
+.sandy-beach .box-element.sunday {
+    fill: #e0e0e0;
+}
+
+.sandy-beach .daybox-element.saturday {
+    fill: #e8e8e8;
+}
+
+

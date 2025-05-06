@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+   
+    <link rel="stylesheet" href="scheduler-5.0.0.css">
+    <link rel="stylesheet" href="scheduler-themes.css">
+    <link rel="stylesheet" href="bootstrap.css">
+    <link rel="stylesheet" href="popup.css">
+    <title></title>
+
+</head>
+
+<body>
+   <div id="mydivid" style="height: 50px;" draggable="true" ondragstart="startdrag(event);" 
+        data-text1="DROPPED TASK"
+        data-text2="dropped task description"
+        data-order="123456789"
+        data-classes=""
+        data-w="2880"
+        data-key="orderID"
+        data-color="#874556"
+        data-ref="reference"
+        data-pieces="4"
+        data-json=""
+        >NEW TASK</div>
+
+    <div id="themesdiv" class="row m-1">
+        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('')">default</button>
+        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('theme-dark')">dark</button>
+        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('theme-blue')">blue</button>
+        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('theme-contrast')">contrast</button>
+        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('theme-light')">light</button>
+        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('ocean-breeze')">ocean</button>
+        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('sunset-luxe')">sunset</button>
+        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('emerald-elegance')">emerald</button>
+        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('royal-indigo')">indigo</button>
+        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('sandy-beach')">sandy beach</button>
+       
+    </div>
+    <div id="datadiv" class="row m-1">
+        <button class="btn btn-outline-secondary m-1" onclick="setData(hotelSchedulerData)">hotel</button>
+        <button class="btn btn-outline-secondary m-1" onclick="setData(hrSchedulerData)">humans</button>
+        <button class="btn btn-outline-secondary m-1" onclick="setData(productionSchedulerData)">production</button>
+        <button class="btn btn-outline-secondary m-1" onclick="setData(clinicSchedulerData)">medical</button>
+       
+       
+       
+    </div>
+    
+    <div id="scheduler" ></div>
+    <div id="sidepanel1" class="sidepanel"></div>
+    <!-- <script src="bootstrap.js"></script> -->
+    <script src="scheduler-data-minutes-3.0.3.js"></script>
+    <script src="hotel-data.js"></script>
+    <script src="production-data.js"></script>
+    <script src="medical-data.js"></script>
+    <script src="bootstrap.js"></script>
+    <script src="hr-data.js"></script>
+    <script src="icons.js"></script>
+    <script src="template.js"></script>
+    <script src="template2.js"></script>
+   
+   
+    <script src="scheduler.js"></script>
+    <script src="scheduler-settings.js" ></script>
+ 
+    <script>
+       
+       function startdrag(evt) {
+            // Add the target element's id to the data transfer object
+           
+            var data = {};
+            data.text1 = evt.target.getAttribute('data-text1');
+            data.text2 = evt.target.getAttribute('data-text2');
+            data.order = evt.target.getAttribute('data-order');
+            data.classes = evt.target.getAttribute('data-classes');
+            data.width = evt.target.getAttribute('data-w');
+            data.key = evt.target.getAttribute('data-key');
+            data.color1 = evt.target.getAttribute('data-color');
+            data.ref = evt.target.getAttribute('data-ref');
+            data.pieces = evt.target.getAttribute('data-qt');
+            data.json = evt.target.getAttribute('data-json');
+            data.element = evt.target;
+            evt.dataTransfer.setData("task", JSON.stringify(data));
+            evt.dataTransfer.effectAllowed = "move";
+
+        }
+       
+       
+        
+        const scheduler1 = new Scheduler("scheduler", hrSchedulerData, template2);    
+        settings.icons=iconssvg;
+        scheduler1.settings=settings;  
+        scheduler1.init();
+
+
+        function setTheme(theme){
+            document.getElementById("scheduler").classList.value="";
+            document.getElementById("scheduler").classList.add(theme);
+        }
+
+        function setData(data){
+           scheduler1.data=data;
+           scheduler1.init();
+        }
+
+        function modified(){
+            console.log('mods');
+        }
+        function gridMouseOver(event, item){
+            console.log(event);
+            console.log(item);
+        }
+       
+        function resourceClick(event, resource){
+            alert('Resource:' +resource.Name + ' cliccked!');
+                
+      
+            
+        }
+
+       
+        function itemMouseEnter(event, item){
+          
+        
+        }
+        function itemMouseExit(event, item){
+         
+        
+        }
+        function itemMouseDown(event, item){
+         
+        
+        }
+        function timeMouseClick(event, item){
+          
+        
+        }
+        function gridMouseClick(event, item){
+          
+        
+        }
+
+
+       
+    </script>
+</body>
+</html>

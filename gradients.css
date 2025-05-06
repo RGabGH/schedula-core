@@ -1,0 +1,75 @@
+/* USABLE horizontal GRADIENTS */
+#horizontal-gradient1 stop.start-color {
+  stop-color: #91ff00;
+}
+#horizontal-gradient1 stop.end-color {
+  stop-color: blue;
+}
+#horizontal-gradient2 stop.start-color {
+  stop-color: #91ff00;
+}
+#horizontal-gradient2 stop.end-color {
+  stop-color: blue;
+}
+#horizontal-gradient3 stop.start-color {
+  stop-color: #91ff00;
+}
+#horizontal-gradient3 stop.end-color {
+  stop-color: blue;
+}
+#horizontal-gradient4 stop.start-color {
+  stop-color: #91ff00;
+}
+#horizontal-gradient4 stop.end-color {
+  stop-color: blue;
+}
+#horizontal-gradient5 stop.start-color {
+  stop-color: #91ff00;
+}
+#horizontal-gradient5 stop.end-color {
+  stop-color: blue;
+}
+/* USABLE VERTICAL GRADIENTS */
+#vertical-gradient1 > stop.start-color {
+  stop-color: #ffffff;
+}
+#vertical-gradient1 > stop.end-color {
+  stop-color: #e4e4e4;
+}
+#vertical-gradient2 stop.start-color {
+  stop-color: #faeead;
+}
+#vertical-gradient2 stop.end-color {
+  stop-color: #7fb4d3;
+}
+#vertical-gradient3 stop.start-color {
+  stop-color: #f3f6f8;
+}
+#vertical-gradient3 stop.end-color {
+  stop-color: #7fb4d3;
+}
+#vertical-gradient4 stop.start-color {
+  stop-color: #f3f6f8;
+}
+#vertical-gradient4 stop.end-color {
+  stop-color: #7fb4d3;
+}
+#vertical-gradient5 stop.start-color {
+  stop-color: #f3f6f8;
+}
+#vertical-gradient5 stop.end-color {
+  stop-color: #7fb4d3;
+}
+/* USABLE RADIAL GRADIENTS */
+#radial-gradient1 stop.start-color {
+  stop-color: #f3f6f8;
+}
+#radial-gradient1 stop.end-color {
+  stop-color: #7fb4d3;
+}
+#radial-gradient2 stop.start-color {
+  stop-color: #f3f6f8;
+}
+#radial-gradient2 stop.end-color {
+  stop-color: #7fb4d3;
+}

@@ -1,0 +1,153 @@
+.scheduler-popup{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    background-color: #fff;
+    border: none;
+    z-index: 9999;
+    visibility: visible;  
+    resize: none;
+    overflow: hidden;
+    box-shadow: 0px 0px 5px;
+}
+
+
+.popup-container{
+  display:flex;
+  flex-direction: column;
+}
+
+
+.popup-header {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px;
+    background-color: #c8d7f8;
+    cursor: move;
+    order: 1;
+}
+
+.popup-content{
+  order:2;
+  flex-grow: 4;
+  height: 100%;
+  margin:1px;
+ 
+  border: none;
+}
+
+.popup-footer{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px;
+ 
+  cursor: move;
+  order: 3;
+}
+
+.popup-header>.close-button {
+  border: none;
+  background-color: transparent;
+  font-size: 24px;
+  cursor: pointer;
+ 
+}
+
+.scheduler-popup-btn{ 
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 400;
+    margin: 5px; 
+    position: relative;
+    text-decoration: none;
+    text-transform: uppercase;
+    width: 100px;
+    height: 30px;
+    border: none;
+    transition: 0.4s;
+  
+}
+.scheduler-popup-btn:hover{ 
+ background-color: brightness(0.2);
+
+}
+
+.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+  }
+  
+ 
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 10px 10px;
+    transition: 0.3s;
+    font-size: 17px;
+}
+  
+ 
+.tab button:hover {
+    background-color: #ddd;
+}
+  
+
+.tab button.active {
+    background-color: #ccc;
+  }
+  
+  
+.tabcontent {
+    height: 300px;
+   
+    display: none;
+    padding: 4px;
+    border-top: none;
+  }
+  .tabcontent.active {
+    display: block;
+   
+  }
+
+  #scheduler-popup>.popup-container>.popup-content>.tabcontent>textarea{
+    width: 100%;
+    height: calc(100% - 50px);
+    resize: none;
+    border: none;
+    overflow:auto;
+    overflow-wrap:unset;
+    overflow-x: scroll;
+    text-wrap: nowrap;
+   
+  }
+  #scheduler-popup>.popup-container>.popup-content>.tabcontent>.formgroup
+  {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px;
+    margin: 2px;
+   
+   
+  }
+  .formgroup>label{
+    width: 30%;
+    text-align: right;
+    margin-right: 5px;
+    color: #797979;
+  }
+  .taskinput{
+    margin:1px;
+    padding: 6px;
+    width: 70%;
+  }
