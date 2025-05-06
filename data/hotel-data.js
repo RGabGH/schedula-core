@@ -106,7 +106,7 @@ var hotelData = {
             Image: "img/pres1.jpg",
             Data: { Beds: "1 King + 2 Queens", Amenities: ["Private Pool", "Butler"], Rate: 1200, Floor: 4 },
             Items: [
-                { Id: "BK4011", Text: "Roberts", Description: "Celebrity VIP", Width: 8640, Offset: 7200, Color1: "#8E2DE2", Classes: "vip" },
+                { Id: "BK4011", Text: "Roberts", Description: "Celebrity VIP", Width: 8640, Offset: 7200, Color1: "#8E2DE2", Classes: "arrow" },
                 { Id: "BK4012", Text: "Diplomatic", Description: "Government guest", Width: 4320, Offset: 21600, Color1: "#4B0082", Classes: "vip" }
             ]
         },
