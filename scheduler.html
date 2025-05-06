@@ -10,7 +10,7 @@
    
     <link rel="stylesheet" href="scheduler-5.0.0.css">
     <link rel="stylesheet" href="scheduler-themes.css">
-    <link rel="stylesheet" href="bootstrap.css">
+    <link rel="stylesheet" href="bootstrap/bootstrap.css">
     <link rel="stylesheet" href="popup.css">
     <title></title>
 
@@ -44,7 +44,7 @@
        
     </div>
     <div id="datadiv" class="row m-1">
-        <button class="btn btn-outline-secondary m-1" onclick="setData(hotelSchedulerData)">hotel</button>
+        <button class="btn btn-outline-secondary m-1" onclick="setData('hotel')">hotel</button>
         <button class="btn btn-outline-secondary m-1" onclick="setData(hrSchedulerData)">humans</button>
         <button class="btn btn-outline-secondary m-1" onclick="setData(productionSchedulerData)">production</button>
         <button class="btn btn-outline-secondary m-1" onclick="setData(clinicSchedulerData)">medical</button>
@@ -60,7 +60,7 @@
     <script src="hotel-data.js"></script>
     <script src="production-data.js"></script>
     <script src="medical-data.js"></script>
-    <script src="bootstrap.js"></script>
+    <script src="/bootstrap/bootstrap.js"></script>
     <script src="hr-data.js"></script>
     <script src="icons.js"></script>
     <script src="template.js"></script>
@@ -105,11 +105,20 @@
             document.getElementById("scheduler").classList.add(theme);
         }
 
-        function setData(data){
-           scheduler1.data=data;
-           scheduler1.init();
+        function setData(datatype){
+            console.log('set data');
+            if (datatype=='hotel'){
+            fetch('./ss-data-hotel.json')
+            .then(res => res.json())
+            .then(dati => loadData(dati))
+            .catch(err => console.error("Errore nel caricamento JSON", err));
         }
-
+        }
+        function loadData(data){
+            console.log('load data');
+            scheduler1.data=dati;
+            scheduler1.init();
+        }
         function modified(){
             console.log('mods');
         }
