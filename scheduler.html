@@ -29,18 +29,21 @@
         data-pieces="4"
         data-json=""
         >NEW TASK</div>
-
+        <div id="themesdiv" class="row m-1">
+            <p>Themes</p>
+        </div>
     <div id="themesdiv" class="row m-1">
-        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('')">default</button>
-        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('theme-dark')">dark</button>
-        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('theme-blue')">blue</button>
-        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('theme-contrast')">contrast</button>
-        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('theme-light')">light</button>
-        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('ocean-breeze')">ocean</button>
-        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('sunset-luxe')">sunset</button>
-        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('emerald-elegance')">emerald</button>
-        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('royal-indigo')">indigo</button>
-        <button type="button" class="btn btn-outline-primary m-1" onclick="setTheme('sandy-beach')">sandy beach</button>
+
+        <button type="button" class="btn btn-sm btn-outline-primary m-1" onclick="setTheme('')">default</button>
+        <button type="button" class="btn btn-sm btn-dark m-1" onclick="setTheme('theme-dark')">dark</button>
+        <button type="button" class="btn btn-sm btn-primary m-1" onclick="setTheme('theme-blue')">blue</button>
+        <button type="button" class="btn btn-sm btn-warning m-1" onclick="setTheme('theme-contrast')">contrast</button>
+        <button type="button" class="btn btn-sm btn-light m-1" onclick="setTheme('theme-light')">light</button>
+        <button type="button" class="btn btn-sm btn-info m-1" onclick="setTheme('ocean-breeze')">ocean</button>
+        <button type="button" class="btn btn-sm btn-outline-danger m-1" onclick="setTheme('sunset-luxe')">sunset</button>
+        <button type="button" class="btn btn-sm btn-outline-success m-1" onclick="setTheme('emerald-elegance')">emerald</button>
+        <button type="button" class="btn btn-sm m-1"  style="border:1;border-color:indigo" onclick="setTheme('royal-indigo')">indigo</button>
+        <button type="button" class="btn btn-sm btn-outline-secondary m-1" onclick="setTheme('sandy-beach')">sandy beach</button>
        
     </div>
     <div id="datadiv" class="row m-1">
@@ -52,7 +55,73 @@
        
        
     </div>
+    <style>
+        .code-container {
+          background-color: #2d2d2d;
+          color: #f8f8f2;
+          border-radius: 8px;
+          overflow: hidden;
+          font-family: Consolas, monospace;
+          margin: 1em auto;  /* Centrato orizzontalmente */
+          max-width: 600px;  /* Limita la larghezza */
+          width: 100%;       /* Assicura che non vada oltre il 100% */
+        }
     
+        .code-header {
+          background-color: #1e1e1e;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.5em 1em;
+          font-size: 0.9em;
+          color: #ccc;
+        }
+    
+        .copy-btn {
+          background-color: #444;
+          border: none;
+          color: white;
+          padding: 0.3em 0.7em;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+    
+        .copy-btn:hover {
+          background-color: #666;
+        }
+    
+        pre {
+          margin: 0;
+          padding: 1em;
+          overflow-x: auto;
+        }
+      </style>
+    </head>
+    <body>
+    
+    <div class="code-container">
+      <div class="code-header">
+        <span>JavaScript</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><code>
+    // Questo è un esempio di codice JavaScript
+    function saluta(nome) {
+      console.log("Ciao, " + nome + "!");
+    }
+    saluta("Marco");
+      </code></pre>
+    </div>
+    
+    <script>
+      function copyCode(button) {
+        const code = button.closest('.code-container').querySelector('code').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+          button.textContent = "Copiato!";
+          setTimeout(() => button.textContent = "Copy", 2000);
+        });
+      }
+    </script>
     <div id="scheduler" ></div>
     <div id="sidepanel1" class="sidepanel"></div>
     <!-- <script src="bootstrap.js"></script> -->
