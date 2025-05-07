@@ -65,6 +65,7 @@ var settings= new  SchedulerSettings();
     settings.progressBarAnimation = true;
     settings.icons='';
     settings.theme = "";
+    settings.template = "";
     settings.months = ["January", "February", "March",
         "April", "May", "June",
         "July", "August", "September",

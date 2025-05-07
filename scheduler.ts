@@ -1,6 +1,4 @@
 
-
-
 class Template {
     public svgString=` 
     
@@ -1038,7 +1036,8 @@ class SchedulerSettings{
     progressBarAnimation:  boolean = true;
     
     icons: string= "";
-    theme: string= "";   
+    theme: string= "";  
+    template: string = ""; 
     months: string[] = ["January", "February", "March",
                                 "April", "May", "June", 
                                 "July", "August", "September",
@@ -1093,12 +1092,14 @@ enum SchedulerView{
     private connLine:SVGLineElement;
     private currentView:SchedulerView=SchedulerView.Month;
 
-    constructor(scheduler:string, jsonData: string, template?: string) {
+    constructor(scheduler:string, jsonData: string, settings?: SchedulerSettings) {
 
        this.scheduler_id=scheduler;
        this.data = jsonData;
-       this.settings = new SchedulerSettings();
-       this.template = template ?? ''; 
+
+       if (settings) {this.settings=settings}
+       else {this.settings = new SchedulerSettings()};
+    
        if (this.data.Calendar){
         console.log(this.data.Calendar);
             this.calendar=new Calendar();
@@ -1136,6 +1137,11 @@ enum SchedulerView{
             if (this.settings.theme){
              this.schedulerContainer.classList.add(this.settings.theme);}
                //append template
+
+            if (this.settings.template) {
+                this.template=this.settings.template; 
+            } else { this.template=new Template().svgString } 
+
             this.schedulerContainer.innerHTML = this.template;
             document.body.style.overflow='auto';
                //get svg element
@@ -1750,16 +1756,7 @@ enum SchedulerView{
             }
         }
     }
-    public resourceFilter(group:number){
-       
-
-            this.settings.groupFilter = group;
     
-            this.init();
-            
-           
-        
-    }
     public filterItems(filter:string){
             const items=document.querySelectorAll('.svg-item');
             items.forEach((item)=>{
@@ -1767,13 +1764,14 @@ enum SchedulerView{
             item.classList.remove('selected');
             let filterlower=filter.toLowerCase();
             if (filterlower != '') {
-                let data= item.querySelector('text').getAttribute('data');
+                let data= item.querySelector('text');
+                console.log(data);
                 let ref = item.getAttribute('data-ref');
                 let key = item.getAttribute('data-key');
                 let show=true;
        
                 if (data!=undefined){
-                    show=data.toLowerCase().startsWith(filterlower);
+                   // show=data.toLowerCase().startsWith(filterlower);
                 } else show = false;
        
                 if (key != undefined) {

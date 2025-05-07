@@ -484,11 +484,9 @@ rect.item.sizing {
 }
 
 
-.item:hover{
-    transition: 0.3s;
-    /* opacity: 0.85; */
+.item:hover {
    
-     filter:  brightness(105%) opacity(85%); 
+    fill-opacity: 0.75;
    
 }
 

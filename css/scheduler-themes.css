@@ -3,8 +3,10 @@
 .theme-dark .header-text { fill: #f0f0f0; }
 .theme-dark .scheduler-footer { fill: #3a3a3a; }
 .theme-dark .week-element { fill: #3a3a3a; }
+.theme-dark .week-element:hover { fill: #9095c2 }
 .theme-dark .week-element-text { fill: #f0f0f0; }
 .theme-dark .time-element { fill: #424242; }
+.theme-dark .time-element:hover { fill: #9095c2 }
 .theme-dark .time-element-text { fill: #f0f0f0; }
 .theme-dark .box-element { fill: #424242; }
 .theme-dark .resource { fill: #383838; }
@@ -15,12 +17,14 @@
 .theme-dark .daybox-element.sunday { fill: #424242; }
 .theme-dark .daybox-element.saturday { fill: #555555; }
 .theme-dark .monthbox { fill: #3a3a3a; }
+.theme-dark .monthbox:hover { fill: #9095c2 }
 
 .theme-light .bg { fill: #ffffff; }
 .theme-light .header-bg { fill: #f5f5f5; }
 .theme-light .header-text { fill: #2e2e2e; }
 .theme-light .scheduler-footer { fill: #f5f5f5; }
 .theme-light .week-element { fill: #f5f5f5; }
+.theme-light .week-element:hover { fill: #9095c2 }
 .theme-light .week-element-text { fill: #2e2e2e; }
 .theme-light .time-element { fill: #e0e0e0; }
 .theme-light .time-element-text { fill: #2e2e2e; }

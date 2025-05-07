@@ -778,6 +778,7 @@ var SchedulerSettings = /** @class */ (function () {
         this.progressBarAnimation = true;
         this.icons = "";
         this.theme = "";
+        this.template = "";
         this.months = ["January", "February", "March",
             "April", "May", "June",
             "July", "August", "September",
@@ -798,7 +799,7 @@ var SchedulerView;
     SchedulerView["None"] = "none";
 })(SchedulerView || (SchedulerView = {}));
 var Scheduler = /** @class */ (function () {
-    function Scheduler(scheduler, jsonData, template) {
+    function Scheduler(scheduler, jsonData, settings) {
         var _this = this;
         var _a;
         this.version = '5.0.0';
@@ -819,8 +820,13 @@ var Scheduler = /** @class */ (function () {
         this.currentView = SchedulerView.Month;
         this.scheduler_id = scheduler;
         this.data = jsonData;
-        this.settings = new SchedulerSettings();
-        this.template = template !== null && template !== void 0 ? template : '';
+        if (settings) {
+            this.settings = settings;
+        }
+        else {
+            this.settings = new SchedulerSettings();
+        }
+        ;
         if (this.data.Calendar) {
             console.log(this.data.Calendar);
             this.calendar = new Calendar();
@@ -857,6 +863,12 @@ var Scheduler = /** @class */ (function () {
                 this.schedulerContainer.classList.add(this.settings.theme);
             }
             //append template
+            if (this.settings.template) {
+                this.template = this.settings.template;
+            }
+            else {
+                this.template = new Template().svgString;
+            }
             this.schedulerContainer.innerHTML = this.template;
             document.body.style.overflow = 'auto';
             //get svg element
@@ -1354,10 +1366,6 @@ var Scheduler = /** @class */ (function () {
             }
         }
     };
-    Scheduler.prototype.resourceFilter = function (group) {
-        this.settings.groupFilter = group;
-        this.init();
-    };
     Scheduler.prototype.filterItems = function (filter) {
         var items = document.querySelectorAll('.svg-item');
         items.forEach(function (item) {
@@ -1365,12 +1373,13 @@ var Scheduler = /** @class */ (function () {
             item.classList.remove('selected');
             var filterlower = filter.toLowerCase();
             if (filterlower != '') {
-                var data = item.querySelector('text').getAttribute('data');
+                var data = item.querySelector('text');
+                console.log(data);
                 var ref = item.getAttribute('data-ref');
                 var key = item.getAttribute('data-key');
                 var show = true;
                 if (data != undefined) {
-                    show = data.toLowerCase().startsWith(filterlower);
+                    // show=data.toLowerCase().startsWith(filterlower);
                 }
                 else
                     show = false;
