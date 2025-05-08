@@ -9,8 +9,8 @@ var hotelData = {
             Image: "img/deluxe1.jpg",
             Data: { Beds: "1 King", Amenities: ["Ocean View", "Jacuzzi"], Rate: 450, Floor: 1 },
             Items: [
-                { Id: "BK1011", Text: "Smith", Description: "Honeymoon", Width: 8640, Offset: 0, Color1: "#3a7bd5" },
-                { Id: "BK1012", Text: "Johnson", Description: "Anniversary", Width: 4320, Offset: 14400, Color1: "#00d2ff" }
+                { Id: "BK1011", Text: "Smith", Description: "Honeymoon", Width: 8640, Offset: 0, Color1: "#3a7bd5" , Color2: "red"},
+                { Id: "BK1012", Text: "Johnson", Description: "Anniversary", Width: 4320, Offset: 14400, Effort:4320, Color1: "#00d2ff" }
             ]
         },
         {
@@ -112,26 +112,63 @@ var hotelData = {
         },
         // ... (PRE-402 a PRE-405 con 1-2 prenotazioni VIP ciascuna) ...
     ],
-
     Calendar: {
-        Exceptions: [
-            { Date: "2023-12-25", Name: "Christmas", Recurrent: true, Color: "#FF0000" },
-            { Date: "2024-01-01", Name: "New Year", Recurrent: true, Color: "#FF0000" }
-        ]
+    
+        Id: 1,
+        Name: "Macchine Utensili",
+        Description: null,
+        Reference: 960,
+        Step: 15,
+        Denom: 60000,
+        Items: [
+            {
+                Id: 4,
+                CalendarId: 1,
+                Name: "Sabati",
+                Description: null,
+                RuleType: 1,
+                ItemType: "exception",
+                Day: 6,
+                Capacity: 0,
+                ResourceId: null,
+                Reference: null,
+                Classes: null,
+                Color: null,
+                TicksFrom: 28401060,
+                TicksTo: 29453699,
+                Duration: null,
+                OrderIndex: 0,
+                DateFrom: "2024-01-01T00:00:00",
+                DateTo: "2025-12-31T23:59:59"
+            },
+            {
+                Id: 4,
+                CalendarId: 1,
+                Name: "Domeniche",
+                Description: null,
+                RuleType: 1,
+                ItemType: "exception",
+                Day: 0,
+                Capacity: 0,
+                ResourceId: null,
+                Reference: null,
+                Classes: null,
+                Color: null,
+                TicksFrom: 28401060,
+                TicksTo: 29453699,
+                Duration: null,
+                OrderIndex: 0,
+                DateFrom: "2024-01-01T00:00:00",
+                DateTo: "2025-12-31T23:59:59"
+            },
+           
+        ],
+       
+    
+  
     },
 
-    Events: [
-        { Id: "EV1", Description: "Annual Maintenance", Offset: 21600, Width: 2880, Color: "#FF9966" },
-        { Id: "EV2", Description: "Film Festival", Offset: 14400, Width: 4320, Color: "#CC99FF" }
-    ],
+   
 
-    HotelInfo: {
-        Name: "Grand Horizon Resort",
-        TotalRooms: 50,
-        Amenities: ["Spa", "Pool", "3 Restaurants"],
-        Contact: {
-            Phone: "+1 (305) 555-1234",
-            Email: "bookings@grandhorizon.com"
-        }
-    }
+   
 };

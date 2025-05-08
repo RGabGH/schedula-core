@@ -1687,16 +1687,14 @@ enum SchedulerView{
                         if (this.calendar!=null){
                             if (this.calendar.reference>0){
                              ratio=this.calendar.getCapacity((cdate.getTime()/60000)+10,cdate.getUTCDay())/this.calendar.reference;
-                             if (saturday==true) {
-                                console.log('saturday ratio:'+ratio);
-                             }
+                            
                              if (ratio>1) ratio=1;
                              if (ratio<0) ratio=0;
                             
                             }
                         }
                        
-                        ratio=1;
+                       // ratio=1;
                         let ry = this.headerHeight;
                         let rx = (c * this.settings.timeWidth);
                         let rw = this.settings.timeWidth;
@@ -1764,14 +1762,16 @@ enum SchedulerView{
             item.classList.remove('selected');
             let filterlower=filter.toLowerCase();
             if (filterlower != '') {
-                let data= item.querySelector('text');
-                console.log(data);
+                let data= item.querySelectorAll('text');               
                 let ref = item.getAttribute('data-ref');
                 let key = item.getAttribute('data-key');
-                let show=true;
+                let show=false;
        
                 if (data!=undefined){
-                   // show=data.toLowerCase().startsWith(filterlower);
+                    data.forEach((text)=>{
+                        show = show || text.innerHTML.toLowerCase().startsWith(filterlower);
+                    });
+                  
                 } else show = false;
        
                 if (key != undefined) {

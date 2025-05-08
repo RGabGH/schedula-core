@@ -52,7 +52,15 @@
         <button class="btn btn-outline-secondary m-1" onclick="setData(hrSchedulerData)">humans</button>
         <button class="btn btn-outline-secondary m-1" onclick="setData(productionSchedulerData)">production</button>
         <button class="btn btn-outline-secondary m-1" onclick="setData(clinicSchedulerData)">medical</button>
-        <input type="text" onkeyup="filterItems(this)">       
+        <input type="text" class="form-control col-1 m-1" placeholder="search..." onkeyup="filterItems(this)">       
+       
+    </div>
+    <div id="adjust" class="row m-1">
+        <button class="btn btn-outline-secondary m-1" onclick="setView(40)"><- 40 -></button>
+        <button class="btn btn-outline-secondary m-1" onclick="setView(30)"><- 30 -></button>
+        <button class="btn btn-outline-secondary m-1" onclick="setView(20)"><- 20 -></button>
+        <button class="btn btn-outline-secondary m-1" onclick="setView(10)"><- 10 -></button>
+       
        
     </div>
 
@@ -79,7 +87,7 @@
     <script>
         settings.icons=iconssvg;
         
-        const scheduler = new Scheduler("scheduler", hrSchedulerData, settings);    
+        const scheduler = new Scheduler("scheduler", hotelData, settings);    
         
         
         scheduler.init();
@@ -95,7 +103,10 @@
             document.getElementById("scheduler").classList.value="";
             document.getElementById("scheduler").classList.add(theme);
         }
-
+        function setView(num){
+            scheduler.settings.timeUnitsView = num
+            scheduler.init();
+        }
         function setData(dati){
             console.log('load data');
             scheduler.data=dati;

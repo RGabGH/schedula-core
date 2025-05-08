@@ -1293,16 +1293,13 @@ var Scheduler = /** @class */ (function () {
                         if (this_1.calendar != null) {
                             if (this_1.calendar.reference > 0) {
                                 ratio = this_1.calendar.getCapacity((cdate_1.getTime() / 60000) + 10, cdate_1.getUTCDay()) / this_1.calendar.reference;
-                                if (saturday == true) {
-                                    console.log('saturday ratio:' + ratio);
-                                }
                                 if (ratio > 1)
                                     ratio = 1;
                                 if (ratio < 0)
                                     ratio = 0;
                             }
                         }
-                        ratio = 1;
+                        // ratio=1;
                         var ry = this_1.headerHeight;
                         var rx = (c * this_1.settings.timeWidth);
                         var rw = this_1.settings.timeWidth;
@@ -1373,24 +1370,25 @@ var Scheduler = /** @class */ (function () {
             item.classList.remove('selected');
             var filterlower = filter.toLowerCase();
             if (filterlower != '') {
-                var data = item.querySelector('text');
-                console.log(data);
+                var data = item.querySelectorAll('text');
                 var ref = item.getAttribute('data-ref');
                 var key = item.getAttribute('data-key');
-                var show = true;
+                var show_1 = false;
                 if (data != undefined) {
-                    // show=data.toLowerCase().startsWith(filterlower);
+                    data.forEach(function (text) {
+                        show_1 = show_1 || text.innerHTML.toLowerCase().startsWith(filterlower);
+                    });
                 }
                 else
-                    show = false;
+                    show_1 = false;
                 if (key != undefined) {
-                    show = show || key.toLowerCase().startsWith(filterlower);
+                    show_1 = show_1 || key.toLowerCase().startsWith(filterlower);
                 }
                 ;
                 if (ref != undefined) {
-                    show = show || ref.toLowerCase().startsWith(filterlower);
+                    show_1 = show_1 || ref.toLowerCase().startsWith(filterlower);
                 }
-                if (show) {
+                if (show_1) {
                     item.style.opacity = '1';
                     item.classList.add('selected');
                 }
