@@ -98,10 +98,10 @@ var hrSchedulerData = {
                     Id: "TASK-401",
                     Text: "Onboarding",
                     Description: "Inserimento 2 nuovi assunti",
-                    Width: 4320, // 3 giorni
-                    Offset: 10080, // 7 giorni dall'inizio
+                    Width: 4320, 
+                    Offset: 10080, 
                     Classes: "hr-task",
-                    Color1: '#8E2DE2' // Colore specifico solo per questo task
+                    Color1: '#8E2DE2' // Color from server
                 }
             ]
         },
@@ -115,7 +115,8 @@ var hrSchedulerData = {
                 {
                     Id: "TASK-501",
                     Text: "Testing",
-                    Description: "Esecuzione test unitari",
+                    ViewInfo : true,
+                    Icons: [{Name:"comments"},{Name:'user'}],
                     Width: 2880, // 2 giorni
                     Offset: 15840, // 11 giorni dall'inizio
                     Classes: "test-task"

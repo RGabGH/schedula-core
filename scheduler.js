@@ -873,9 +873,21 @@ var Scheduler = /** @class */ (function () {
             document.body.style.overflow = 'auto';
             //get svg element
             this.schedulerSVG = document.querySelector('#main-svg');
+            var defs_1 = this.schedulerSVG.getElementById('defs');
             var parser = new DOMParser();
-            var svgIconsElement = parser.parseFromString(this.settings.icons, "image/svg+xml").documentElement;
-            this.schedulerSVG.getElementById('defs').append(svgIconsElement);
+            var wrapped = "<svg xmlns=\"http://www.w3.org/2000/svg\">".concat(this.settings.icons, "</svg>");
+            var doc = parser.parseFromString(wrapped, "image/svg+xml");
+            // Estrai il contenuto dell'SVG virtuale
+            var icons = doc.documentElement.childNodes;
+            // Importa ogni nodo <symbol> o contenuto SVG come definizione
+            icons.forEach(function (node) {
+                console.log(node);
+                // Solo elementi validi (salta commenti, spazi, ecc.)
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    var importedNode = _this.schedulerSVG.ownerDocument.importNode(node, true);
+                    defs_1.appendChild(node);
+                }
+            });
             this.schedulerItems = document.getElementById('scheduler-items');
             this.splitBar = document.getElementById('scheduler-splitter');
             if (this.schedulerContainer != null) {

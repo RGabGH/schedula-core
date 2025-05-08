@@ -1,0 +1,19 @@
+<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <!-- Sfondo blu con bordi arrotondati -->
+    <rect x="2" y="2" width="44" height="44" rx="6" fill="#3498db"/>
+    
+    <!-- Calendario (parte superiore) -->
+    <rect x="12" y="10" width="24" height="8" fill="#fff" rx="2"/>
+    <text x="24" y="16" font-family="Arial" font-size="8" text-anchor="middle" fill="#3498db">SS</text>
+    
+    <!-- Pagina del calendario -->
+    <rect x="12" y="18" width="24" height="24" fill="#fff" rx="2"/>
+    
+    <!-- Linee decorative calendario -->
+    <line x1="12" y1="24" x2="36" y2="24" stroke="#e0e0e0" stroke-width="1"/>
+    <line x1="12" y1="30" x2="36" y2="30" stroke="#e0e0e0" stroke-width="1"/>
+    <line x1="12" y1="36" x2="36" y2="36" stroke="#e0e0e0" stroke-width="1"/>
+    
+    <!-- Segno di spunta verde -->
+    <path d="M18 28 L22 32 L30 24" stroke="#2ecc71" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </svg>

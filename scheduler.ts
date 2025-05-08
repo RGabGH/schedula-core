@@ -1146,10 +1146,32 @@ enum SchedulerView{
             document.body.style.overflow='auto';
                //get svg element
             this.schedulerSVG=document.querySelector('#main-svg') as SVGSVGElement;
-            const parser = new DOMParser();
-            const svgIconsElement = parser.parseFromString(this.settings.icons, "image/svg+xml").documentElement;
 
-            this.schedulerSVG.getElementById('defs').append(svgIconsElement);
+            let defs=this.schedulerSVG.getElementById('defs');
+            const parser = new DOMParser();
+            const wrapped = `<svg xmlns="http://www.w3.org/2000/svg">${this.settings.icons}</svg>`;
+            const doc = parser.parseFromString(wrapped, "image/svg+xml");
+          
+            // Estrai il contenuto dell'SVG virtuale
+           
+          
+            const icons = doc.documentElement.childNodes;
+
+          
+
+            // Importa ogni nodo <symbol> o contenuto SVG come definizione
+            icons.forEach((node) => {
+                console.log(node);
+                // Solo elementi validi (salta commenti, spazi, ecc.)
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                const importedNode = this.schedulerSVG.ownerDocument!.importNode(node, true);
+                defs!.appendChild(node);
+                }
+            });
+
+           
+            
+        
             this.schedulerItems=document.getElementById('scheduler-items')!;
             this.splitBar=document.getElementById('scheduler-splitter')!;
             if (this.schedulerContainer!=null){

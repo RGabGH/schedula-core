@@ -65,8 +65,8 @@
     </div>
 
 
+    
     <div id="scheduler" ></div>
-   
     
 
     <script src="data/scheduler-data.js"></script>
@@ -84,15 +84,24 @@
  
     <script src="bootstrap/bootstrap.js"></script>
 
+
+
+
+ 
+
     <script>
-        settings.icons=iconssvg;
-        
+        settings.icons=iconssvg; 
+        console.log(settings.icons);
         const scheduler = new Scheduler("scheduler", hotelData, settings);    
         
-        
         scheduler.init();
+
+
+
        
-       
+
+
+
         function filterItems(input){
           console.log(input.value);
         
