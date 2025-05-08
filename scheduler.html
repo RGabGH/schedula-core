@@ -63,7 +63,14 @@
        
        
     </div>
-
+    <div id="styleselect" class="row m-1">
+        <button class="btn btn-outline-secondary m-1" onclick="setStyle('rect')">rect</button>
+        <button class="btn btn-outline-secondary m-1" onclick="setStyle('round-rect')">roundrect</button>
+        <button class="btn btn-outline-secondary m-1" onclick="setStyle('arrow')">arrow</button>
+        <button class="btn btn-outline-secondary m-1" onclick="setStyle('circle')">circle</button>
+         
+       
+    </div>
 
     
     <div id="scheduler" ></div>
@@ -90,10 +97,9 @@
  
 
     <script>
-        settings.icons=iconssvg; 
-        console.log(settings.icons);
-        const scheduler = new Scheduler("scheduler", hotelData, settings);    
+        settings.icons=iconssvg;
         
+        const scheduler = new Scheduler("scheduler", hrSchedulerData, settings);      
         scheduler.init();
 
 
@@ -112,9 +118,9 @@
             document.getElementById("scheduler").classList.value="";
             document.getElementById("scheduler").classList.add(theme);
         }
-        function setView(num){
-            scheduler.settings.timeUnitsView = num
-            scheduler.init();
+        function setStyle(style){
+           settings.gStyle=style;
+           scheduler.init();
         }
         function setData(dati){
             console.log('load data');
