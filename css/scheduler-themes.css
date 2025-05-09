@@ -64,7 +64,7 @@
 .theme-contrast .box-element { fill: #ffffff; }
 .theme-contrast .resource { fill: #ffffff; }
 .theme-contrast .resource-text { fill: #333333; }
-.theme-contrast .item:not(.custom-color) { fill: #ffeb3b; }
+.theme-contrast .item:not(.custom-color) { fill: #fad609; }
 .theme-contrast .item-text { fill: #ffffff; }
 .theme-contrast .monthbox { fill: #333333; }
 
@@ -325,3 +325,261 @@
 }
 
 
+/***** MIDNIGHT ABYSS - ULTRA DARK THEME *****/
+/***** MIDNIGHT ABYSS - ULTRA DARK THEME *****/
+.midnight-abyss .item:not(.custom-color) {
+    fill: #6a00f4;
+}
+.midnight-abyss .item:hover:not(.custom-color) {
+    filter: brightness(120%) drop-shadow(0 0 4px #8e2bff);
+}
+
+.midnight-abyss .resource {
+    fill: #121212;
+    stroke: #6a00f4;
+}
+.midnight-abyss .resource:hover {
+    fill: #1e1e1e;
+    stroke: #8e2bff;
+}
+
+.midnight-abyss .header-bg,
+.midnight-abyss .monthbox,
+.midnight-abyss .scheduler-footer {
+    fill: #0a0a0a;
+}
+
+.midnight-abyss .header-text,
+.midnight-abyss .resource-text {
+    fill: #b388ff;
+}
+
+.midnight-abyss .time-element.today {
+    fill: #8e2bff;
+}
+
+.midnight-abyss .week-element:hover {
+    fill: #6a00f4;
+}
+
+.midnight-abyss .bg {
+    fill: #121212;
+}
+
+.midnight-abyss .daybox-element.sunday,
+.midnight-abyss .time-element.sunday,
+.midnight-abyss .box-element.sunday {
+    fill: #1a1a2e;
+}
+
+.midnight-abyss .daybox-element.saturday {
+    fill: #1e1e1e;
+} 
+
+/***** EMERALD ENVY - GREEN ELEGANCE *****/
+.emerald-envy .item:not(.custom-color) {
+    fill: #2ecc71;
+}
+.emerald-envy .item:hover:not(.custom-color) {
+    filter: brightness(110%) opacity(90%);
+}
+
+.emerald-envy .resource {
+    fill: #e8f8f5;
+    stroke: #2ecc71;
+}
+.emerald-envy .resource:hover {
+    fill: #d1f2eb;
+    stroke: #27ae60;
+}
+
+.emerald-envy .header-bg,
+.emerald-envy .monthbox,
+.emerald-envy .scheduler-footer {
+    fill: #e8f8f5;
+}
+
+.emerald-envy .header-text,
+.emerald-envy .resource-text {
+    fill: #1e8449;
+}
+
+.emerald-envy .time-element.today {
+    fill: #27ae60;
+}
+
+.emerald-envy .week-element:hover {
+    fill: #2ecc71;
+}
+
+.emerald-envy .bg {
+    fill: #e8f8f5;
+}
+
+.emerald-envy .daybox-element.sunday,
+.emerald-envy .time-element.sunday,
+.emerald-envy .box-element.sunday {
+    fill: #d0ece7;
+}
+
+.emerald-envy .daybox-element.saturday {
+    fill: #d5f5e3;
+}
+
+
+/***** BLAZING SUNSET - FIERY ORANGE/RED *****/
+.blazing-sunset .item:not(.custom-color) {
+    fill: #ff6b35;
+}
+.blazing-sunset .item:hover:not(.custom-color) {
+    filter: brightness(110%) drop-shadow(0 0 3px #ff8c5a);
+}
+
+.blazing-sunset .resource {
+    fill: #fff5f0;
+    stroke: #ff6b35;
+}
+.blazing-sunset .resource:hover {
+    fill: #ffd4c2;
+    stroke: #e25822;
+}
+
+.blazing-sunset .header-bg,
+.blazing-sunset .monthbox,
+.blazing-sunset .scheduler-footer {
+    fill: #fff5f0;
+}
+
+.blazing-sunset .header-text,
+.blazing-sunset .resource-text {
+    fill: #d1451e;
+}
+
+.blazing-sunset .time-element.today {
+    fill: #e25822;
+}
+
+.blazing-sunset .week-element:hover {
+    fill: #ff6b35;
+}
+
+.blazing-sunset .bg {
+    fill: #fff5f0;
+}
+
+.blazing-sunset .daybox-element.sunday,
+.blazing-sunset .time-element.sunday,
+.blazing-sunset .box-element.sunday {
+    fill: #ffe0d4;
+}
+
+.blazing-sunset .daybox-element.saturday {
+    fill: #ffeadb;
+}
+
+/***** FROSTBITE - COOL BLUE/WHITE *****/
+.frostbite .item:not(.custom-color) {
+    fill: #3498db;
+}
+.frostbite .item:hover:not(.custom-color) {
+    filter: brightness(110%) opacity(90%);
+}
+
+.frostbite .resource {
+    fill: #f5f9fc;
+    stroke: #3498db;
+}
+.frostbite .resource:hover {
+    fill: #d4e6f7;
+    stroke: #2980b9;
+}
+
+.frostbite .header-bg,
+.frostbite .monthbox,
+.frostbite .scheduler-footer {
+    fill: #f5f9fc;
+}
+
+.frostbite .header-text,
+.frostbite .resource-text {
+    fill: #1a5276;
+}
+
+.frostbite .time-element.today {
+    fill: #2980b9;
+}
+
+.frostbite .week-element:hover {
+    fill: #3498db;
+}
+
+.frostbite .bg {
+    fill: #f5f9fc;
+}
+
+.frostbite .daybox-element.sunday,
+.frostbite .time-element.sunday,
+.frostbite .box-element.sunday {
+    fill: #e1f0fa;
+}
+
+.frostbite .daybox-element.saturday {
+    fill: #eaf2f8;
+}
+
+
+/***** ROYAL BOURBON - DARK BROWN & GOLD THEME *****/
+.royal-bourbon .item:not(.custom-color) {
+    fill: #D4AF37; /* Gold */
+}
+.royal-bourbon .item:hover:not(.custom-color) {
+    filter: brightness(110%) drop-shadow(0 0 4px rgba(212, 175, 55, 0.5));
+}
+
+.royal-bourbon .resource {
+    fill: #1A120B; /* Dark Brown */
+    stroke: #D4AF37; /* Gold */
+}
+.royal-bourbon .resource:hover {
+    fill: #2C1A0D; /* Lighter Brown */
+    stroke: #F5D062; /* Brighter Gold */
+}
+
+.royal-bourbon .header-bg,
+.royal-bourbon .monthbox,
+.royal-bourbon .scheduler-footer {
+    fill: #1A120B; /* Dark Brown */
+}
+
+.royal-bourbon .header-text,
+.royal-bourbon .resource-text {
+    fill: #D4AF37; /* Gold */
+}
+
+.royal-bourbon .time-element.today {
+    fill: #F5D062; /* Brighter Gold */
+}
+
+.royal-bourbon .week-element:hover {
+    fill: #D4AF37; /* Gold */
+}
+
+.royal-bourbon .bg {
+    fill: #2C1A0D; /* Soft Dark Brown */
+}
+
+.royal-bourbon .daybox-element.sunday,
+.royal-bourbon .time-element.sunday,
+.royal-bourbon .box-element.sunday {
+    fill: #30200f; /* Warm Brown */
+}
+
+.royal-bourbon .daybox-element.saturday {
+    fill: #352413; /* Medium Brown */
+}
+
+/* Extra: Stile per bordi e dettagli */
+.royal-bourbon .scheduler-border {
+    stroke: #D4AF37; /* Gold */
+    opacity: 0.7;
+}
