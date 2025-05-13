@@ -129,6 +129,10 @@
             document.getElementById("scheduler").classList.value="";
             document.getElementById("scheduler").classList.add(theme);
         }
+        function setColor(id,color){
+           scheduler.setItemColor(id,color);
+          
+        }
         function setView(num){
            scheduler.settings.timeUnitsView = num;
            scheduler.init();
@@ -168,7 +172,8 @@
         
         }
         function itemMouseDown(event, item){
-         
+            console.log(item.item);
+            scheduler.setItemColor(item.item.Id,"red");
         
         }
         function timeMouseClick(event, item){

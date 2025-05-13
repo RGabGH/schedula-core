@@ -2598,13 +2598,19 @@ var Scheduler = /** @class */ (function () {
     Scheduler.prototype.setItemColor = function (id, c) {
         var _a;
         var sc = this;
+        console.log('set color:>' + id + '<');
         (_a = sc.data.Resources) === null || _a === void 0 ? void 0 : _a.forEach(function (resource) {
             var _a;
             (_a = resource.Items) === null || _a === void 0 ? void 0 : _a.forEach(function (item) {
+                console.log('>' + item.Id + '<');
                 if (item.Id == id) {
+                    console.log('1');
                     item.Color1 = c;
+                    console.log('2');
                     item.Modified = true;
-                    sc.redrawItems();
+                    console.log('3');
+                    document.querySelector('svg[data-id="' + id + '"]>rect.item').setAttribute('fill', c);
+                    console.log('4');
                     return;
                 }
             });

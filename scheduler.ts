@@ -3228,15 +3228,22 @@ enum SchedulerView{
    
     public setItemColor(id: string, c: string){
         let sc=this;
+        console.log('set color:>'+id+'<');
         sc.data.Resources?.forEach(function(resource) {
                    
             resource.Items?.forEach(function(item){
-                          
+                          console.log('>'+item.Id+'<');
                             if (item.Id==id)
                             {
+                                 console.log('1');
                                 item.Color1=c;
+                                  console.log('2');
                                 item.Modified=true;
-                                sc.redrawItems();
+                                  console.log('3');
+                                document.querySelector('svg[data-id="'+id+'"]>rect.item').setAttribute('fill', c);
+                                  console.log('4');
+                             
+
                                 return;
                             }
                         });
