@@ -14,7 +14,6 @@ var hotelData = {
             Id: "DLX-102",
             Name: "102 - Deluxe Ocean View ",
             Group: 1,
-            Image: "img/deluxe2.jpg",
             Data: { Beds: "2 Queens", Amenities: ["Ocean View", "Balcony"], Rate: 420, Floor: 1 },
             Items: [
                 { Id: "BK1021", Text: "Williams", Description: "Family vacation", Width: 10080, Offset: 2880, Color1: "#ff7e5f" }
@@ -100,7 +99,6 @@ var hotelData = {
             Id: "PRE-401",
             Name: "401 - Presidential Suite ",
             Group: 4,
-            Image: "img/pres1.jpg",
             Data: { Beds: "1 King + 2 Queens", Amenities: ["Private Pool", "Butler"], Rate: 1200, Floor: 4 },
             Items: [
                 { Id: "BK4011", Text: "Roberts", Description: "Celebrity VIP", Width: 8640, Offset: 7200, Color1: "#8E2DE2", Classes: "arrow" },

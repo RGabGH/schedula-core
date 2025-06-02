@@ -83,7 +83,8 @@ var hrSchedulerData = {
                     Description: "Report performance keywords",
                     Width: 2880, // 2 giorni
                     Offset: 14400, // 10 giorni dall'inizio
-                    Classes: "analysis-task"
+                    Classes: "analysis-task",
+                    Color2:"red"
                 }
             ]
         },
