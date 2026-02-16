@@ -1,585 +1,157 @@
-.theme-dark .bg { fill: #474747; }
-.theme-dark .header-bg { fill: #3a3a3a; }
-.theme-dark .header-text { fill: #f0f0f0; }
-.theme-dark .scheduler-footer { fill: #3a3a3a; }
-.theme-dark .week-element { fill: #3a3a3a; }
-.theme-dark .week-element:hover { fill: #9095c2 }
-.theme-dark .week-element-text { fill: #f0f0f0; }
-.theme-dark .time-element { fill: #424242; }
-.theme-dark .time-element:hover { fill: #9095c2 }
-.theme-dark .time-element-text { fill: #f0f0f0; }
-.theme-dark .box-element { fill: #424242; }
-.theme-dark .resource { fill: #383838; }
-.theme-dark .resource-text { fill: #ffffff; }
-.theme-dark .item:not(.custom-color) { fill: #009688; }
-.theme-dark .item-text { fill: #f0f0f0; }
-.theme-dark .daybox-element { fill: #777777; }
-.theme-dark .daybox-element.sunday { fill: #424242; }
-.theme-dark .daybox-element.saturday { fill: #555555; }
-.theme-dark .monthbox { fill: #3a3a3a; }
-.theme-dark .monthbox:hover { fill: #9095c2 }
-
-.theme-light .bg { fill: #ffffff; }
-.theme-light .header-bg { fill: #f5f5f5; }
-.theme-light .header-text { fill: #2e2e2e; }
-.theme-light .scheduler-footer { fill: #f5f5f5; }
-.theme-light .week-element { fill: #f5f5f5; }
-.theme-light .week-element:hover { fill: #9095c2 }
-.theme-light .week-element-text { fill: #2e2e2e; }
-.theme-light .time-element { fill: #e0e0e0; }
-.theme-light .time-element-text { fill: #2e2e2e; }
-.theme-light .box-element { fill: #e0e0e0; }
-.theme-light .resource { fill: #e0e0e0; }
-.theme-light .resource-text { fill: #2e2e2e; }
-.theme-light .item:not(.custom-color) { fill: #2196f3; }
-.theme-light .item-text { fill: #2e2e2e; }
-.theme-light .daybox-element { fill: #e0e0e0; }
-.theme-light .monthbox { fill: #f5f5f5; }
-
-.theme-blue .bg { fill: #e3f2fd; }
-.theme-blue .bg-vl { stroke: #87cbff; }
-.theme-blue .header-bg { fill: #bbdefb; }
-.theme-blue .header-text { fill: #0d47a1; }
-.theme-blue .scheduler-footer { fill: #bbdefb; }
-.theme-blue .week-element { fill: #bbdefb; }
-.theme-blue .week-element-text { fill: #0d47a1; }
-.theme-blue .time-element { fill: #90caf9; }
-.theme-blue .time-element-text { fill: #0d47a1; }
-.theme-blue .box-element { fill: #f4f7fd; }
-.theme-blue .resource { fill: #90caf9; }
-.theme-blue .resource-text { fill: #0d47a1; }
-.theme-blue .item:not(.custom-color) { fill: #1e88e5; }
-.theme-blue .item-text { fill: #0d47a1; }
-.theme-blue .monthbox { fill: #bbdefb; }
-
-.theme-contrast .bg { fill: #000000; }
-.theme-blue .bg-vl { stroke: #004579; }
-.theme-contrast .header-bg { fill: #333333; }
-.theme-contrast .header-text { fill: #ffffff; }
-.theme-contrast .scheduler-footer { fill: #333333; }
-.theme-contrast .week-element { fill: #333333; }
-.theme-contrast .week-element-text { fill: #ffffff; }
-.theme-contrast .time-element { fill: #ffffff; }
-.theme-contrast .time-element-text { fill: #333333; }
-.theme-contrast .box-element { fill: #ffffff; }
-.theme-contrast .resource { fill: #ffffff; }
-.theme-contrast .resource-text { fill: #333333; }
-.theme-contrast .item:not(.custom-color) { fill: #fad609; }
-.theme-contrast .item-text { fill: #ffffff; }
-.theme-contrast .monthbox { fill: #333333; }
-
-
-/*******************************************************************
-/***** 1. TEMA OCEAN BREEZE *****/
-.ocean-breeze .item:not(.custom-color) {
-    fill: #00a8cc;
+/* REFINED DARK THEME */
+.theme-dark .bg {
+    fill: #1e1e1e;
 }
-.ocean-breeze .item:hover:not(.custom-color) {
-    filter: brightness(110%) opacity(90%);
+.theme-dark .header-bg {
+    fill: #2d2d2d;
 }
-
-.ocean-breeze .resource  {
-    fill: #e6f7ff;
-    stroke: #00a8cc;
-}
-.ocean-breeze .resource:hover {
-    fill: #a7e4f2;
-    stroke: #0088a8;
-}
-
-.ocean-breeze .header-bg ,
-.ocean-breeze .monthbox ,
-.ocean-breeze .scheduler-footer  {
-    fill: #e6f7ff;
-}
-
-.ocean-breeze .header-text ,
-.ocean-breeze .resource-text  {
-    fill: #00587a;
-}
-
-.ocean-breeze .time-element.today{
-    fill: #00587a;
-}
-
-.ocean-breeze .week-element:hover {
-    fill: #00a8cc;
-}
-
-.ocean-breeze .bg {
-    fill: #e6f7ff;
-}
-
-.ocean-breeze .daybox-element.sunday,
-.ocean-breeze .time-element.sunday,
-.ocean-breeze .box-element.sunday {
-    fill: #c0e0f0;
-}
-
-.ocean-breeze .daybox-element.saturday {
-    fill: #d8edf7;
-}
-
-
-/***** 2. TEMA SUNSET LUXE *****/
-.sunset-luxe .item:not(.custom-color) {
-    fill: #b83b5e;
-}
-.sunset-luxe .item:hover:not(.custom-color) {
-    filter: brightness(110%) opacity(90%);
-}
-
-.sunset-luxe .resource {
-    fill: #fff8f0;
-    stroke: #f08a5d;
-}
-.sunset-luxe .resource:hover {
-    fill: #fcecd5;
-    stroke: #e05d2e;
-}
-
-.sunset-luxe .header-bg,
-.sunset-luxe .monthbox,
-.sunset-luxe .scheduler-footer {
-    fill: #fff8f0;
-}
-
-.sunset-luxe .header-text,
-.sunset-luxe .resource-text {
-    fill: #6a2c70;
-}
-
-.sunset-luxe .time-element.today {
-    fill: #6a2c70;
-}
-
-.sunset-luxe .week-element:hover {
-    fill: #f08a5d;
-}
-
-.sunset-luxe .bg.sunset-luxe {
-    fill: #fff8f0;
-}
-
-.sunset-luxe .daybox-element.sunday,
-.sunset-luxe .time-element.sunday,
-.sunset-luxe .box-element.sunday {
-    fill: #f5d5c8;
-}
-
-.sunset-luxe .daybox-element.saturday {
-    fill: #f8e1d1;
-}
-
-
-/***** 3. TEMA EMERALD ELEGANCE *****/
-.emerald-elegance .item:not(.custom-color) {
-    fill: #689f38;
-}
-.emerald-elegance .item:hover:not(.custom-color) {
-    filter: brightness(110%) opacity(90%);
-}
-
-.emerald-elegance .resource {
-    fill: #f1f8e9;
-    stroke: #689f38;
-}
-.emerald-elegance .resource:hover {
-    fill: #dcedc8;
-    stroke: #558b2f;
-}
-
-.emerald-elegance .header-bg,
-.emerald-elegance .monthbox,
-.emerald-elegance .scheduler-footer {
-    fill: #f1f8e9;
-}
-
-.emerald-elegance .header-text,
-.emerald-elegance .resource-text {
-    fill: #2e7d32;
-}
-
-.emerald-elegance .time-element.today {
-    fill: #2e7d32;
-}
-
-.emerald-elegance .week-element:hover {
-    fill: #8bc34a;
-}
-
-.emerald-elegance .bg {
-    fill: #f1f8e9;
-}
-
-.emerald-elegance .daybox-element.sunday,
-.emerald-elegance .time-element.sunday,
-.emerald-elegance .box-element.sunday {
-    fill: #d8e8c8;
-}
-
-.emerald-elegance .daybox-element.saturday {
-    fill: #e4efd8;
-}
-
-
-/***** 4. TEMA ROYAL INDIGO *****/
-.royal-indigo .item:not(.custom-color) {
-    fill: #5c6bc0;
-}
-.royal-indigo .item:hover:not(.custom-color) {
-    filter: brightness(110%) opacity(90%);
-}
-
-.royal-indigo .resource {
-    fill: #f3e5f5;
-    stroke: #7e57c2;
-}
-.royal-indigo .resource:hover {
-    fill: #e1bee7;
-    stroke: #5e35b1;
-}
-
-.royal-indigo .header-bg,
-.royal-indigo .monthbox,
-.royal-indigo .scheduler-footer{
-    fill: #f3e5f5;
-}
-
-.royal-indigo .header-text,
-.royal-indigo .resource-text {
-    fill: #4527a0;
-}
-
-.royal-indigo .time-element.today {
-    fill: #4527a0;
-}
-
-.royal-indigo .week-element:hover {
-    fill: #7e57c2;
-}
-
-.royal-indigo .bg {
-    fill: #f3e5f5;
-}
-
-.royal-indigo .daybox-element.sunday,
-.royal-indigo .time-element.sunday,
-.royal-indigo .box-element.sunday{
-    fill: #e6d4ed;
-}
-
-.royal-indigo .daybox-element.saturday {
-    fill: #ece0f2;
-}
-
-
-/***** 5. TEMA SANDY BEACH *****/
-.sandy-beach .item:not(.custom-color) {
-    fill: #4db6ac;
-}
-.sandy-beach .item:hover:not(.custom-color) {
-    filter: brightness(110%) opacity(90%);
-}
-
-.sandy-beach .resource{
-    fill: #f5f5f5;
-    stroke: #a1887f;
-}
-.sandy-beach .resource:hover {
-    fill: #efebe9;
-    stroke: #8d6e63;
-}
-
-.sandy-beach .header-bg ,
-.sandy-beach .monthbox ,
-.sandy-beach .scheduler-footer{
-    fill: #f5f5f5;
-}
-
-.sandy-beach .header-text ,
-.sandy-beach .resource-text {
-    fill: #6d4c41;
-}
-
-.sandy-beach .time-element.today {
-    fill: #6d4c41;
-}
-
-.sandy-beach .week-element:hover {
-    fill: #80cbc4;
-}
-
-.sandy-beach .bg{
-    fill: #f5f5f5;
-}
-
-.sandy-beach .daybox-element.sunday,
-.sandy-beach .time-element.sunday,
-.sandy-beach .box-element.sunday {
+.theme-dark .header-text {
     fill: #e0e0e0;
 }
-
-.sandy-beach .daybox-element.saturday {
-    fill: #e8e8e8;
+.theme-dark .resource {
+    fill: #2d2d2d;
+    stroke: #444;
+}
+.theme-dark .resource-text {
+    fill: #e0e0e0;
+}
+.theme-dark .time-element {
+    fill: #333;
+    stroke: #444;
+}
+.theme-dark .time-element-text {
+    fill: #ccc;
+}
+.theme-dark .box-element {
+    fill: #3a3a45;
+}
+.theme-dark .week-element {
+    fill: #252526;
+    stroke: #444;
+}
+.theme-dark .sb-rbg,
+.theme-dark .sb-hbg {
+    fill: #252526;
+}
+.theme-dark .splitter {
+    fill: #444;
+}
+.theme-dark .daybox-element {
+    fill: #2d2d2d;
+}
+.theme-dark .daybox-element.saturday,
+.theme-dark .daybox-element.sunday {
+    fill: #3a3a45;
+}
+.theme-dark .monthbox {
+    fill: #2d2d2d;
+    stroke: #444;
+}
+.theme-dark .monthbox:hover {
+    fill: #677ee4;
+}
+.theme-dark .item:not(.custom-color) {
+    fill: #5762ca; /* Keeping a distinct item color */
+}
+.theme-dark .item-text {
+    fill: #ffffff;
 }
 
-
-/***** MIDNIGHT ABYSS - ULTRA DARK THEME *****/
-/***** MIDNIGHT ABYSS - ULTRA DARK THEME *****/
-.midnight-abyss .item:not(.custom-color) {
-    fill: #6a00f4;
+/* REFINED BLUE THEME (Slate Inspired) */
+.theme-blue .bg {
+    fill: #0f172a;
 }
-.midnight-abyss .item:hover:not(.custom-color) {
-    filter: brightness(120%) drop-shadow(0 0 4px #8e2bff);
+.theme-blue .header-bg {
+    fill: #1e293b;
 }
-
-.midnight-abyss .resource {
-    fill: #121212;
-    stroke: #6a00f4;
+.theme-blue .header-text {
+    fill: #94a3b8;
 }
-.midnight-abyss .resource:hover {
-    fill: #1e1e1e;
-    stroke: #8e2bff;
+.theme-blue .resource {
+    fill: #1e293b;
+    stroke: #334155;
 }
-
-.midnight-abyss .header-bg,
-.midnight-abyss .monthbox,
-.midnight-abyss .scheduler-footer {
-    fill: #0a0a0a;
+.theme-blue .resource-text {
+    fill: #e2e8f0;
 }
-
-.midnight-abyss .header-text,
-.midnight-abyss .resource-text {
-    fill: #b388ff;
+.theme-blue .time-element {
+    fill: #334155;
+    stroke: #475569;
 }
-
-.midnight-abyss .time-element.today {
-    fill: #8e2bff;
+.theme-blue .time-element-text {
+    fill: #cbd5e1;
 }
-
-.midnight-abyss .week-element:hover {
-    fill: #6a00f4;
+.theme-blue .box-element {
+    fill: #1e293b;
 }
-
-.midnight-abyss .bg {
-    fill: #121212;
+.theme-blue .week-element {
+    fill: #0f172a;
+    stroke: #334155;
 }
-
-.midnight-abyss .daybox-element.sunday,
-.midnight-abyss .time-element.sunday,
-.midnight-abyss .box-element.sunday {
-    fill: #1a1a2e;
+.theme-blue .sb-rbg,
+.theme-blue .sb-hbg {
+    fill: #0f172a;
 }
-
-.midnight-abyss .daybox-element.saturday {
-    fill: #1e1e1e;
-} 
-
-/***** EMERALD ENVY - GREEN ELEGANCE *****/
-.emerald-envy .item:not(.custom-color) {
-    fill: #2ecc71;
+.theme-blue .splitter {
+    fill: #334155;
 }
-.emerald-envy .item:hover:not(.custom-color) {
-    filter: brightness(110%) opacity(90%);
+.theme-blue .daybox-element {
+    fill: #1e293b;
 }
-
-.emerald-envy .resource {
-    fill: #e8f8f5;
-    stroke: #2ecc71;
+.theme-blue .daybox-element.saturday,
+.theme-blue .daybox-element.sunday {
+    fill: #334155;
 }
-.emerald-envy .resource:hover {
-    fill: #d1f2eb;
-    stroke: #27ae60;
+.theme-blue .monthbox {
+    fill: #1e293b;
+    stroke: #334155;
+}
+.theme-blue .monthbox:hover {
+    fill: #3b82f6;
+}
+.theme-blue .item:not(.custom-color) {
+    fill: #3b82f6;
+}
+.theme-blue .item-text {
+    fill: #ffffff;
 }
 
-.emerald-envy .header-bg,
-.emerald-envy .monthbox,
-.emerald-envy .scheduler-footer {
-    fill: #e8f8f5;
+/* SOFT THEME */
+.theme-soft .bg {
+    fill: url(#vertical-gradient5);
+}
+.theme-soft .daybox-element {
+    fill: url(#vertical-gradient5);
+}
+.theme-soft .daybox-element.saturday,
+.theme-soft .daybox-element.sunday {
+    fill: #e0e0e0;
+}
+.theme-soft .header-bg {
+    fill: #f5f5f5;
+}
+.theme-soft .header-text {
+    fill: #333;
+}
+.theme-soft .resource {
+    fill: #ffffff;
+    stroke: #ddd;
+}
+.theme-soft .resource-text {
+    fill: #333;
+}
+.theme-soft .time-element {
+    fill: #f0f0f0;
+    stroke: #ddd;
+}
+.theme-soft .time-element-text {
+    fill: #666;
+}
+.theme-soft .item:not(.custom-color) {
+    fill: #818cf8;
 }
 
-.emerald-envy .header-text,
-.emerald-envy .resource-text {
-    fill: #1e8449;
-}
-
-.emerald-envy .time-element.today {
-    fill: #27ae60;
-}
-
-.emerald-envy .week-element:hover {
-    fill: #2ecc71;
-}
-
-.emerald-envy .bg {
-    fill: #e8f8f5;
-}
-
-.emerald-envy .daybox-element.sunday,
-.emerald-envy .time-element.sunday,
-.emerald-envy .box-element.sunday {
-    fill: #d0ece7;
-}
-
-.emerald-envy .daybox-element.saturday {
-    fill: #d5f5e3;
-}
-
-
-/***** BLAZING SUNSET - FIERY ORANGE/RED *****/
-.blazing-sunset .item:not(.custom-color) {
-    fill: #ff6b35;
-}
-.blazing-sunset .item:hover:not(.custom-color) {
-    filter: brightness(110%) drop-shadow(0 0 3px #ff8c5a);
-}
-
-.blazing-sunset .resource {
-    fill: #fff5f0;
-    stroke: #ff6b35;
-}
-.blazing-sunset .resource:hover {
-    fill: #ffd4c2;
-    stroke: #e25822;
-}
-
-.blazing-sunset .header-bg,
-.blazing-sunset .monthbox,
-.blazing-sunset .scheduler-footer {
-    fill: #fff5f0;
-}
-
-.blazing-sunset .header-text,
-.blazing-sunset .resource-text {
-    fill: #d1451e;
-}
-
-.blazing-sunset .time-element.today {
-    fill: #e25822;
-}
-
-.blazing-sunset .week-element:hover {
-    fill: #ff6b35;
-}
-
-.blazing-sunset .bg {
-    fill: #fff5f0;
-}
-
-.blazing-sunset .daybox-element.sunday,
-.blazing-sunset .time-element.sunday,
-.blazing-sunset .box-element.sunday {
-    fill: #ffe0d4;
-}
-
-.blazing-sunset .daybox-element.saturday {
-    fill: #ffeadb;
-}
-
-/***** FROSTBITE - COOL BLUE/WHITE *****/
-.frostbite .item:not(.custom-color) {
-    fill: #3498db;
-}
-.frostbite .item:hover:not(.custom-color) {
-    filter: brightness(110%) opacity(90%);
-}
-
-.frostbite .resource {
-    fill: #f5f9fc;
-    stroke: #3498db;
-}
-.frostbite .resource:hover {
-    fill: #d4e6f7;
-    stroke: #2980b9;
-}
-
-.frostbite .header-bg,
-.frostbite .monthbox,
-.frostbite .scheduler-footer {
-    fill: #f5f9fc;
-}
-
-.frostbite .header-text,
-.frostbite .resource-text {
-    fill: #1a5276;
-}
-
-.frostbite .time-element.today {
-    fill: #2980b9;
-}
-
-.frostbite .week-element:hover {
-    fill: #3498db;
-}
-
-.frostbite .bg {
-    fill: #f5f9fc;
-}
-
-.frostbite .daybox-element.sunday,
-.frostbite .time-element.sunday,
-.frostbite .box-element.sunday {
-    fill: #e1f0fa;
-}
-
-.frostbite .daybox-element.saturday {
-    fill: #eaf2f8;
-}
-
-
-/***** ROYAL BOURBON - DARK BROWN & GOLD THEME *****/
-.royal-bourbon .item:not(.custom-color) {
-    fill: #D4AF37; /* Gold */
-}
-.royal-bourbon .item:hover:not(.custom-color) {
-    filter: brightness(110%) drop-shadow(0 0 4px rgba(212, 175, 55, 0.5));
-}
-
-.royal-bourbon .resource {
-    fill: #1A120B; /* Dark Brown */
-    stroke: #D4AF37; /* Gold */
-}
-.royal-bourbon .resource:hover {
-    fill: #2C1A0D; /* Lighter Brown */
-    stroke: #F5D062; /* Brighter Gold */
-}
-
-.royal-bourbon .header-bg,
-.royal-bourbon .monthbox,
-.royal-bourbon .scheduler-footer {
-    fill: #1A120B; /* Dark Brown */
-}
-
-.royal-bourbon .header-text,
-.royal-bourbon .resource-text {
-    fill: #D4AF37; /* Gold */
-}
-
-.royal-bourbon .time-element.today {
-    fill: #F5D062; /* Brighter Gold */
-}
-
-.royal-bourbon .week-element:hover {
-    fill: #D4AF37; /* Gold */
-}
-
-.royal-bourbon .bg {
-    fill: #2C1A0D; /* Soft Dark Brown */
-}
-
-.royal-bourbon .daybox-element.sunday,
-.royal-bourbon .time-element.sunday,
-.royal-bourbon .box-element.sunday {
-    fill: #30200f; /* Warm Brown */
-}
-
-.royal-bourbon .daybox-element.saturday {
-    fill: #352413; /* Medium Brown */
-}
-
-/* Extra: Stile per bordi e dettagli */
-.royal-bourbon .scheduler-border {
-    stroke: #D4AF37; /* Gold */
-    opacity: 0.7;
-}
+/* Body Background Helper */
+body.theme-dark { background-color: #1e1e1e; color: #e0e0e0; }
+body.theme-blue { background-color: #0f172a; color: #cbd5e1; }
+body.theme-soft { background-color: #F8F8F8; color: #333; }

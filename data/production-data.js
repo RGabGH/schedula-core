@@ -4,7 +4,6 @@ var productionSchedulerData = {
             Id: "M001",
             Name: "Press PX-200",
             Group: 1,   // Macchine a stampaggio
-            Image: "images/hydraulic-press.jpg",
             Status: "Operativa",
             Items: [
                 {
@@ -21,7 +20,7 @@ var productionSchedulerData = {
                         Quantity: 1200,
                         Operator: "Mario Rossi"
                     },
-                    Icons: [{Name: "industry"}, {Name: "clock"}]
+                    Icons: [{ Name: "industry" }, { Name: "clock" }]
                 },
                 {
                     Id: "ORD-4579",
@@ -182,7 +181,7 @@ var productionSchedulerData = {
             }
         ],
     },
-    
+
     Events: [
         {
             Id: "EV-PROD-1",
@@ -212,7 +211,7 @@ var productionSchedulerData = {
             Classes: "delivery-event"
         }
     ],
-    
+
     ProductionInfo: {
         Plant: "Stabilimento Nord",
         Manager: "Ing. Paolo Bianchi",

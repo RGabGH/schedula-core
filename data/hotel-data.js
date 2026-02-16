@@ -1,13 +1,13 @@
 var hotelData = {
-    Resources: [      
+    Resources: [
         {
             Id: "DLX-101",
             Name: "101 - Deluxe Ocean View ",
             Group: 1,
             Data: { Beds: "1 King", Amenities: ["Ocean View", "Jacuzzi"], Rate: 450, Floor: 1 },
             Items: [
-                { Id: "BK1011", Text: "Smith", Description: "Honeymoon", Width: 8640, Offset: 0, Color1: "#3a7bd5" , Color2: "red"},
-                { Id: "BK1012", Text: "Johnson", Description: "Anniversary", Width: 4320, Offset: 14400, Effort:4320, Color1: "#00d2ff" }
+                { Id: "BK1011", Text: "Smith", Description: "Honeymoon", Width: 8640, Offset: 0, Color1: "#3a7bd5", Color2: "red" },
+                { Id: "BK1012", Text: "Johnson", Description: "Anniversary", Width: 4320, Offset: 14400, Effort: 4320, Color1: "#00d2ff" }
             ]
         },
         {
@@ -19,18 +19,17 @@ var hotelData = {
                 { Id: "BK1021", Text: "Williams", Description: "Family vacation", Width: 10080, Offset: 2880, Color1: "#ff7e5f" }
             ]
         },
-    
+
 
         // Suite 106-115 (Piano 2)
         {
             Id: "DLX-106",
             Name: "106 - Deluxe Premium ",
             Group: 1,
-            Image: "img/deluxe3.jpg",
             Data: { Beds: "1 King", Amenities: ["Ocean View", "Jacuzzi", "Terrace"], Rate: 500, Floor: 2 },
             Items: [
                 { Id: "BK1061", Text: "Brown", Description: "Business retreat", Width: 5760, Offset: 7200, Color1: "#a8ff78" },
-                { Id: "BK1062", Text: "Davis", Description: "Wedding party", Width: 2880, Offset: 18000, Color1: "#ff416c" }
+                { Id: "BK1062", Text: "Davis", Description: "Wedding party", Width: 2880, Offset: 18000, Color1: "#ff416c", Link: "mylink" }
             ]
         },
         // ... (DLX-107 a DLX-115 con 2 prenotazioni ciascuna) ...
@@ -53,7 +52,7 @@ var hotelData = {
             Data: { Beds: "2 Twins", Amenities: ["Work Desk"], Rate: 300, Floor: 2 },
             Items: [
                 { Id: "BK2021", Text: "Wilson", Description: "Conference attendee", Width: 4320, Offset: 8640, Color1: "#FFD166" },
-                { Id: "BK2022", Text: "Taylor", Description: "Extended stay", Width: 14400, Offset: 14400, Color1: "#06D6A0" }
+                { Id: "BK2022", Text: "Taylor", Description: "Extended stay", Width: 14400, Offset: 14400, Color1: "#06D6A0", Link: "mylink" }
             ]
         },
         // ... (EXC-203 a EXC-210 con 1-2 prenotazioni ciascuna) ...
@@ -65,7 +64,7 @@ var hotelData = {
             Group: 2,
             Data: { Beds: "1 King", Amenities: ["Corner Room", "Extra Space"], Rate: 350, Floor: 3 },
             Items: [
-                { Id: "BK2111", Text: "Anderson", Description: "Project team", Width: 7200, Offset: 21600, Color1: "#118AB2" }
+                { Id: "BK2111", Text: "Anderson", Description: "Project team", Width: 7200, Offset: 21600, Color1: "#118AB2", Link: "mylink" }
             ]
         },
         // ... (EXC-212 a EXC-220 con 1-3 prenotazioni ciascuna) ...
@@ -108,7 +107,7 @@ var hotelData = {
         // ... (PRE-402 a PRE-405 con 1-2 prenotazioni VIP ciascuna) ...
     ],
     Calendar: {
-    
+
         Id: 1,
         Name: "Macchine Utensili",
         Description: null,
@@ -156,16 +155,16 @@ var hotelData = {
                 DateFrom: "2024-01-01T00:00:00",
                 DateTo: "2025-12-31T23:59:59"
             },
-           
+
         ],
-       
-    
-  
+
+
+
     },
 
-   
 
-   
+
+
 };
 
 

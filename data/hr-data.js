@@ -6,7 +6,6 @@ var hrSchedulerData = {
             Group: 1,   // Sviluppo Software
             Position: "Senior Developer",
             Department: "IT",
-            Image: "images/employee1.jpg",
             Items: [
                 {
                     Id: "TASK-101",
@@ -20,7 +19,7 @@ var hrSchedulerData = {
                         Priority: "High",
                         Status: "In Progress"
                     },
-                    Icons: [{Name: "code"}, {Name: "urgent"}]
+                    Icons: [{ Name: "code" }, { Name: "urgent" }]
                 },
                 {
                     Id: "TASK-102",
@@ -74,7 +73,7 @@ var hrSchedulerData = {
                     Width: 5760, // 4 giorni
                     Offset: 8640, // 6 giorni dall'inizio
                     Classes: "marketing-task",
-                    Icons:[{Name:"bookmark"}]
+                    Icons: [{ Name: "bookmark" }]
 
                 },
                 {
@@ -84,7 +83,7 @@ var hrSchedulerData = {
                     Width: 2880, // 2 giorni
                     Offset: 14400, // 10 giorni dall'inizio
                     Classes: "analysis-task",
-                    Color2:"red"
+                    Color2: "red"
                 }
             ]
         },
@@ -99,8 +98,8 @@ var hrSchedulerData = {
                     Id: "TASK-401",
                     Text: "Onboarding",
                     Description: "Inserimento 2 nuovi assunti",
-                    Width: 4320, 
-                    Offset: 10080, 
+                    Width: 4320,
+                    Offset: 10080,
                     Classes: "hr-task",
                     Color1: '#8E2DE2' // Color from server
                 }
@@ -116,8 +115,8 @@ var hrSchedulerData = {
                 {
                     Id: "TASK-501",
                     Text: "Testing",
-                    ViewInfo : true,
-                    Icons: [{Name:"comments"},{Name:'user'}],
+                    ViewInfo: true,
+                    Icons: [{ Name: "comments" }, { Name: 'user' }],
                     Width: 2880, // 2 giorni
                     Offset: 15840, // 11 giorni dall'inizio
                     Classes: "test-task"
@@ -159,7 +158,7 @@ var hrSchedulerData = {
             }
         ],
     },
-    
+
     Events: [
         {
             Id: "HR-EVT-1",
@@ -177,7 +176,7 @@ var hrSchedulerData = {
             Classes: "evaluation-event"
         }
     ],
-    
+
     HrInfo: {
         Company: "TechSolutions S.p.A.",
         HRManager: "Dr. Elena Russo",

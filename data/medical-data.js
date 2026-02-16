@@ -5,7 +5,6 @@ var clinicSchedulerData = {
             Id: "CARD1",
             Name: "Dr. Rossi - Cardiologia",
             Group: 1,
-            Image: "images/doctor1.jpg",
             Specialty: "Cardiologia",
             Items: [
                 {
@@ -36,7 +35,7 @@ var clinicSchedulerData = {
                 }
             ]
         },
-        
+
         // Ortopedia
         {
             Id: "ORTO1",
@@ -70,7 +69,7 @@ var clinicSchedulerData = {
                 }
             ]
         },
-        
+
         // Pediatria
         {
             Id: "PED1",
@@ -97,7 +96,7 @@ var clinicSchedulerData = {
                 }
             ]
         },
-        
+
         // Ecografia
         {
             Id: "ECO1",
@@ -131,7 +130,7 @@ var clinicSchedulerData = {
                 }
             ]
         },
-        
+
         // Fisioterapia
         {
             Id: "FISIO1",
@@ -165,7 +164,7 @@ var clinicSchedulerData = {
                 }
             ]
         },
-        
+
         // Laboratorio Analisi
         {
             Id: "LAB1",
@@ -216,7 +215,7 @@ var clinicSchedulerData = {
             ]
         }
     ],
-    
+
     Calendar: {
         Exceptions: [
             {
@@ -237,7 +236,7 @@ var clinicSchedulerData = {
             End: 1200   // 20:00
         }
     },
-    
+
     Events: [
         {
             Id: "PAUSA1",
@@ -258,7 +257,7 @@ var clinicSchedulerData = {
             Opacity: 0.2
         }
     ],
-    
+
     ClinicInfo: {
         Name: "Poliambulatorio San Marco",
         Address: "Via Roma 123, Milano",
