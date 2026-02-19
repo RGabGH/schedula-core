@@ -71,10 +71,10 @@ export class SchedulaSettings {
         this.icons = "";
         this.theme = "";
         this.template = "";
-        this.months = ["January", "February", "March",
-            "April", "May", "June",
-            "July", "August", "September",
-            "October", "November", "December"
+        this.months = ["Gennaio", "Febbraio", "Marzo",
+            "Aprile", "Maggio", "Giugno",
+            "Luglio", "Agosto", "Settembre",
+            "Ottobre", "Novembre", "Dicembre"
         ];
     }
 }

@@ -43,6 +43,7 @@ export class SchedulaCore implements ISchedulaCore {
     private template: string = '';
     public calendar: SchedulaCalendar | null = null;
 
+    private _clickStart: {x: number, y: number} = {x: 0, y: 0};
     private itemConnPoint1: SVGCircleElement | null = null;
     private itemConnPoint2: SVGCircleElement | null = null;
     private itemConnPoint3: SVGCircleElement | null = null;
@@ -1491,6 +1492,7 @@ export class SchedulaCore implements ISchedulaCore {
             this.actionMemoPos.y = event.pageY;
         }
 
+        this._clickStart = { x: event.pageX, y: event.pageY };
         if (typeof itemMouseDown == 'function') {
             itemMouseDown(event, data);
         }
@@ -1515,13 +1517,155 @@ export class SchedulaCore implements ISchedulaCore {
     }
 
     private itemClick(event: any, element: any) {
+        const dx = Math.abs(event.pageX - this._clickStart.x);
+        const dy = Math.abs(event.pageY - this._clickStart.y);
+        if (dx > 5 || dy > 5) return;
+        const item = element.item;
+        if (!item) return;
+        const popup = this.ensurePopup();
+        // Reset tabs to info
+        popup.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        popup.querySelectorAll('.tabcontent').forEach(t => t.classList.remove('active'));
+        (popup.querySelector('.tab-btn[data-tab="info"]') as HTMLElement).classList.add('active');
+        document.getElementById('scheduler-popup-tab-info')!.classList.add('active');
+        // Populate fields
+        document.getElementById('scheduler-popup-title')!.textContent = item.Text || 'Task';
+        (document.getElementById('popup-field-text') as HTMLInputElement).value = item.Text || '';
+        (document.getElementById('popup-field-desc') as HTMLInputElement).value = item.Description || '';
+        const fmt = (mins: number) => mins != null ? new Date(mins * 60000).toLocaleString() : '';
+        (document.getElementById('popup-field-from') as HTMLInputElement).value = fmt(item.From);
+        (document.getElementById('popup-field-to') as HTMLInputElement).value = fmt(item.To);
+        (document.getElementById('popup-field-color') as HTMLInputElement).value = item.Color1 || '#000000';
+        (document.getElementById('popup-field-completion') as HTMLInputElement).value = item.Completion ?? '';
+        (document.getElementById('popup-field-ref') as HTMLInputElement).value = item.Reference || '';
+        (document.getElementById('popup-field-json') as HTMLTextAreaElement).value = JSON.stringify(item, null, 2);
+        // Re-attach Save button to avoid duplicate listeners
+        const saveBtn = document.getElementById('popup-btn-save')!;
+        const newSave = saveBtn.cloneNode(true) as HTMLElement;
+        saveBtn.parentNode!.replaceChild(newSave, saveBtn);
+        newSave.addEventListener('click', () => {
+            item.Text = (document.getElementById('popup-field-text') as HTMLInputElement).value;
+            item.Description = (document.getElementById('popup-field-desc') as HTMLInputElement).value;
+            item.Color1 = (document.getElementById('popup-field-color') as HTMLInputElement).value;
+            const comp = parseInt((document.getElementById('popup-field-completion') as HTMLInputElement).value);
+            item.Completion = isNaN(comp) ? undefined : comp;
+            item.Reference = (document.getElementById('popup-field-ref') as HTMLInputElement).value;
+            popup.style.display = 'none';
+            this.init();
+        });
+        // Re-attach Cancel button
+        const cancelBtn = document.getElementById('popup-btn-cancel')!;
+        const newCancel = cancelBtn.cloneNode(true) as HTMLElement;
+        cancelBtn.parentNode!.replaceChild(newCancel, cancelBtn);
+        newCancel.addEventListener('click', () => { popup.style.display = 'none'; });
+        // Re-attach Close button
+        const closeBtn = document.getElementById('scheduler-popup-close')!;
+        const newClose = closeBtn.cloneNode(true) as HTMLElement;
+        closeBtn.parentNode!.replaceChild(newClose, closeBtn);
+        newClose.addEventListener('click', () => { popup.style.display = 'none'; });
+        popup.style.display = 'block';
+    }
+
+    private ensurePopup(): HTMLElement {
         let popup = document.getElementById('scheduler-popup');
+        if (!popup) {
+            popup = document.createElement('div');
+            popup.id = 'scheduler-popup';
+            popup.className = 'scheduler-popup';
+            popup.style.display = 'none';
+            popup.innerHTML = `
+                <div class="popup-container">
+                    <div class="popup-header" id="scheduler-popup-header">
+                        <button class="close-button" id="scheduler-popup-close">&#x2715;</button>
+                        <span id="scheduler-popup-title">Task</span>
+                    </div>
+                    <div class="popup-content">
+                        <div class="tab">
+                            <button class="tab-btn active" data-tab="info">Info</button>
+                            <button class="tab-btn" data-tab="json">JSON</button>
+                        </div>
+                        <div class="tabcontent active" id="scheduler-popup-tab-info">
+                            <div class="formgroup">
+                                <label>Text</label>
+                                <input class="taskinput" id="popup-field-text" type="text">
+                            </div>
+                            <div class="formgroup">
+                                <label>Description</label>
+                                <input class="taskinput" id="popup-field-desc" type="text">
+                            </div>
+                            <div class="formgroup">
+                                <label>From</label>
+                                <input class="taskinput" id="popup-field-from" type="text" readonly>
+                            </div>
+                            <div class="formgroup">
+                                <label>To</label>
+                                <input class="taskinput" id="popup-field-to" type="text" readonly>
+                            </div>
+                            <div class="formgroup">
+                                <label>Color</label>
+                                <input class="taskinput" id="popup-field-color" type="color">
+                            </div>
+                            <div class="formgroup">
+                                <label>Completion %</label>
+                                <input class="taskinput" id="popup-field-completion" type="number" min="0" max="100">
+                            </div>
+                            <div class="formgroup">
+                                <label>Reference</label>
+                                <input class="taskinput" id="popup-field-ref" type="text">
+                            </div>
+                        </div>
+                        <div class="tabcontent" id="scheduler-popup-tab-json">
+                            <textarea id="popup-field-json"></textarea>
+                        </div>
+                    </div>
+                    <div class="popup-footer">
+                        <button class="scheduler-popup-btn" id="popup-btn-cancel">Cancel</button>
+                        <button class="scheduler-popup-btn" id="popup-btn-save">Save</button>
+                    </div>
+                </div>`;
+            document.body.appendChild(popup);
+            // Tab switching
+            popup.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    popup!.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    popup!.querySelectorAll('.tabcontent').forEach(t => t.classList.remove('active'));
+                    btn.classList.add('active');
+                    const tab = (btn as HTMLElement).dataset.tab;
+                    if (tab === 'info') {
+                        document.getElementById('scheduler-popup-tab-info')!.classList.add('active');
+                    } else if (tab === 'json') {
+                        document.getElementById('scheduler-popup-tab-json')!.classList.add('active');
+                    }
+                });
+            });
+            this.makePopupDraggable(popup);
+        }
+        return popup;
+    }
 
-
-        // ... Implementation of popup logic ...
-        // Simplified for now:
-        if (element.item)
-            console.log(element.item);
+    private makePopupDraggable(popup: HTMLElement): void {
+        const header = popup.querySelector('#scheduler-popup-header') as HTMLElement;
+        if (!header) return;
+        let isDragging = false;
+        let startX = 0, startY = 0, startLeft = 0, startTop = 0;
+        header.addEventListener('mousedown', (e: MouseEvent) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            const rect = popup.getBoundingClientRect();
+            startLeft = rect.left + window.scrollX;
+            startTop = rect.top + window.scrollY;
+            popup.style.left = startLeft + 'px';
+            popup.style.top = startTop + 'px';
+            popup.style.transform = 'none';
+            e.preventDefault();
+        });
+        document.addEventListener('mousemove', (e: MouseEvent) => {
+            if (!isDragging) return;
+            popup.style.left = (startLeft + e.clientX - startX) + 'px';
+            popup.style.top = (startTop + e.clientY - startY) + 'px';
+        });
+        document.addEventListener('mouseup', () => { isDragging = false; });
     }
 
     private itemOver(event: any, item: any) {

@@ -1,267 +1,329 @@
 var clinicSchedulerData = {
     Resources: [
-        // Cardiologia
         {
-            Id: "CARD1",
-            Name: "Dr. Rossi - Cardiologia",
-            Group: 1,
-            Specialty: "Cardiologia",
+            Id: "D001",
+            Name: "Dott. Rossi Mario",
+            Group: 1, // Cardiologia
+            Status: "In servizio",
             Items: [
                 {
-                    Id: "C101",
-                    Text: "Bianchi M.",
-                    Description: "Controllo pressione\nECG richiesto\nIpertensione",
-                    Width: 720, // 1.5h
-                    Offset: 1440, // Giorno 1 08:00
-                    Color1: '#FF6B6B',
-                    Classes: "appointment checkup"
+                    Id: "VIS-1001",
+                    Text: "VISITA CARDIO",
+                    Description: "Paziente: Luigi Bianchi\nEtà: 58\nMotivo: dolore toracico\nECG da refertare",
+                    Width: 30,         // durata in minuti
+                    Offset: 480,        // inizio alle 8:00 (480 minuti dalla mezzanotte)
+                    Color1: "#ff6b6b",
+                    Classes: "appointment",
+                    Completion: 100      // completata
                 },
                 {
-                    Id: "C102",
-                    Text: "Verdi L.",
-                    Description: "Visita controllo\nPost-operatorio",
-                    Width: 480, // 1h
-                    Offset: 3600, // Giorno 3 10:00
-                    Color1: '#4ECDC4',
-                    Classes: "appointment post-op"
+                    Id: "VIS-1002",
+                    Text: "ECOCARDIO",
+                    Description: "Paziente: Anna Verdi\nEtà: 62\nSospetta insufficienza mitralica",
+                    Width: 45,
+                    Offset: 540,         // 9:00
+                    Color1: "#feca57",
+                    Classes: "examination",
+                    Completion: 70
                 },
                 {
-                    Id: "C103",
-                    Text: "Neri G.",
-                    Description: "Palpitazioni\nHolter 24h da valutare",
-                    Width: 600, // 1.25h
-                    Offset: 7200, // Giorno 5 14:00
-                    Classes: "appointment urgent"
+                    Id: "VIS-1003",
+                    Text: "VISITA CONTROLLO",
+                    Description: "Paziente: Giovanni Neri\nEtà: 55\nFollow-up post intervento",
+                    Width: 20,
+                    Offset: 630,         // 10:30
+                    Color1: "#48dbfb",
+                    Classes: "appointment"
                 }
             ]
         },
-
-        // Ortopedia
         {
-            Id: "ORTO1",
-            Name: "Dr. Bianchi - Ortopedia",
-            Group: 2,
-            Specialty: "Ortopedia",
+            Id: "D002",
+            Name: "Dott.ssa Laura Esposito",
+            Group: 1, // Cardiologia
+            Status: "In servizio",
             Items: [
                 {
-                    Id: "O201",
-                    Text: "Russo P.",
-                    Description: "Dolore spalla dx\nRX già eseguito",
-                    Width: 720,
-                    Offset: 4320,
-                    Classes: "appointment urgent"
+                    Id: "VIS-1004",
+                    Text: "VISITA CARDIO",
+                    Description: "Paziente: Marco Ferrara\nEtà: 47\nIpertensione arteriosa",
+                    Width: 30,
+                    Offset: 510,         // 8:30
+                    Color1: "#ff6b6b",
+                    Classes: "appointment"
                 },
                 {
-                    Id: "O202",
-                    Text: "Ferrari A.",
-                    Description: "Controllo gesso\nGinocchio sx",
-                    Width: 480,
-                    Offset: 6480,
-                    Classes: "appointment checkup"
-                },
-                {
-                    Id: "O203",
-                    Text: "Esposito L.",
-                    Description: "Prima visita\nLombalgia cronica",
-                    Width: 960,
-                    Offset: 8640,
-                    Classes: "appointment new"
+                    Id: "ECO-1005",
+                    Text: "ECOCARDIO",
+                    Description: "Paziente: Elena Russo\nEtà: 71\nControllo protesi valvolare",
+                    Width: 45,
+                    Offset: 600,         // 10:00
+                    Color1: "#feca57",
+                    Classes: "examination",
+                    Completion: 30
                 }
             ]
         },
-
-        // Pediatria
         {
-            Id: "PED1",
-            Name: "Dr. Verdi - Pediatria",
-            Group: 3,
-            Specialty: "Pediatria",
+            Id: "RAD001",
+            Name: "TAC 64 strati",
+            Group: 2, // Radiologia
+            Status: "Operativo",
             Items: [
                 {
-                    Id: "P301",
-                    Text: "Bambino R. (6 anni)",
-                    Description: "Vaccinazione esavalente\nControllo crescita",
-                    Width: 480,
-                    Offset: 2880,
-                    Color1: '#A0E7E5',
-                    Classes: "appointment vaccine"
+                    Id: "TAC-2001",
+                    Text: "TAC CRANIO",
+                    Description: "Paziente: Sofia Conti\nEtà: 45\nTrauma cranico lieve",
+                    Width: 20,
+                    Offset: 495,         // 8:15
+                    Color1: "#1dd1a1",
+                    Classes: "radiology"
                 },
                 {
-                    Id: "P302",
-                    Text: "Bambina M. (4 anni)",
-                    Description: "Tosse persistente\nPossibile allergia",
-                    Width: 720,
-                    Offset: 5040,
-                    Classes: "appointment urgent"
+                    Id: "TAC-2002",
+                    Text: "TAC ADDOME",
+                    Description: "Paziente: Antonio Gallo\nEtà: 63\nDolore addominale",
+                    Width: 25,
+                    Offset: 570,         // 9:30
+                    Color1: "#00d2ff",
+                    Classes: "radiology"
+                },
+                {
+                    Id: "TAC-2003",
+                    Text: "TAC TORACE",
+                    Description: "Paziente: Paola De Luca\nEtà: 58\nSospetta neoplasia",
+                    Width: 25,
+                    Offset: 660,         // 11:00
+                    Color1: "#3a7bd5",
+                    Classes: "radiology",
+                    Completion: 50
                 }
             ]
         },
-
-        // Ecografia
         {
-            Id: "ECO1",
-            Name: "Sala Ecografie",
-            Group: 4,
-            Type: "Stanza",
+            Id: "RAD002",
+            Name: "Risonanza Magnetica 1.5T",
+            Group: 2, // Radiologia
+            Status: "Manutenzione",
             Items: [
                 {
-                    Id: "E401",
-                    Text: "Addome completo",
-                    Description: "Paziente: Gialli S.\nDigiuno da 8h",
-                    Width: 600,
-                    Offset: 2160,
-                    Classes: "appointment exam"
-                },
-                {
-                    Id: "E402",
-                    Text: "Tiroide",
-                    Description: "Paziente: Rossi M.\nRefertazione urgente",
-                    Width: 480,
-                    Offset: 5760,
-                    Classes: "appointment urgent"
-                },
-                {
-                    Id: "E403",
-                    Text: "Articolazione ginocchio",
-                    Description: "Paziente: Bianchi L.",
-                    Width: 480,
-                    Offset: 9360,
-                    Classes: "appointment exam"
+                    Id: "RMN-3001",
+                    Text: "RMN COLONNA",
+                    Description: "Paziente: Francesco Riva\nEtà: 52\nLombalgia cronica",
+                    Width: 40,
+                    Offset: 540,         // 9:00
+                    Color1: "#ff9ff3",
+                    Classes: "radiology"
                 }
             ]
         },
-
-        // Fisioterapia
         {
-            Id: "FISIO1",
-            Name: "Sala Fisioterapia",
-            Group: 5,
-            Type: "Stanza",
+            Id: "ORL001",
+            Name: "Ambulatorio Ortopedia",
+            Group: 3, // Ortopedia
+            Status: "In servizio",
             Items: [
                 {
-                    Id: "F501",
-                    Text: "Rieducazione",
-                    Description: "Paziente: Neri G.\nPost-operatorio ginocchio",
-                    Width: 960,
-                    Offset: 3600,
-                    Classes: "appointment physio"
+                    Id: "ORT-4001",
+                    Text: "VISITA ORTOPEDICA",
+                    Description: "Paziente: Luca Barbieri\nEtà: 34\nDistorsione ginocchio",
+                    Width: 25,
+                    Offset: 495,         // 8:15
+                    Color1: "#f368e0",
+                    Classes: "appointment",
+                    Completion: 100
                 },
                 {
-                    Id: "F502",
-                    Text: "Massoterapia",
-                    Description: "Paziente: Viola P.\nCervicalgia",
-                    Width: 720,
-                    Offset: 6480,
-                    Classes: "appointment physio"
+                    Id: "ORT-4002",
+                    Text: "RADIOLOGIA",
+                    Description: "Paziente: Sara Monti\nEtà: 27\nRx mano per frattura",
+                    Width: 15,
+                    Offset: 570,         // 9:30
+                    Color1: "#00d2ff",
+                    Classes: "xray"
                 },
                 {
-                    Id: "F503",
-                    Text: "TENS",
-                    Description: "Paziente: Rossi A.\nLombosciatalgia",
-                    Width: 720,
-                    Offset: 7920,
-                    Classes: "appointment physio"
+                    Id: "ORT-4003",
+                    Text: "VISITA CONTROLLO",
+                    Description: "Paziente: Giorgio Fontana\nEtà: 61\nProtesi anca",
+                    Width: 20,
+                    Offset: 630,         // 10:30
+                    Color1: "#ff6b6b",
+                    Classes: "appointment"
                 }
             ]
         },
-
-        // Laboratorio Analisi
         {
-            Id: "LAB1",
-            Name: "Prelievi Laboratorio",
-            Group: 6,
-            Type: "Stanza",
+            Id: "ORL002",
+            Name: "Dott. Fabio Martini",
+            Group: 3, // Ortopedia
+            Status: "In servizio",
             Items: [
                 {
-                    Id: "L601",
-                    Text: "Prelievo sangue",
-                    Description: "Paziente: Gialli M.\nDigiuno da 12h",
-                    Width: 240,
-                    Offset: 1800,
-                    Classes: "appointment lab"
+                    Id: "ORT-4004",
+                    Text: "VISITA ORTOPEDICA",
+                    Description: "Paziente: Elena Villa\nEtà: 48\nDolore spalla",
+                    Width: 25,
+                    Offset: 510,         // 8:30
+                    Color1: "#f368e0",
+                    Classes: "appointment"
                 },
                 {
-                    Id: "L602",
-                    Text: "Prelievo sangue",
-                    Description: "Paziente: Verdi S.\nGravidanza 3° trimestre",
-                    Width: 240,
-                    Offset: 2880,
-                    Classes: "appointment lab"
+                    Id: "ORT-4005",
+                    Text: "ECOGRAFIA",
+                    Description: "Paziente: Roberto Sala\nEtà: 39\nSospetta lesione menisco",
+                    Width: 30,
+                    Offset: 585,         // 9:45
+                    Color1: "#48dbfb",
+                    Classes: "ultrasound"
+                }
+            ]
+        },
+        {
+            Id: "PS001",
+            Name: "Pronto Soccorso - Medico 1",
+            Group: 4, // Emergenza
+            Status: "In servizio",
+            Items: [
+                {
+                    Id: "PS-5001",
+                    Text: "CODICE GIALLO",
+                    Description: "Paziente: sconosciuto\nTrauma stradale\nInstabile",
+                    Width: 60,
+                    Offset: 465,         // 7:45
+                    Color1: "#e84118",
+                    Classes: "emergency",
+                    Completion: 80
                 },
                 {
-                    Id: "L603",
-                    Text: "Prelievo sangue",
-                    Description: "Paziente: Blu R.\nControllo terapia anticoagulante",
-                    Width: 240,
-                    Offset: 4320,
-                    Classes: "appointment lab"
+                    Id: "PS-5002",
+                    Text: "CODICE VERDE",
+                    Description: "Paziente: Maria Rocca\nFebbre alta\nAttesa referti",
+                    Width: 30,
+                    Offset: 570,         // 9:30
+                    Color1: "#fbc531",
+                    Classes: "emergency"
+                }
+            ]
+        },
+        {
+            Id: "PS002",
+            Name: "Pronto Soccorso - Medico 2",
+            Group: 4, // Emergenza
+            Status: "In servizio",
+            Items: [
+                {
+                    Id: "PS-5003",
+                    Text: "CODICE ROSSO",
+                    Description: "Paziente: anziano\nInfarto in corso\nTrasferimento in UTIC",
+                    Width: 90,
+                    Offset: 480,         // 8:00
+                    Color1: "#c23616",
+                    Classes: "emergency",
+                    Completion: 45
+                }
+            ]
+        },
+        {
+            Id: "AMB001",
+            Name: "Ambulatorio Oculistica",
+            Group: 5, // Oculistica
+            Status: "In servizio",
+            Items: [
+                {
+                    Id: "OCU-6001",
+                    Text: "VISITA OCULISTICA",
+                    Description: "Paziente: Chiara Fabbri\nEtà: 22\nControllo miopia",
+                    Width: 20,
+                    Offset: 495,         // 8:15
+                    Color1: "#9c88ff",
+                    Classes: "appointment"
                 },
                 {
-                    Id: "L604",
-                    Text: "Test intolleranze",
-                    Description: "Paziente: Rossi L.\nPanel 120 alimenti",
-                    Width: 480,
-                    Offset: 7200,
-                    Classes: "appointment lab"
+                    Id: "OCU-6002",
+                    Text: "FONDO OCULARE",
+                    Description: "Paziente: Valerio Neri\nEtà: 68\nGlaucoma sospetto",
+                    Width: 30,
+                    Offset: 570,         // 9:30
+                    Color1: "#8c7ae6",
+                    Classes: "examination"
                 },
                 {
-                    Id: "L605",
-                    Text: "Prelievo sangue",
-                    Description: "Paziente: Bianchi P.",
-                    Width: 240,
-                    Offset: 8640,
-                    Classes: "appointment lab"
+                    Id: "OCU-6003",
+                    Text: "VISITA CONTROLLO",
+                    Description: "Paziente: Giulia Moretti\nEtà: 45\nPost intervento cataratta",
+                    Width: 15,
+                    Offset: 660,         // 11:00
+                    Color1: "#487eb0",
+                    Classes: "appointment",
+                    Completion: 100
+                }
+            ]
+        },
+        {
+            Id: "AMB002",
+            Name: "Ambulatorio Dermatologia",
+            Group: 6, // Dermatologia
+            Status: "In servizio",
+            Items: [
+                {
+                    Id: "DER-7001",
+                    Text: "VISITA DERMATOLOGICA",
+                    Description: "Paziente: Alessandro Bianchi\nEtà: 35\nControllo nei",
+                    Width: 20,
+                    Offset: 510,         // 8:30
+                    Color1: "#e1b12c",
+                    Classes: "appointment"
+                },
+                {
+                    Id: "DER-7002",
+                    Text: "DERMOSCOPIA",
+                    Description: "Paziente: Marta Sala\nEtà: 28\nLesione sospetta",
+                    Width: 25,
+                    Offset: 585,         // 9:45
+                    Color1: "#f5cd79",
+                    Classes: "examination"
+                }
+            ]
+        },
+        {
+            Id: "CHIR001",
+            Name: "Sala Operatoria 1",
+            Group: 7, // Chirurgia
+            Status: "Occupata",
+            Items: [
+                {
+                    Id: "CH-8001",
+                    Text: "INTERVENTO",
+                    Description: "Paziente: Giuseppe Romano\nColecistectomia\nDurata prevista 90min",
+                    Width: 90,
+                    Offset: 510,         // 8:30
+                    Color1: "#f97f51",
+                    Classes: "surgery",
+                    Completion: 60
+                }
+            ]
+        },
+        {
+            Id: "CHIR002",
+            Name: "Sala Operatoria 2",
+            Group: 7, // Chirurgia
+            Status: "Libera",
+            Items: [
+                {
+                    Id: "CH-8002",
+                    Text: "INTERVENTO",
+                    Description: "Paziente: Sonia Ferri\nRiduzione frattura femore",
+                    Width: 120,
+                    Offset: 600,         // 10:00
+                    Color1: "#ea868f",
+                    Classes: "surgery"
                 }
             ]
         }
     ],
-
-    Calendar: {
-        Exceptions: [
-            {
-                Date: "2023-12-25",
-                Name: "Chiusura Natale",
-                Recurrent: true,
-                Color: "#FF0000"
-            },
-            {
-                Date: "2023-12-26",
-                Name: "Chiusura Santo Stefano",
-                Recurrent: true,
-                Color: "#FF0000"
-            }
-        ],
-        BusinessHours: {
-            Start: 480, // 8:00
-            End: 1200   // 20:00
-        }
-    },
-
-    Events: [
-        {
-            Id: "PAUSA1",
-            Description: "Pausa pranzo",
-            Offset: 720, // 12:00
-            Width: 120,  // 2h
-            Recurrent: "daily",
-            Color: "#FFD166",
-            Opacity: 0.3
-        },
-        {
-            Id: "PULIZIA1",
-            Description: "Sanificazione ambienti",
-            Offset: 1140, // 19:00
-            Width: 60,    // 1h
-            Recurrent: "daily",
-            Color: "#06D6A0",
-            Opacity: 0.2
-        }
-    ],
-
     ClinicInfo: {
-        Name: "Poliambulatorio San Marco",
-        Address: "Via Roma 123, Milano",
-        EmergencyPhone: "02-1234567",
-        Departments: ["Cardiologia", "Ortopedia", "Pediatria", "Diagnostica", "Fisioterapia"]
+        Hospital: "Ospedale San Giovanni",
+        Date: "2026-02-19"
     }
 };

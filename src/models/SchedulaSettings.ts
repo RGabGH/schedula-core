@@ -84,10 +84,10 @@ export class SchedulaSettings {
     icons = "";
     theme = "";
     template = "";
-    months = ["January", "February", "March",
-        "April", "May", "June",
-        "July", "August", "September",
-        "October", "November", "December"
+    months = ["Gennaio", "Febbraio", "Marzo",
+        "Aprile", "Maggio", "Giugno",
+        "Luglio", "Agosto", "Settembre",
+        "Ottobre", "Novembre", "Dicembre"
     ];
 
 

@@ -2,225 +2,353 @@ var productionSchedulerData = {
     Resources: [
         {
             Id: "M001",
-            Name: "Press PX-200",
-            Group: 1,   // Macchine a stampaggio
+            Name: "Pressa PX-200",
+            Group: 1,
             Status: "Operativa",
             Items: [
                 {
                     Id: "ORD-4578",
                     Text: "LAM-4578",
-                    Description: "Laminati per settore auto\nMateriale: Acciaio INOX\nSpessore: 2mm",
-                    Width: 5760, // 4 giorni
-                    Offset: 1440, // 1 giorno dall'inizio
-                    Color1: '#3a7bd5',
+                    Description: "Laminati settore auto\nAcciaio INOX 2mm\nQty: 1200 pz",
+                    Width: 5760,
+                    Offset: 1440,
+                    Color1: "#3a7bd5",
                     Classes: "production-order",
-                    Data: {
-                        Client: "AutoCorp",
-                        Priority: "Alta",
-                        Quantity: 1200,
-                        Operator: "Mario Rossi"
-                    },
-                    Icons: [{ Name: "industry" }, { Name: "clock" }]
+                    Completion: 80
                 },
                 {
                     Id: "ORD-4579",
                     Text: "LAM-4579",
-                    Description: "Laminati per elettrodomestici\nMateriale: Alluminio",
-                    Width: 4320, // 3 giorni
-                    Offset: 8640, // 6 giorni dall'inizio
-                    Color1: '#00d2ff',
-                    Classes: "production-order",
-                    Link: "ORD-4580"
+                    Description: "Laminati elettrodomestici\nAlluminio 1.5mm\nQty: 2200 pz",
+                    Width: 4320,
+                    Offset: 10080,
+                    Color1: "#00d2ff",
+                    Classes: "production-order"
+                },
+                {
+                    Id: "ORD-4590",
+                    Text: "LAM-4590",
+                    Description: "Lamiera zincata\nEdilizia industriale\nQty: 800 pz",
+                    Width: 2880,
+                    Offset: 17280,
+                    Color1: "#3a7bd5",
+                    Classes: "production-order"
                 }
-            ],
-            Data: {
-                Manutenzione: "2023-06-15",
-                Produttività: "92%",
-                UltimaRevisione: "2023-01-10"
-            },
-            Buttons: [{
-                Text: "Manutenzione",
-                Color: "orange",
-                Id: "btn-maint-M001"
-            }]
+            ]
         },
         {
             Id: "M002",
-            Name: "CNC T-450",
-            Group: 2,   // Macchine a controllo numerico
+            Name: "Pressa PX-201",
+            Group: 1,
             Status: "Operativa",
             Items: [
                 {
-                    Id: "ORD-4580",
-                    Text: "AS-4580",
-                    Description: "Alberi motore\nTolleranza: ±0.01mm\nFinitura: Rettificata",
-                    Width: 7200, // 5 giorni
-                    Offset: 7200, // 5 giorni dall'inizio
-                    Color1: '#a8ff78',
-                    Classes: "production-order critical"
+                    Id: "ORD-4601",
+                    Text: "LAM-4601",
+                    Description: "Componenti automotive\nAcciaio DP 600\nQty: 3500 pz",
+                    Width: 7200,
+                    Offset: 0,
+                    Color1: "#ff6b6b",
+                    Classes: "production-order",
+                    Completion: 45
+                },
+                {
+                    Id: "ORD-4602",
+                    Text: "LAM-4602",
+                    Description: "Scocche elettronica\nAlluminio 0.8mm\nQty: 5000 pz",
+                    Width: 5040,
+                    Offset: 8640,
+                    Color1: "#feca57",
+                    Classes: "production-order"
                 }
-            ],
-            Data: {
-                Manutenzione: "2023-05-20",
-                Produttività: "88%",
-                UltimaRevisione: "2022-11-15"
-            }
+            ]
         },
         {
             Id: "M003",
-            Name: "Line LA-10",
-            Group: 3,   // Linee di assemblaggio
-            Status: "In manutenzione",
+            Name: "Pressa PX-202",
+            Group: 1,
+            Status: "Manutenzione",
             Items: [
                 {
-                    Id: "ORD-4581",
-                    Text: "KIT-4581",
-                    Description: "Kit componenti elettronici\nQuantità: 2500\nScadenza: 2023-04-30",
-                    Width: 14400, // 10 giorni
-                    Offset: 14400, // 10 giorni dall'inizio
-                    Color1: '#ff416c',
-                    Classes: "production-order delayed",
-                    Completion: 35
+                    Id: "ORD-4610",
+                    Text: "LAM-4610",
+                    Description: "Pannelli fotovoltaici\nAcciaio zincato\nQty: 600 pz",
+                    Width: 4320,
+                    Offset: 2880,
+                    Color1: "#48dbfb",
+                    Classes: "production-order"
                 }
-            ],
-            Data: {
-                Manutenzione: "In corso",
-                Produttività: "75%",
-                UltimaRevisione: "2023-03-01"
-            }
+            ]
         },
         {
             Id: "M004",
-            Name: "Machine F-3000",
+            Name: "Fresatrice CNC-50",
             Group: 2,
             Status: "Operativa",
             Items: [
                 {
-                    Id: "ORD-4582",
-                    Text: "FR-4582",
-                    Description: "Fresature complesse\nMateriale: Titanio\nDisegno: TC-7845",
-                    Width: 2880, // 2 giorni
-                    Offset: 21600, // 15 giorni dall'inizio
-                    Color1: '#f9d423',
+                    Id: "ORD-4701",
+                    Text: "FRS-101",
+                    Description: "Stampo per iniezione\nAcciaio temprato\nQty: 1 pz",
+                    Width: 10080,
+                    Offset: 0,
+                    Color1: "#ff9ff3",
+                    Classes: "production-order",
+                    Completion: 30
+                },
+                {
+                    Id: "ORD-4702",
+                    Text: "FRS-102",
+                    Description: "Componenti meccanici\nAlluminio 7075\nQty: 150 pz",
+                    Width: 5760,
+                    Offset: 11520,
+                    Color1: "#f368e0",
+                    Classes: "production-order"
+                },
+                {
+                    Id: "ORD-4703",
+                    Text: "FRS-103",
+                    Description: "Telaio robot\nAcciaio strutturale\nQty: 10 pz",
+                    Width: 7200,
+                    Offset: 18720,
+                    Color1: "#ff6b6b",
                     Classes: "production-order"
                 }
             ]
         },
         {
             Id: "M005",
-            Name: "Robot SR-200",
-            Group: 4,   // Robot industriali
+            Name: "Tornio TL-30",
+            Group: 2,
             Status: "Operativa",
             Items: [
                 {
-                    Id: "ORD-4583",
-                    Text: "SAL-4583",
-                    Description: "Saldature strutturali\nProcesso: MIG\nStandard: ISO 3834",
-                    Width: 4320, // 3 giorni
-                    Offset: 18000, // 12.5 giorni dall'inizio
-                    Color1: '#8E2DE2',
+                    Id: "ORD-4801",
+                    Text: "TOR-201",
+                    Description: "Alberi motore\nAcciaio C40\nQty: 200 pz",
+                    Width: 4320,
+                    Offset: 1440,
+                    Color1: "#1dd1a1",
+                    Classes: "production-order",
+                    Completion: 95
+                },
+                {
+                    Id: "ORD-4802",
+                    Text: "TOR-202",
+                    Description: "Flange personalizzate\nAlluminio 6061\nQty: 80 pz",
+                    Width: 2880,
+                    Offset: 7200,
+                    Color1: "#feca57",
+                    Classes: "production-order"
+                },
+                {
+                    Id: "ORD-4803",
+                    Text: "TOR-203",
+                    Description: "Boccole bronzine\nBronzo fosforoso\nQty: 500 pz",
+                    Width: 3600,
+                    Offset: 11520,
+                    Color1: "#00d2ff",
                     Classes: "production-order"
                 }
             ]
         },
         {
             Id: "M006",
-            Name: "Owen FT-800",
-            Group: 5,   // Trattamenti termici
+            Name: "Centro di lavoro MC-100",
+            Group: 2,
             Status: "Operativa",
             Items: [
                 {
-                    Id: "ORD-4584",
-                    Text: "TT-4584",
-                    Description: "Tempra acciai\nCiclo: 12 ore\nTemperatura: 850°C",
-                    Width: 1440, // 1 giorno (12 ore)
-                    Offset: 23040, // 16 giorni dall'inizio
-                    Color1: '#4b6cb7',
+                    Id: "ORD-4901",
+                    Text: "MC-301",
+                    Description: "Carter protezione\nAcciaio INOX 1.5mm\nQty: 60 pz",
+                    Width: 5040,
+                    Offset: 0,
+                    Color1: "#3a7bd5",
                     Classes: "production-order"
+                },
+                {
+                    Id: "ORD-4902",
+                    Text: "MC-302",
+                    Description: "Supporti motore\nGhisa sferoidale\nQty: 120 pz",
+                    Width: 6480,
+                    Offset: 7200,
+                    Color1: "#ff6b6b",
+                    Classes: "production-order",
+                    Completion: 20
                 }
             ]
         },
         {
             Id: "M007",
-            Name: "Cut machine LT-500",
-            Group: 6,   // Taglio
+            Name: "Linea assemblaggio A1",
+            Group: 3,
             Status: "Operativa",
             Items: [
                 {
-                    Id: "ORD-4585",
-                    Text: "TAG-4585",
-                    Description: "Taglio lamiera\nSpessore: 5mm\nTolleranza: ±0.1mm",
-                    Width: 2880, // 2 giorni
-                    Offset: 24480, // 17 giorni dall'inizio
-                    Color1: '#f857a6',
+                    Id: "ORD-5001",
+                    Text: "ASS-401",
+                    Description: "Assemblaggio pompe idrauliche\nQty: 300 pz",
+                    Width: 5760,
+                    Offset: 0,
+                    Color1: "#feca57",
+                    Classes: "production-order"
+                },
+                {
+                    Id: "ORD-5002",
+                    Text: "ASS-402",
+                    Description: "Gruppi frizione\nQty: 450 pz",
+                    Width: 7200,
+                    Offset: 7200,
+                    Color1: "#48dbfb",
+                    Classes: "production-order"
+                },
+                {
+                    Id: "ORD-5003",
+                    Text: "ASS-403",
+                    Description: "Valvole di sicurezza\nQty: 600 pz",
+                    Width: 4320,
+                    Offset: 15840,
+                    Color1: "#1dd1a1",
+                    Classes: "production-order",
+                    Completion: 60
+                }
+            ]
+        },
+        {
+            Id: "M008",
+            Name: "Robot saldatura RS-7",
+            Group: 3,
+            Status: "Fermo",
+            Items: [
+                {
+                    Id: "ORD-5101",
+                    Text: "WEL-501",
+                    Description: "Telai in acciaio\nQty: 80 pz",
+                    Width: 4320,
+                    Offset: 2880,
+                    Color1: "#ff9ff3",
+                    Classes: "production-order"
+                }
+            ]
+        },
+        {
+            Id: "M009",
+            Name: "Stampante 3D SP-1",
+            Group: 4,
+            Status: "Operativa",
+            Items: [
+                {
+                    Id: "ORD-5201",
+                    Text: "3DP-601",
+                    Description: "Prototipi funzionali\nNylon PA12\nQty: 25 pz",
+                    Width: 10080,
+                    Offset: 0,
+                    Color1: "#f368e0",
+                    Classes: "production-order",
+                    Completion: 15
+                },
+                {
+                    Id: "ORD-5202",
+                    Text: "3DP-602",
+                    Description: "Staffe personalizzate\nABS\nQty: 150 pz",
+                    Width: 5760,
+                    Offset: 11520,
+                    Color1: "#00d2ff",
+                    Classes: "production-order"
+                }
+            ]
+        },
+        {
+            Id: "M010",
+            Name: "Taglio laser TL-500",
+            Group: 2,
+            Status: "Operativa",
+            Items: [
+                {
+                    Id: "ORD-5301",
+                    Text: "LAS-701",
+                    Description: "Lamierini elettrici\nAcciaio al silicio\nQty: 5000 pz",
+                    Width: 7200,
+                    Offset: 0,
+                    Color1: "#3a7bd5",
+                    Classes: "production-order"
+                },
+                {
+                    Id: "ORD-5302",
+                    Text: "LAS-702",
+                    Description: "Profili architettonici\nAcciaio corten\nQty: 200 pz",
+                    Width: 5040,
+                    Offset: 8640,
+                    Color1: "#ff6b6b",
+                    Classes: "production-order"
+                },
+                {
+                    Id: "ORD-5303",
+                    Text: "LAS-703",
+                    Description: "Particolari di precisione\nOttone\nQty: 1000 pz",
+                    Width: 3600,
+                    Offset: 15120,
+                    Color1: "#feca57",
+                    Classes: "production-order"
+                }
+            ]
+        },
+        {
+            Id: "M011",
+            Name: "Piegatrice PG-20",
+            Group: 2,
+            Status: "Operativa",
+            Items: [
+                {
+                    Id: "ORD-5401",
+                    Text: "PIE-801",
+                    Description: "Scatolari in lamiera\nAcciaio S235\nQty: 350 pz",
+                    Width: 4320,
+                    Offset: 2160,
+                    Color1: "#1dd1a1",
+                    Classes: "production-order"
+                },
+                {
+                    Id: "ORD-5402",
+                    Text: "PIE-802",
+                    Description: "Supporti a L\nAlluminio 3mm\nQty: 800 pz",
+                    Width: 2880,
+                    Offset: 7920,
+                    Color1: "#48dbfb",
+                    Classes: "production-order",
+                    Completion: 100
+                }
+            ]
+        },
+        {
+            Id: "M012",
+            Name: "Linea verniciatura LV-2",
+            Group: 4,
+            Status: "Manutenzione",
+            Items: [
+                {
+                    Id: "ORD-5501",
+                    Text: "VER-901",
+                    Description: "Verniciatura telai\nRAL 9010\nQty: 150 pz",
+                    Width: 5760,
+                    Offset: 0,
+                    Color1: "#ff9ff3",
+                    Classes: "production-order"
+                },
+                {
+                    Id: "ORD-5502",
+                    Text: "VER-902",
+                    Description: "Trattamento anticorrosione\nComponenti auto\nQty: 400 pz",
+                    Width: 4320,
+                    Offset: 7200,
+                    Color1: "#f368e0",
                     Classes: "production-order"
                 }
             ]
         }
     ],
-
-    Calendar: {
-        Exceptions: [
-            {
-                Date: "2023-04-10",
-                Name: "Manutenzione programmata",
-                Recurrent: false,
-                Color: "#ff9966"
-            },
-            {
-                Date: "2023-04-25",
-                Name: "Festa Liberazione",
-                Recurrent: true,
-                Color: "#ff0000"
-            },
-            {
-                Date: "2023-05-01",
-                Name: "Festa del Lavoro",
-                Recurrent: true,
-                Color: "#ff0000"
-            }
-        ],
-    },
-
-    Events: [
-        {
-            Id: "EV-PROD-1",
-            Description: "Consegna materiali grezzi",
-            Offset: 0,
-            Width: 1440, // 1 giorno
-            Color: "#66cc99",
-            Opacity: 0.7,
-            Classes: "logistic-event"
-        },
-        {
-            Id: "EV-PROD-2",
-            Description: "Controllo qualità programmato",
-            Offset: 10080, // 7 giorni
-            Width: 2880, // 2 giorni
-            Color: "#ffcc00",
-            Opacity: 0.5,
-            Classes: "quality-event"
-        },
-        {
-            Id: "EV-PROD-3",
-            Description: "Consegna cliente finale",
-            Offset: 25920, // 18 giorni
-            Width: 1440, // 1 giorno
-            Color: "#cc99ff",
-            Opacity: 0.7,
-            Classes: "delivery-event"
-        }
-    ],
-
     ProductionInfo: {
-        Plant: "Stabilimento Nord",
-        Manager: "Ing. Paolo Bianchi",
-        Shifts: [
-            "06:00-14:00",
-            "14:00-22:00"
-        ],
-        CurrentShift: 1,
-        MonthlyTarget: 125000,
-        CurrentProduction: 98750
+        Plant: "Stabilimento Centrale"
     }
 };
