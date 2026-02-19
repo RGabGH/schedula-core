@@ -59,7 +59,7 @@
 }
 
 #vertical-gradient1>stop.end-color {
-    stop-color: rgb(228, 228, 228);
+    stop-color: rgb(255, 255, 255);
 }
 
 #vertical-gradient2 stop.start-color {
@@ -67,7 +67,7 @@
 }
 
 #vertical-gradient2 stop.end-color {
-    stop-color: rgb(127, 180, 211);
+    stop-color: rgb(250, 238, 173);
 }
 
 #vertical-gradient3 stop.start-color {
@@ -75,7 +75,7 @@
 }
 
 #vertical-gradient3 stop.end-color {
-    stop-color: rgb(127, 180, 211);
+    stop-color: rgb(243, 246, 248);
 }
 
 #vertical-gradient4 stop.start-color {
@@ -83,7 +83,7 @@
 }
 
 #vertical-gradient4 stop.end-color {
-    stop-color: rgb(127, 180, 211);
+    stop-color: rgb(243, 246, 248);
 }
 
 #vertical-gradient5 stop.start-color {
@@ -91,7 +91,7 @@
 }
 
 #vertical-gradient5 stop.end-color {
-    stop-color: rgb(127, 180, 211);
+    stop-color: rgb(243, 246, 248);
 }
 
 
@@ -125,7 +125,7 @@ text {
 /* background */
 
 .bg {
-    fill:url(#vertical-gradient1);
+    fill: url(#vertical-gradient1);
 }
 
 .bg-hl {
@@ -143,7 +143,7 @@ text {
 .scheduler-footer {
     fill: #efefef;
     stroke: lightgray;
-    stroke-width:1 ;
+    stroke-width: 1;
 }
 
 .monthbox {
@@ -160,7 +160,7 @@ text {
     font-weight: 600;
     font-size: 20px;
     opacity: 0.75;
-   
+
 }
 
 .week-element {
@@ -175,18 +175,22 @@ text {
 .week-element:hover {
     fill: #677ee4;
 }
-.week-element-text{
+
+.week-element-text {
     fill: lightgray;
 }
+
 .time-element {
     fill: lightgray;
     stroke: rgb(224, 224, 224);
     stroke-width: 1;
 }
+
 .time-element.sunday {
     fill: rgb(175, 175, 175);
-  
+
 }
+
 .time-element.today {
     fill: rgb(196, 78, 176);
 }
@@ -198,13 +202,15 @@ text {
     font-family: 'Arial';
     text-anchor: middle;
     font-weight: bold;
-  
+
 }
+
 .time-element-text.today {
     fill: rgb(250, 248, 248);
-   
-  
+
+
 }
+
 .time-unit {
     transition: 0.5s;
     fill: transparent;
@@ -218,19 +224,21 @@ text {
 
 .info-element {
     /* fill: url(#obliqueLines); */
-   
-    fill:transparent;
+
+    fill: transparent;
 }
+
 .info-unit:hover {
     fill-opacity: 0.2;
     fill: #677ee4;
 }
+
 /******************************************* scheduler elements */
 
 .box-element {
     fill: white;
     transition: 0.3s;
-    opacity: 0.7;
+    opacity: 1;
     /* stroke:#5c38fc;
     stroke-width: 0.06;
     ry:1.5; */
@@ -248,8 +256,8 @@ text {
 
 .box-element:hover {
     opacity: 0.5;
-   
-     fill: rgb(219, 236, 248); 
+
+    fill: rgb(219, 236, 248);
     stroke-width: 1;
     stroke: lightskyblue;
 }
@@ -257,18 +265,20 @@ text {
 .daybox-element {
     fill: white;
     transition: 0.3s;
-    opacity: 0.7;
+    opacity: 1;
     /* stroke:#5c38fc;
     stroke-width: 0.06;
     ry:1.5; */
 }
 
 .daybox-element.saturday {
-    fill:#c0b4b4;
+    fill: #c0b4b4;
 }
+
 .daybox-element.sunday {
     fill: #a39595;
 }
+
 /********************************************* sidebar */
 
 .sb-rbg {
@@ -311,7 +321,7 @@ svg.sb-hbg>image {
 .splitter:hover {
     opacity: 1;
     fill: #00ff00;
- 
+
 }
 
 .splitter.sizing {
@@ -327,7 +337,7 @@ svg.sb-hbg>image {
 
 .toggle:hover {
     fill: #00ff00;
-    r:12;
+    r: 12;
 
 }
 
@@ -356,7 +366,7 @@ svg.sb-hbg>image {
     font-family: 'Verdana';
     font-weight: 600;
     opacity: 0.75;
-   
+
 }
 
 .resource.myclass {
@@ -368,11 +378,11 @@ svg.sb-hbg>image {
 
 .link-conn {
     opacity: 1;
-    fill:#00ff00;
+    fill: #00ff00;
     opacity: 0.5;
     stroke-width: 1;
     stroke: #444444;
-    
+
 }
 
 .link-conn:hover {
@@ -384,60 +394,65 @@ svg.sb-hbg>image {
     transition-property: opacity, stroke, stroke-width;
     opacity: 0.7;
     stroke: #808080;
-    stroke-width:1.5;
+    stroke-width: 1.5;
     stroke-linecap: round;
 }
+
 .link-wire.drawing {
-   
+
     stroke: violet;
-   
+
 }
+
 .link-wire:hover {
     stroke: #00ff00;
     stroke-width: 2;
     opacity: 1;
 }
-.link-wire-marker-end{
+
+.link-wire-marker-end {
     stroke: #181818;
     fill: #444444;
 }
 
-.link-point{
-   
-   
-   
+.link-point {
+
+
+
     opacity: 0.6;
     stroke: #808080;
     stroke-width: 1;
     stroke-linecap: round;
-   
-  
+
+
 
 }
-.link-point:hover{
-   
+
+.link-point:hover {
+
     opacity: 0.8;
     stroke: #00ff00;
     stroke-width: 1.5;
     stroke-linecap: round;
-   
+
     r: 7;
 }
-.link-line{
+
+.link-line {
 
     opacity: 0.7;
     stroke: #00ff00;
     stroke-width: 0.3;
     stroke-linecap: round;
-  
-   
+
+
 }
 
 
-.additional-info{
-    opacity:0.5,
+.additional-info {
+    opacity: 0.5,
 }
- 
+
 /* .link-point{
   
 }
@@ -450,33 +465,37 @@ svg.sb-hbg>image {
 /***************************************** activity items */
 
 
-svg.item-icon>path{
+svg.item-icon>path {
     opacity: 1;
     fill: #fbfcfb;
 }
 
-.item-icon{
+.item-icon {
     opacity: 1;
     fill: #fbfcfb;
 }
-.item-icon:hover{
+
+.item-icon:hover {
     opacity: 1;
     fill: #01fa01;
 }
-.resource-icon{
+
+.resource-icon {
     opacity: 0.5;
     fill: #262364;
-} 
+}
+
 .item:not(.custom-color) {
     fill: #5762ca;
 }
 
-  
+
 rect.item.moving {
     stroke: #00ff00;
     stroke-width: 1.5;
- 
+
 }
+
 rect.item.sizing {
     stroke: #00ff00;
     stroke-width: 1.5;
@@ -485,9 +504,9 @@ rect.item.sizing {
 
 
 .item:hover {
-   
+
     fill-opacity: 0.75;
-   
+
 }
 
 .item-text {
@@ -501,8 +520,8 @@ rect.item.sizing {
 .item-text2 {
     fill: white;
     font-family: 'Verdana';
-   
-    transform: translate(0px, 0px); 
+
+    transform: translate(0px, 0px);
 }
 
 /***************************************** events */
@@ -512,19 +531,20 @@ rect.item.sizing {
     transition: 0.6s;
     stroke-width: 0.1;
     stroke: #535353;
-    
+
 }
 
 .event-header:hover {
     opacity: 0.7;
     stroke: brightness(0.85);
 }
+
 .event-extension {
     opacity: 0.4;
     transition: 0.6s;
     stroke-width: 0.1;
     stroke: #535353;
-    
+
 }
 
 .event-extension:hover {
@@ -579,51 +599,52 @@ rect.item.sizing {
     filter: drop-shadow(0px 0px 6px rgb(0 0 0 / 0.25));
 }
 
-#popupsvg{
+#popupsvg {
     transition: 0.5s;
     transition-property: visibility, opacity;
-    transition-delay:0.5s, 0ms;  
-     display: none;
-   
-   
-   
-}
-#popup-rect{
-   
-    fill:white;
-    filter: drop-shadow(0px 0px 2px  rgb(0 0 0 / 0.4));
-    /* display: none; */
-   
+    transition-delay: 0.5s, 0ms;
+    display: none;
+
+
+
 }
 
-.resize-line{
-    stroke:white;
+#popup-rect {
+
+    fill: white;
+    filter: drop-shadow(0px 0px 2px rgb(0 0 0 / 0.4));
+    /* display: none; */
+
+}
+
+.resize-line {
+    stroke: white;
     stroke-width: 1;
     visibility: hidden;
-    
+
 }
 
-.svg-item:has(.resize:hover) > .resize-line{
+.svg-item:has(.resize:hover)>.resize-line {
     visibility: visible;
 }
 
-.blink{
- 
-    animation: blink 1s infinite;
-  }
+.blink {
 
-  @keyframes blink{
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
     50% {
-      fill: rgb(0, 0, 255);
-      opacity: 1;
+        fill: rgb(0, 0, 255);
+        opacity: 1;
     }
 }
 
-svg.svg-item{
+svg.svg-item {
     filter: drop-shadow(1px 3px 3px rgb(0 0 0 / 0.2));
 }
 
-.sidepanello{
+.sidepanello {
     background-color: #5762ca;
     position: absolute;
     height: 3000px;

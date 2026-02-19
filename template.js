@@ -1,4 +1,4 @@
-var template=` 
+var template = ` 
     
 <svg 
 
@@ -59,13 +59,13 @@ var template=`
             </marker>
 
             <linearGradient id="gradV1" x1="0%" y1="0%" x2="0%" y2="100%"> 
-                <stop class="grad-color1" offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:0.8" /> 
-                <stop class="grad-color2" offset="100%" style="stop-color:rgb(123, 175, 196);stop-opacity:0.8" /> 
+                <stop class="grad-color1" offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:1" /> 
+                <stop class="grad-color2" offset="100%" style="stop-color:rgb(255,255,255);stop-opacity:1" /> 
             
             </linearGradient> 
            <linearGradient id="gradH1" x1="0%" y1="0%" x2="100%" y2="0%">
-               <stop  class="grad-color1" offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:0.8" />
-               <stop  class="grad-color2" offset="100%" style="stop-color:rgb(123, 175, 196);stop-opacity:0.8" />
+               <stop  class="grad-color1" offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:1" />
+               <stop  class="grad-color2" offset="100%" style="stop-color:rgb(255,255,255);stop-opacity:1" />
 
             </linearGradient>
 
