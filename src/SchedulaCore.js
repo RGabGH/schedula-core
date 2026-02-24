@@ -94,9 +94,13 @@ export class SchedulaCore {
             });
             this.schedulerItems = document.getElementById('scheduler-items');
             this.splitBar = document.getElementById('scheduler-splitter');
+            // Restore saved view from localStorage
+            this.restoreView();
             if (this.schedulerContainer != null) {
                 if (this.schedulerSVG != null) {
                     this.draw();
+                    // Restore saved shift position from localStorage
+                    this.restoreShiftPos();
                     this.processData();
                     this.storeData();
                     this.schedulerSVG.addEventListener('mousemove', (event) => {
@@ -391,8 +395,10 @@ export class SchedulaCore {
         let w = parseFloat((_a = sidebar.getAttribute('data-w')) !== null && _a !== void 0 ? _a : '0');
         let variationw = Math.round(((this.mpos.x - this.actionMemoPos.x) * this.ratio) * 100) / 100;
         let neww = w + (variationw);
-        if (neww > this.settings.sidebarMinWidth && neww < this.settings.sidebarMaxWidth)
+        if (neww > this.settings.sidebarMinWidth && neww < this.settings.sidebarMaxWidth) {
             sidebar.setAttribute('width', neww.toString());
+            localStorage.setItem('splitbarpos', neww.toString());
+        }
     }
     getTranslateValues(element) {
         if (!element) {
@@ -644,9 +650,9 @@ export class SchedulaCore {
         parent === null || parent === void 0 ? void 0 : parent.append(svg);
     }
     initSplitter() {
-        var _a;
-        let splitbarpos = parseFloat((_a = localStorage.getItem('splitbarpos')) !== null && _a !== void 0 ? _a : '0');
-        splitbarpos = this.settings.splitBarinitPos;
+        let stored = localStorage.getItem('splitbarpos');
+        let splitbarpos = stored ? parseFloat(stored) : this.settings.splitBarinitPos;
+        if (isNaN(splitbarpos) || splitbarpos <= 0) splitbarpos = this.settings.splitBarinitPos;
         let sh = (this.settings.resourceHeight * this.data.Resources.length) + this.headerHeight;
         let sw = this.settings.splitterWidth;
         let sy = 0;
@@ -667,12 +673,8 @@ export class SchedulaCore {
         let y = 0;
         let x = 0;
         let splitbarpos = parseFloat((_a = localStorage.getItem('splitbarpos')) !== null && _a !== void 0 ? _a : '0');
-        if (splitbarpos != null) {
-            if ((splitbarpos > this.settings.resourceWidth) || (splitbarpos < this.settings.resCollapsedWidth))
-                splitbarpos = this.settings.resourceWidth;
-        }
-        else {
-            splitbarpos = this.settings.resourceWidth;
+        if (!splitbarpos || splitbarpos < this.settings.sidebarMinWidth || splitbarpos > this.settings.sidebarMaxWidth) {
+            splitbarpos = this.settings.splitBarinitPos;
         }
         sidebar === null || sidebar === void 0 ? void 0 : sidebar.setAttribute('width', splitbarpos.toString());
         var count = 0;
@@ -1271,6 +1273,7 @@ export class SchedulaCore {
             anim[0].setAttribute('from', transform === null || transform === void 0 ? void 0 : transform.x.toString());
             anim[0].setAttribute('to', pos.toString());
             anim[0].beginElement();
+            localStorage.setItem('schedulaShiftPos', pos.toString());
         }
         else if (items) {
             let minpos = 0;
@@ -1282,6 +1285,7 @@ export class SchedulaCore {
             if (pos < maxpos)
                 pos = maxpos;
             items.setAttribute('transform', 'translate(' + pos + ',0)');
+            localStorage.setItem('schedulaShiftPos', pos.toString());
         }
     }
     itemMouseDown(event, data) {
@@ -1766,8 +1770,45 @@ export class SchedulaCore {
         let timespan = (dt2.getTime() - dt1.getTime()) / 86400000;
         timespan -= variation;
         this.currentView = view;
+        localStorage.setItem('schedulaView', view);
         this.init();
         this.shift(-timespan);
+    }
+    restoreView() {
+        let savedView = localStorage.getItem('schedulaView');
+        if (savedView && Object.values(SchedulaView).includes(savedView)) {
+            this.currentView = savedView;
+            switch (savedView) {
+                case SchedulaView.Day:
+                    this.settings.timeUnitsView = 2;
+                    this.settings.shifterStep = 1;
+                    break;
+                case SchedulaView.Week:
+                    this.settings.timeUnitsView = 7;
+                    this.settings.shifterStep = 4;
+                    break;
+                case SchedulaView.Month:
+                    this.settings.timeUnitsView = 31;
+                    this.settings.shifterStep = 15;
+                    break;
+            }
+        }
+    }
+    restoreShiftPos() {
+        let savedPos = localStorage.getItem('schedulaShiftPos');
+        if (savedPos) {
+            let pos = parseFloat(savedPos);
+            if (!isNaN(pos) && pos !== 0) {
+                const items = document.getElementById('scheduler-items');
+                if (items) {
+                    let minpos = 0;
+                    let maxpos = -((this.settings.timeUnitsCount - this.settings.timeUnitsView - 1) * this.settings.timeWidth);
+                    if (pos > minpos) pos = minpos;
+                    if (pos < maxpos) pos = maxpos;
+                    items.setAttribute('transform', 'translate(' + pos + ',0)');
+                }
+            }
+        }
     }
     resourceClick(event, data) {
     }

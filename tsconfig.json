@@ -1,9 +1,22 @@
 {
-    "compilerOptions": {
-      "target": "ES2015",
-      
-
-     
-      "sourceMap": true
-    }
-  }
+  "compilerOptions": {
+    "target": "ES2015",
+    "outDir": "dist/js",
+    "rootDir": "./",
+    "sourceMap": false,
+    "removeComments": true,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "src/**/*",
+    "calendar.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
