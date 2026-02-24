@@ -29,7 +29,7 @@
         <button type="button" class="btn btn-sm btn-light m-1 border" onclick="setTheme('theme-soft')">Soft</button>
     </div>
     <div id="datadiv" class="row m-1">
-        <button class="btn btn-outline-secondary m-1" onclick="setData(hotelData)">hotel</button>
+        <button class="btn btn-outline-secondary m-1" onclick="setData(hotelSchedulerData)">hotel</button>
         <button class="btn btn-outline-secondary m-1" onclick="setData(hrSchedulerData)">humans</button>
         <button class="btn btn-outline-secondary m-1" onclick="setData(productionSchedulerData)">production</button>
         <button class="btn btn-outline-secondary m-1" onclick="setData(clinicSchedulerData)">medical</button>
@@ -65,13 +65,14 @@
     <script src="data/medical.js"></script>
 
 
-    <script src="js/icons.js"></script>
+    <script src="js/icons.min.js"></script>
 
 
-    <script type="module">
-        import { SchedulaCore } from './js/src/SchedulaCore.js';
-        import { SchedulaSettings } from './js/src/models/SchedulaSettings.js';
-        import { SchedulaTemplate } from './js/src/ui/SchedulaTemplate.js';
+    <script src="js/smartscheduler.min.js"></script>
+    <script>
+        import { SchedulaCore } from './src/SchedulaCore.js';
+        import { SchedulaSettings } from './src/models/SchedulaSettings.js';
+        import { SchedulaTemplate } from './src/ui/SchedulaTemplate.js';
 
         // Initialize settings
         // Assuming global 'settings' variable was expected, we create it here or use a new one.
@@ -111,19 +112,16 @@
         }
 
         window.setView = function (num) {
-            scheduler.settings.timeUnitsView = num;
-            scheduler.init();
+            scheduler.setView(num);
         }
 
         window.setStyle = function (style) {
-            scheduler.settings.gStyle = style;
-            scheduler.init();
+            scheduler.setStyle(style);
         }
 
         window.setData = function (dati) {
             console.log('load data');
-            scheduler.data = dati;
-            scheduler.init();
+            scheduler.setData(dati);
         }
 
         window.modified = function () {

@@ -6,4 +6,7 @@ export interface ISchedulaCore {
     settings: SchedulaSettings;
     headerHeight: number;
     calendar: SchedulaCalendar | null;
+    setData(data: any): void;
+    setView(num: number): void;
+    setStyle(style: string): void;
 }

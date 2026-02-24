@@ -59,6 +59,11 @@ export class SchedulaCore implements ISchedulaCore {
         if (settings) { this.settings = settings }
         else { this.settings = new SchedulaSettings() };
 
+        this.initCalendar();
+    }
+
+    private initCalendar() {
+        this.calendar = null;
         if (this.data.Calendar) {
             this.calendar = new SchedulaCalendar();
             let r = this.calendar.newItem();
@@ -80,6 +85,69 @@ export class SchedulaCore implements ISchedulaCore {
             });
         }
     }
+
+    public setData(data: any) {
+        this.data = data;
+        this.initCalendar();
+        this.processData();
+        this.refresh();
+    }
+
+    public setView(num: number) {
+        this.settings.timeUnitsView = num;
+        this.refresh();
+    }
+
+    public setStyle(style: string) {
+        this.settings.gStyle = style;
+        this.refresh();
+    }
+
+    private clearGroupSafe(groupId: string) {
+        const group = document.getElementById(groupId);
+        if (!group) return;
+
+        if (groupId === 'scheduler-items') {
+            const nodesToRemove: Node[] = [];
+            group.childNodes.forEach(node => {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    const el = node as Element;
+                    if (el.id !== 'scheduler-header' && el.id !== 'scheduler-background' && el.tagName !== 'animateTransform') {
+                        nodesToRemove.push(node);
+                    }
+                } else {
+                    nodesToRemove.push(node);
+                }
+            });
+            nodesToRemove.forEach(node => node.parentNode?.removeChild(node));
+        } else {
+            group.innerHTML = '';
+        }
+    }
+
+    private refresh() {
+        if (this.schedulerSVG) {
+            const groups = ['scheduler-background', 'scheduler-header', 'scheduler-resources', 'scheduler-events', 'scheduler-info', 'scheduler-items'];
+            groups.forEach(id => {
+                this.clearGroupSafe(id);
+            });
+
+            // Reset any pending scroll animation on the items group
+            const items = document.getElementById('scheduler-items');
+            if (items) {
+                items.setAttribute('transform', 'translate(0,0)');
+                const anims = items.getElementsByTagName('animateTransform');
+                if (anims.length > 0) {
+                    anims[0].setAttribute('from', '0');
+                    anims[0].setAttribute('to', '0');
+                }
+            }
+
+            this.draw();
+        }
+    }
+
+    private eventsSetup = false;
 
     init() {
         this.schedulerContainer = document.getElementById(this.scheduler_id)!;
@@ -128,30 +196,34 @@ export class SchedulaCore implements ISchedulaCore {
                     this.restoreShiftPos();
                     this.processData();
                     this.storeData();
-                    this.schedulerSVG.addEventListener('mousemove', (event) => {
-                        this.handleMouseMove(event);
-                    });
-                    this.schedulerSVG.addEventListener('mouseup', (event) => {
-                        this.svgMouseUp(event);
-                    });
-                    this.schedulerSVG.addEventListener('drop', (event: any) => {
-                        this.dropEventManagement(event);
-                    });
 
-                    this.schedulerSVG.addEventListener('dragover', (event) => {
-                        if ((event.target as HTMLElement).classList.contains('box-element')) {
-                            event.preventDefault();
-                        }
-                    });
-                    let scheduler = this;
-                    document.addEventListener('keyup', (function (e) {
-                        if (e.key === "Escape") {
-                            scheduler.escapePressed();
-                        }
-                    }));
-                    window.addEventListener('resize', (function (e) {
-                        scheduler.resized();
-                    }));
+                    if (!this.eventsSetup) {
+                        this.schedulerSVG.addEventListener('mousemove', (event) => {
+                            this.handleMouseMove(event);
+                        });
+                        this.schedulerSVG.addEventListener('mouseup', (event) => {
+                            this.svgMouseUp(event);
+                        });
+                        this.schedulerSVG.addEventListener('drop', (event: any) => {
+                            this.dropEventManagement(event);
+                        });
+
+                        this.schedulerSVG.addEventListener('dragover', (event) => {
+                            if ((event.target as HTMLElement).classList.contains('box-element')) {
+                                event.preventDefault();
+                            }
+                        });
+                        let scheduler = this;
+                        document.addEventListener('keyup', (function (e) {
+                            if (e.key === "Escape") {
+                                scheduler.escapePressed();
+                            }
+                        }));
+                        window.addEventListener('resize', (function (e) {
+                            scheduler.resized();
+                        }));
+                        this.eventsSetup = true;
+                    }
                 }
                 else {
                     this.schedulerContainer.textContent = "Error: Template is null";
@@ -643,7 +715,7 @@ export class SchedulaCore implements ISchedulaCore {
                             rect.setAttribute('x', rx.toString());
                             rect.setAttribute('y', ry.toString());
                             rect.setAttribute('width', rw.toString());
-                            rect.setAttribute('height', rh.toString());
+                            rect.setAttribute('height', this.settings.resourceHeight.toString());
                             rect.setAttribute('data-date', cdate.toUTCString());
                             rect.setAttribute('data-res', this.data.Resources[rr].id);
                             rect.setAttribute('class', 'box-element');
@@ -957,7 +1029,7 @@ export class SchedulaCore implements ISchedulaCore {
     }
 
     private clearItems() {
-        this.schedulerItems!.innerHTML = '';
+        this.clearGroupSafe('scheduler-items');
         // Re-append connection points/lines if needed or ensure they are recreated
         if (this.settings.itemsLinks) this.initLinks();
     }
@@ -1944,42 +2016,41 @@ export class SchedulaCore implements ISchedulaCore {
         return (d < 10) ? '0' + d.toString() : d.toString();
     }
 
-    private setView(event: any, view: SchedulaView) {
-        let variation = 1;
-
+    private switchViewMode(event: any, view: SchedulaView) {
         switch (view) {
             case SchedulaView.Day:
                 this.settings.timeUnitsView = 2;
                 this.settings.shifterStep = 1;
-                variation = 0.5;
                 break;
             case SchedulaView.Week:
                 this.settings.timeUnitsView = 7;
                 this.settings.shifterStep = 4;
-                variation = 1;
                 break;
             case SchedulaView.Month:
                 this.settings.timeUnitsView = 31;
                 this.settings.shifterStep = 15;
-                variation = 3;
                 break;
             default:
                 break;
         }
 
-
-        let startDate = new Date(event.target.getAttribute('data-date') ?? '');
-        let dt1 = this.settings.date;
-        let dt2 = startDate;
-
-        let timespan = (dt2.getTime() - dt1.getTime()) / 86400000;
-        timespan -= variation;
+        // Set date to the clicked date so it becomes the new start
+        const clickedDateStr = event.target.getAttribute('data-date') ?? '';
+        if (clickedDateStr) {
+            this.settings.date = new Date(clickedDateStr);
+        }
 
         this.currentView = view;
         localStorage.setItem('schedulaView', view);
 
-        this.init();
-        this.shift(-timespan);
+        // Clear stored shift so the new view starts at position 0
+        localStorage.removeItem('schedulaShiftPos');
+
+        // Reset scroll position on scheduler-items group
+        const items = document.getElementById('scheduler-items');
+        if (items) items.setAttribute('transform', 'translate(0,0)');
+
+        this.refresh();
     }
 
     private restoreView() {
@@ -2083,7 +2154,7 @@ export class SchedulaCore implements ISchedulaCore {
 
                     let that = this;
                     monthBox.addEventListener('click', (event) => {
-                        that.setView(event, SchedulaView.Month);
+                        that.switchViewMode(event, SchedulaView.Month);
                     });
 
                     const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
@@ -2167,7 +2238,7 @@ export class SchedulaCore implements ISchedulaCore {
 
                     let that = this;
                     elem.addEventListener('click', (event) => {
-                        that.setView(event, SchedulaView.Week);
+                        that.switchViewMode(event, SchedulaView.Week);
                     });
                     let txt = this.getWeekOfYear(cdate).toString();
 
@@ -2231,7 +2302,7 @@ export class SchedulaCore implements ISchedulaCore {
 
                 let that = this;
                 elem.addEventListener('click', (event) => {
-                    that.setView(event, SchedulaView.Day);
+                    that.switchViewMode(event, SchedulaView.Day);
                 });
 
                 parent.append(elem);
@@ -2279,7 +2350,7 @@ export class SchedulaCore implements ISchedulaCore {
 
                 dummy.addEventListener('click', (event) => {
 
-                    that.setView(event, SchedulaView.Day);
+                    that.switchViewMode(event, SchedulaView.Day);
 
                     if (typeof timeMouseClick == 'function') {
                         timeMouseClick(event, cdate);

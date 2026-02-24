@@ -20,7 +20,33 @@ New-Item -ItemType Directory -Path "$distFolder/data" -Force | Out-Null
 Write-Host "Compiling TypeScript..." -ForegroundColor Cyan
 npx tsc
 
-# 4. Copy assets
+# 4. Bundle with esbuild
+Write-Host "Bundling JavaScript..." -ForegroundColor Cyan
+npx -y esbuild src/index.ts --bundle --outfile="$distFolder/js/smartscheduler.js" --format=iife --target=es2015
+
+# 5. Rename to .min.js and update imports
+Write-Host "Renaming files to .min.js and updating imports..." -ForegroundColor Cyan
+
+# Copy icons.js to js folder first so it gets renamed
+if (Test-Path "icons.js") {
+    Copy-Item -Path "icons.js" -Destination "$distFolder/js"
+}
+
+Get-ChildItem -Path "$distFolder/js" -Include "*.js" -Recurse | ForEach-Object {
+    $newName = $_.FullName -replace '\.js$', '.min.js'
+    Rename-Item -Path $_.FullName -NewName $newName -Force
+}
+
+# Update internal imports in .min.js files (only relevant for non-bundled files if any)
+Get-ChildItem -Path "$distFolder/js" -Include "*.min.js" -Recurse | ForEach-Object {
+    $content = Get-Content $_.FullName -Raw
+    # Replace .js' or .js" in imports/exports
+    $content = $content -replace "\.js'", ".min.js'"
+    $content = $content -replace '\.js"', '.min.js"'
+    Set-Content $_.FullName $content
+}
+
+# 6. Copy other assets
 Write-Host "Copying assets..." -ForegroundColor Cyan
 
 # Copy CSS
@@ -38,36 +64,39 @@ if (Test-Path "bootstrap") {
     Copy-Item -Path "bootstrap/*" -Destination "$distFolder/bootstrap" -Recurse -Force
 }
 
-# Copy Data
+# Copy Data (Filter to only copy .js and .json, exclude .py)
 if (Test-Path "data") {
-    Copy-Item -Path "data/*" -Destination "$distFolder/data" -Recurse -Force
+    Get-ChildItem -Path "data" -Include "*.js", "*.json" -Recurse | ForEach-Object {
+        $destPath = Join-Path "$distFolder/data" $_.FullName.Substring((Get-Item "data").FullName.Length + 1)
+        $destDir = Split-Path $destPath
+        if (!(Test-Path $destDir)) { New-Item -ItemType Directory -Path $destDir | Out-Null }
+        Copy-Item -Path $_.FullName -Destination $destPath -Force
+    }
 }
 
 # Copy HTML files (excluding tests)
 Get-ChildItem -Filter "*.html" | Where-Object { $_.Name -notmatch "tests.html" } | Copy-Item -Destination $distFolder
 
-# Copy icons.js to js folder
-if (Test-Path "icons.js") {
-    Copy-Item -Path "icons.js" -Destination "$distFolder/js"
-}
-
-# 5. Minification and Obfuscation
+# 7. Minification and Obfuscation
 Write-Host "Minifying and Obfuscating JavaScript files..." -ForegroundColor Cyan
 npx -y javascript-obfuscator "$distFolder/js" --output "$distFolder/js" --compact true --control-flow-flattening true --dead-code-injection true --string-array true --string-array-rotate true --string-array-shuffle true --string-array-threshold 0.75
 
-# 6. Fix paths in scheduler.html
+# 8. Fix paths in scheduler.html
 Write-Host "Updating paths in dist/scheduler.html..." -ForegroundColor Cyan
 $htmlPath = "$distFolder/scheduler.html"
 if (Test-Path $htmlPath) {
     $content = Get-Content $htmlPath -Raw
     
-    # Update script src for icons.js
-    $content = $content -replace 'src="icons.js"', 'src="js/icons.js"'
+    # Update script src for icons.js (now icons.min.js)
+    $content = $content -replace 'src="icons.js"', 'src="js/icons.min.js"'
     
-    # Update ES module imports to point to js/src
-    $content = $content -replace "import { SchedulaCore } from './src/", "import { SchedulaCore } from './js/src/"
-    $content = $content -replace "import { SchedulaSettings } from './src/", "import { SchedulaSettings } from './js/src/"
-    $content = $content -replace "import { SchedulaTemplate } from './src/", "import { SchedulaTemplate } from './js/src/"
+    # Replace the module script block with simplified bundle usage
+    # Regex to catch the imports with either .js or .min.js extensions
+    $importRegex = '(?s)import \{ SchedulaCore \} from ''\./js/src/SchedulaCore(\.min)?\.js'';\s*import \{ SchedulaSettings \} from ''\./js/src/models/SchedulaSettings(\.min)?\.js'';\s*import \{ SchedulaTemplate \} from ''\./js/src/ui/SchedulaTemplate(\.min)?\.js'';'
+    $content = $content -replace $importRegex, ''
+    
+    # Remove type="module" and add the bundle script tag
+    $content = $content -replace '<script type="module">', "<script src=`"js/smartscheduler.min.js`"></script>`r`n    <script>"
     
     Set-Content $htmlPath $content
 }
