@@ -150,13 +150,11 @@ export class SchedulaCalendar {
             let cursor = item.From + sum;
             let e = 0;
             let dt = new Date(cursor * denom);
-            //check rules
             let capacity = this.getCapacity(cursor, dt.getUTCDay());
             minutes = dt.getUTCMinutes();
             hours = dt.getUTCHours();
             dayMinTot = (hours * 60) + minutes;
             if (capacity > 0) {
-                //  e=(capacity/reference)*step;  
                 if (dayMinTot >= capacity)
                     e = 0;
                 else
@@ -188,14 +186,12 @@ export class SchedulaCalendar {
             minutes = dt.getUTCMinutes();
             hours = dt.getUTCHours();
             dayMinTot = (hours * 60) + minutes;
-            //check rules
             let capacity = this.getCapacity(cursor, dt.getUTCDay());
             if (capacity > 0) {
                 if (dayMinTot >= capacity)
                     e = 0;
                 else
                     e = step;
-                //e=(capacity/reference)*step;  
             }
             effort += e;
             effort = Math.ceil(effort * 100) / 100;
@@ -217,8 +213,6 @@ export class SchedulaCalendar {
             let minutes = dt.getUTCMinutes();
             let hours = dt.getUTCHours();
             let dayMinTot = (hours * 60) + minutes;
-            // console.log(dayMinTot);
-            // console.log(cursor+ ' '+denom);
             capacity = this.getCapacity(cursor, dt.getUTCDay());
             if ((capacity == 0) || (dayMinTot >= capacity)) {
                 sum += step;
@@ -226,7 +220,6 @@ export class SchedulaCalendar {
             }
             else
                 go = false;
-            //e=(capacity/reference)*step;  
         }
         return item.From + sum;
     }
@@ -255,4 +248,3 @@ export class CalendarMousePos {
         this.date = new Date();
     }
 }
-//# sourceMappingURL=SchedulaCalendar.js.map

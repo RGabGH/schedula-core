@@ -15,4 +15,3 @@ export class mousePos {
         this.y = 0;
     }
 }
-//# sourceMappingURL=SchedulaView.js.map

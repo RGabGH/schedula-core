@@ -27,12 +27,12 @@ export class SchedulaSettings {
         this.roundRect = 5;
         this.progressBarPattern = true;
         this.resUnitsView = 0;
-        this.timeUnitsView = 30; //number of time units shown in a screen
-        this.timeUnitVal = 1440; //number of minutes in time unit
+        this.timeUnitsView = 30;
+        this.timeUnitVal = 1440;
         this.gridStep = 1440;
-        this.gridOffset = 0; //grid step in minutes
-        this.timeUnitsCount = 90; //number of time units view
-        this.timeWidth = 144; //graphic width of time unit
+        this.gridOffset = 0;
+        this.timeUnitsCount = 90;
+        this.timeWidth = 144;
         this.timeElementHeight = 15;
         this.monthBoxHeight = 50;
         this.weekBoxHeight = 15;
@@ -78,4 +78,3 @@ export class SchedulaSettings {
         ];
     }
 }
-//# sourceMappingURL=SchedulaSettings.js.map

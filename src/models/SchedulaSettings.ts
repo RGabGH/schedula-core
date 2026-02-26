@@ -1,4 +1,6 @@
 
+import { ITaskPopup } from './ITaskPopup.js';
+
 export class SchedulaSettings {
 
     splitBarToggleButtons = true;
@@ -90,5 +92,11 @@ export class SchedulaSettings {
         "Ottobre", "Novembre", "Dicembre"
     ];
 
+    /**
+     * Optional custom popup provider for task items.
+     * When set, overrides the built-in popup entirely.
+     * The provider must implement the `ITaskPopup` interface.
+     */
+    popupProvider?: ITaskPopup;
 
 }

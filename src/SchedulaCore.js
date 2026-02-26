@@ -5,7 +5,6 @@ import { SchedulaItem } from './ui/SchedulaItem.js';
 import { SchedulaView, mousePos } from './models/SchedulaView.js';
 export class SchedulaCore {
     constructor(scheduler, jsonData, settings) {
-        var _a;
         this.version = '5.0.0';
         this.scheduler_id = 'scheduler';
         this.headerHeight = 100;
@@ -26,13 +25,14 @@ export class SchedulaCore {
         this.splitBar = null;
         this.template = '';
         this.calendar = null;
+        this._clickStart = { x: 0, y: 0 };
         this.itemConnPoint1 = null;
         this.itemConnPoint2 = null;
         this.itemConnPoint3 = null;
         this.itemConnPoint4 = null;
         this.connLine = null;
         this.currentView = SchedulaView.Month;
-        this._clickStart = { x: 0, y: 0 };
+        this.eventsSetup = false;
         this.scheduler_id = scheduler;
         this.data = jsonData;
         if (settings) {
@@ -42,6 +42,11 @@ export class SchedulaCore {
             this.settings = new SchedulaSettings();
         }
         ;
+        this.initCalendar();
+    }
+    initCalendar() {
+        var _a;
+        this.calendar = null;
         if (this.data.Calendar) {
             this.calendar = new SchedulaCalendar();
             let r = this.calendar.newItem();
@@ -63,6 +68,61 @@ export class SchedulaCore {
             });
         }
     }
+    setData(data) {
+        this.data = data;
+        this.initCalendar();
+        this.processData();
+        this.refresh();
+    }
+    setView(num) {
+        this.settings.timeUnitsView = num;
+        this.refresh();
+    }
+    setStyle(style) {
+        this.settings.gStyle = style;
+        this.refresh();
+    }
+    clearGroupSafe(groupId) {
+        const group = document.getElementById(groupId);
+        if (!group)
+            return;
+        if (groupId === 'scheduler-items') {
+            const nodesToRemove = [];
+            group.childNodes.forEach(node => {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    const el = node;
+                    if (el.id !== 'scheduler-header' && el.id !== 'scheduler-background' && el.tagName !== 'animateTransform') {
+                        nodesToRemove.push(node);
+                    }
+                }
+                else {
+                    nodesToRemove.push(node);
+                }
+            });
+            nodesToRemove.forEach(node => { var _a; return (_a = node.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(node); });
+        }
+        else {
+            group.innerHTML = '';
+        }
+    }
+    refresh() {
+        if (this.schedulerSVG) {
+            const groups = ['scheduler-background', 'scheduler-header', 'scheduler-resources', 'scheduler-events', 'scheduler-info', 'scheduler-items'];
+            groups.forEach(id => {
+                this.clearGroupSafe(id);
+            });
+            const items = document.getElementById('scheduler-items');
+            if (items) {
+                items.setAttribute('transform', 'translate(0,0)');
+                const anims = items.getElementsByTagName('animateTransform');
+                if (anims.length > 0) {
+                    anims[0].setAttribute('from', '0');
+                    anims[0].setAttribute('to', '0');
+                }
+            }
+            this.draw();
+        }
+    }
     init() {
         this.schedulerContainer = document.getElementById(this.scheduler_id);
         if (this.schedulerContainer != null) {
@@ -70,7 +130,6 @@ export class SchedulaCore {
             if (this.settings.theme) {
                 this.schedulerContainer.classList.add(this.settings.theme);
             }
-            //append template
             if (this.settings.template) {
                 this.template = this.settings.template;
             }
@@ -79,7 +138,6 @@ export class SchedulaCore {
             }
             this.schedulerContainer.innerHTML = this.template;
             document.body.style.overflow = 'auto';
-            //get svg element
             this.schedulerSVG = document.querySelector('#main-svg');
             let defs = this.schedulerSVG.getElementById('defs');
             const parser = new DOMParser();
@@ -94,38 +152,39 @@ export class SchedulaCore {
             });
             this.schedulerItems = document.getElementById('scheduler-items');
             this.splitBar = document.getElementById('scheduler-splitter');
-            // Restore saved view from localStorage
             this.restoreView();
             if (this.schedulerContainer != null) {
                 if (this.schedulerSVG != null) {
                     this.draw();
-                    // Restore saved shift position from localStorage
                     this.restoreShiftPos();
                     this.processData();
                     this.storeData();
-                    this.schedulerSVG.addEventListener('mousemove', (event) => {
-                        this.handleMouseMove(event);
-                    });
-                    this.schedulerSVG.addEventListener('mouseup', (event) => {
-                        this.svgMouseUp(event);
-                    });
-                    this.schedulerSVG.addEventListener('drop', (event) => {
-                        this.dropEventManagement(event);
-                    });
-                    this.schedulerSVG.addEventListener('dragover', (event) => {
-                        if (event.target.classList.contains('box-element')) {
-                            event.preventDefault();
-                        }
-                    });
-                    let scheduler = this;
-                    document.addEventListener('keyup', (function (e) {
-                        if (e.key === "Escape") {
-                            scheduler.escapePressed();
-                        }
-                    }));
-                    window.addEventListener('resize', (function (e) {
-                        scheduler.resized();
-                    }));
+                    if (!this.eventsSetup) {
+                        this.schedulerSVG.addEventListener('mousemove', (event) => {
+                            this.handleMouseMove(event);
+                        });
+                        this.schedulerSVG.addEventListener('mouseup', (event) => {
+                            this.svgMouseUp(event);
+                        });
+                        this.schedulerSVG.addEventListener('drop', (event) => {
+                            this.dropEventManagement(event);
+                        });
+                        this.schedulerSVG.addEventListener('dragover', (event) => {
+                            if (event.target.classList.contains('box-element')) {
+                                event.preventDefault();
+                            }
+                        });
+                        let scheduler = this;
+                        document.addEventListener('keyup', (function (e) {
+                            if (e.key === "Escape") {
+                                scheduler.escapePressed();
+                            }
+                        }));
+                        window.addEventListener('resize', (function (e) {
+                            scheduler.resized();
+                        }));
+                        this.eventsSetup = true;
+                    }
                 }
                 else {
                     this.schedulerContainer.textContent = "Error: Template is null";
@@ -215,7 +274,6 @@ export class SchedulaCore {
             return;
         this.settings.timeWidth = this.schedulerSVG.clientWidth / this.settings.timeUnitsView;
         let w = (this.settings.timeUnitsView * this.settings.timeWidth);
-        //header height calc
         this.headerHeight = this.settings.timeElementHeight + this.settings.monthBoxHeight;
         if (this.settings.viewWeeks) {
             this.headerHeight += this.settings.weekBoxHeight;
@@ -331,6 +389,9 @@ export class SchedulaCore {
     }
     escapePressed() {
         var _a, _b, _c, _d, _e;
+        if (this.settings.popupProvider) {
+            this.settings.popupProvider.hide();
+        }
         if (this.action == 'moving') {
             this.element.setAttribute('x', (_a = this.element.getAttribute('data-x')) !== null && _a !== void 0 ? _a : '0');
             this.element.setAttribute('y', (_b = this.element.getAttribute('data-y')) !== null && _b !== void 0 ? _b : '0');
@@ -367,7 +428,6 @@ export class SchedulaCore {
         }
         let datalink = this.element.getAttribute('data-link');
         if (datalink != null) {
-            // this.updatePath(datalink);
         }
     }
     linkItem() {
@@ -386,7 +446,6 @@ export class SchedulaCore {
         this.element.setAttribute('width', neww.toString());
         let datalink = this.element.getAttribute('data-link');
         if (datalink != null) {
-            // this.updatePath(datalink);
         }
     }
     splitArea() {
@@ -453,9 +512,6 @@ export class SchedulaCore {
             localStorage.setItem('data', JSON.stringify(this.data));
         }
     }
-    // ... Additional draw methods ...
-    // Note: Due to size limits, I am summarizing the remaining methods. I will need to complete the rest in a subsequent file part or assume they are copied from Scheduler.ts
-    // For brevity in this task, I will include the critical rendering methods.
     drawBackGroud() {
         var parent = document.getElementById('scheduler-background');
         if (parent) {
@@ -536,7 +592,7 @@ export class SchedulaCore {
                             rect.setAttribute('x', rx.toString());
                             rect.setAttribute('y', ry.toString());
                             rect.setAttribute('width', rw.toString());
-                            rect.setAttribute('height', rh.toString());
+                            rect.setAttribute('height', this.settings.resourceHeight.toString());
                             rect.setAttribute('data-date', cdate.toUTCString());
                             rect.setAttribute('data-res', this.data.Resources[rr].id);
                             rect.setAttribute('class', 'box-element');
@@ -652,7 +708,8 @@ export class SchedulaCore {
     initSplitter() {
         let stored = localStorage.getItem('splitbarpos');
         let splitbarpos = stored ? parseFloat(stored) : this.settings.splitBarinitPos;
-        if (isNaN(splitbarpos) || splitbarpos <= 0) splitbarpos = this.settings.splitBarinitPos;
+        if (isNaN(splitbarpos) || splitbarpos <= 0)
+            splitbarpos = this.settings.splitBarinitPos;
         let sh = (this.settings.resourceHeight * this.data.Resources.length) + this.headerHeight;
         let sw = this.settings.splitterWidth;
         let sy = 0;
@@ -810,8 +867,7 @@ export class SchedulaCore {
         });
     }
     clearItems() {
-        this.schedulerItems.innerHTML = '';
-        // Re-append connection points/lines if needed or ensure they are recreated
+        this.clearGroupSafe('scheduler-items');
         if (this.settings.itemsLinks)
             this.initLinks();
     }
@@ -830,12 +886,9 @@ export class SchedulaCore {
         y = (resindex * this.settings.resourceHeight) + this.headerHeight + this.settings.itemsPadding;
         h = h - (this.settings.itemsPadding * 2);
         if (this.settings.viewWeeks == true) {
-            //  y+=this.settings.weekBoxHeight;
         }
         let itemData = new SchedulaItem(this, item, this.calendar);
         let drawItem = true;
-        // Viewport culling equivalent
-        // if (x > (this.settings.timeUnitsView * this.settings.timeWidth) || (x + w) < 0) drawItem = false;
         if (drawItem) {
             let ItemSVG = document.createElementNS('http://www.w3.org/2000/svg', "svg");
             ItemSVG.setAttribute("x", x.toString());
@@ -902,8 +955,7 @@ export class SchedulaCore {
             }
             ItemSVG.append(itemrect);
             (_a = item.Pieces) === null || _a === void 0 ? void 0 : _a.forEach((piece) => {
-                var completion = piece.Width; // Assuming pieces define width in % or relative
-                // Logic for pieces (simplified from original for brevity, can be expanded)
+                var completion = piece.Width;
                 const pback = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
                 pback.setAttribute('x', piece.Start);
                 pback.setAttribute('y', '0');
@@ -911,7 +963,6 @@ export class SchedulaCore {
                 pback.setAttribute('height', '100%');
                 pback.setAttribute('fill', piece.Color);
                 pback.setAttribute('clip-path', 'url(#' + clipid + ')');
-                // if (mask) pback.setAttribute('mask', 'url(#' + maskid + ')'); // Mask logic if complex types
                 ItemSVG.append(pback);
             });
             if (item.Completion != null) {
@@ -946,7 +997,6 @@ export class SchedulaCore {
                     ItemSVG.append(progressGroup);
                 }
             }
-            // Resize handles
             if (this.settings.canResizeItems == true) {
                 const resize = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
                 resize.setAttribute('x', 'calc(100% - 10px)');
@@ -1014,8 +1064,7 @@ export class SchedulaCore {
                 const itemtext = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 itemtext.setAttribute('x', lx.toString());
                 itemtext.setAttribute('y', '15%');
-                // Calculate font size relative to resource height
-                let fontSize = 12; // default fallback
+                let fontSize = 12;
                 if (typeof this.settings.itemTextSize === 'string' && this.settings.itemTextSize.includes('%')) {
                     const pct = parseFloat(this.settings.itemTextSize) / 100;
                     fontSize = this.settings.resourceHeight * pct;
@@ -1032,7 +1081,6 @@ export class SchedulaCore {
                 const itemtext2 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 itemtext2.setAttribute('x', lx.toString());
                 itemtext2.setAttribute('y', '50%');
-                // Description size logic (approx 25% of height)
                 let descSize = this.settings.resourceHeight * 0.25;
                 itemtext2.setAttribute('font-size', descSize.toString());
                 itemtext2.setAttribute('dominant-baseline', 'hanging');
@@ -1172,13 +1220,13 @@ export class SchedulaCore {
                                     let idlink = item1.Link == item2.Id;
                                     let singletime = (samelink && ((item1.Offset < item2.Offset) || ((item1.Offset == item2.Offset) && (resindex > resindex2)))) || idlink;
                                     let notitself = item2.Id != item1.Id;
-                                    let cond = resindex == resindex2; //Math.abs(resindex - resindex2)<=1;
+                                    let cond = resindex == resindex2;
                                     if ((samelink || idlink) && singletime && notitself) {
                                         var x1 = (this.settings.timeWidth * ((item1.Offset + (item1.Width / 2)) / this.settings.timeUnitVal));
                                         var x2 = (this.settings.timeWidth * ((item2.Offset + (item2.Width / 2)) / this.settings.timeUnitVal));
                                         var y1 = (resindex * this.settings.resourceHeight) + this.headerHeight + this.settings.itemsPadding;
                                         var y2 = ((resindex2 - 1) * this.settings.resourceHeight) + this.headerHeight - this.settings.itemsPadding;
-                                        if (cond) { //resindex == resindex2
+                                        if (cond) {
                                             let i1 = item1.Offset > item2.Offset ? item2 : item1;
                                             let i2 = item1.Offset > item2.Offset ? item1 : item2;
                                             x1 = (this.settings.timeWidth * ((i1.Offset + i1.Width) / this.settings.timeUnitVal));
@@ -1196,7 +1244,7 @@ export class SchedulaCore {
                                         if (this.settings.linkSpline == true) {
                                             strpath = ' M' + x1 + ',' + y1 + ' C' + x1 + ',' + y3 + ' ' + x2 + ',' + y3 + '  ' + x2 + ',' + y2;
                                         }
-                                        if (cond) { //resindex == resindex2
+                                        if (cond) {
                                             strpath = ' M' + x1 + ',' + y1 + ' L' + x2 + ',' + y1;
                                         }
                                         else if (!cond && resindex > resindex2) {
@@ -1290,8 +1338,7 @@ export class SchedulaCore {
     }
     itemMouseDown(event, data) {
         if (this.action == '') {
-            if (event.button == 0 && this.settings.canMoveItems && event.target.classList.contains('items')) { // check class 'items' or 'item' ? 'item' based on drawItem
-                // In drawItem, class is 'item'.
+            if (event.button == 0 && this.settings.canMoveItems && event.target.classList.contains('items')) {
                 this.action = 'moving';
             }
             if (event.button == 0 && this.settings.canMoveItems && event.target.classList.contains('item')) {
@@ -1338,18 +1385,23 @@ export class SchedulaCore {
         this.storeData();
     }
     itemClick(event, element) {
+        var _a;
         const dx = Math.abs(event.pageX - this._clickStart.x);
         const dy = Math.abs(event.pageY - this._clickStart.y);
-        if (dx > 5 || dy > 5) return;
+        if (dx > 5 || dy > 5)
+            return;
         const item = element.item;
-        if (!item) return;
+        if (!item)
+            return;
+        if (this.settings.popupProvider) {
+            this.settings.popupProvider.show(item, event, this);
+            return;
+        }
         const popup = this.ensurePopup();
-        // Reset tabs to info
         popup.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         popup.querySelectorAll('.tabcontent').forEach(t => t.classList.remove('active'));
         popup.querySelector('.tab-btn[data-tab="info"]').classList.add('active');
         document.getElementById('scheduler-popup-tab-info').classList.add('active');
-        // Populate fields
         document.getElementById('scheduler-popup-title').textContent = item.Text || 'Task';
         document.getElementById('popup-field-text').value = item.Text || '';
         document.getElementById('popup-field-desc').value = item.Description || '';
@@ -1357,10 +1409,9 @@ export class SchedulaCore {
         document.getElementById('popup-field-from').value = fmt(item.From);
         document.getElementById('popup-field-to').value = fmt(item.To);
         document.getElementById('popup-field-color').value = item.Color1 || '#000000';
-        document.getElementById('popup-field-completion').value = item.Completion ?? '';
+        document.getElementById('popup-field-completion').value = (_a = item.Completion) !== null && _a !== void 0 ? _a : '';
         document.getElementById('popup-field-ref').value = item.Reference || '';
         document.getElementById('popup-field-json').value = JSON.stringify(item, null, 2);
-        // Re-attach Save button to avoid duplicate listeners
         const saveBtn = document.getElementById('popup-btn-save');
         const newSave = saveBtn.cloneNode(true);
         saveBtn.parentNode.replaceChild(newSave, saveBtn);
@@ -1374,12 +1425,10 @@ export class SchedulaCore {
             popup.style.display = 'none';
             this.init();
         });
-        // Re-attach Cancel button
         const cancelBtn = document.getElementById('popup-btn-cancel');
         const newCancel = cancelBtn.cloneNode(true);
         cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
         newCancel.addEventListener('click', () => { popup.style.display = 'none'; });
-        // Re-attach Close button
         const closeBtn = document.getElementById('scheduler-popup-close');
         const newClose = closeBtn.cloneNode(true);
         closeBtn.parentNode.replaceChild(newClose, closeBtn);
@@ -1444,7 +1493,6 @@ export class SchedulaCore {
                     </div>
                 </div>`;
             document.body.appendChild(popup);
-            // Tab switching
             popup.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     popup.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1453,7 +1501,8 @@ export class SchedulaCore {
                     const tab = btn.dataset.tab;
                     if (tab === 'info') {
                         document.getElementById('scheduler-popup-tab-info').classList.add('active');
-                    } else if (tab === 'json') {
+                    }
+                    else if (tab === 'json') {
                         document.getElementById('scheduler-popup-tab-json').classList.add('active');
                     }
                 });
@@ -1464,7 +1513,8 @@ export class SchedulaCore {
     }
     makePopupDraggable(popup) {
         const header = popup.querySelector('#scheduler-popup-header');
-        if (!header) return;
+        if (!header)
+            return;
         let isDragging = false;
         let startX = 0, startY = 0, startLeft = 0, startTop = 0;
         header.addEventListener('mousedown', (e) => {
@@ -1480,7 +1530,8 @@ export class SchedulaCore {
             e.preventDefault();
         });
         document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
+            if (!isDragging)
+                return;
             popup.style.left = (startLeft + e.clientX - startX) + 'px';
             popup.style.top = (startTop + e.clientY - startY) + 'px';
         });
@@ -1691,11 +1742,8 @@ export class SchedulaCore {
     }
     drawInfoUnits() {
         if (this.settings.viewInfoElements) {
-            // ... implementation if needed, skipped for brevity as likely less critical or similar to drawTimeUnits ...
-            // If critical, would need to implement.
         }
     }
-    // Helper to get sum for mouse over
     getSum(box) {
         var _a;
         let dt = box.getAttribute('data-date');
@@ -1742,37 +1790,35 @@ export class SchedulaCore {
     pad(d) {
         return (d < 10) ? '0' + d.toString() : d.toString();
     }
-    setView(event, view) {
+    switchViewMode(event, view) {
         var _a;
-        let variation = 1;
         switch (view) {
             case SchedulaView.Day:
                 this.settings.timeUnitsView = 2;
                 this.settings.shifterStep = 1;
-                variation = 0.5;
                 break;
             case SchedulaView.Week:
                 this.settings.timeUnitsView = 7;
                 this.settings.shifterStep = 4;
-                variation = 1;
                 break;
             case SchedulaView.Month:
                 this.settings.timeUnitsView = 31;
                 this.settings.shifterStep = 15;
-                variation = 3;
                 break;
             default:
                 break;
         }
-        let startDate = new Date((_a = event.target.getAttribute('data-date')) !== null && _a !== void 0 ? _a : '');
-        let dt1 = this.settings.date;
-        let dt2 = startDate;
-        let timespan = (dt2.getTime() - dt1.getTime()) / 86400000;
-        timespan -= variation;
+        const clickedDateStr = (_a = event.target.getAttribute('data-date')) !== null && _a !== void 0 ? _a : '';
+        if (clickedDateStr) {
+            this.settings.date = new Date(clickedDateStr);
+        }
         this.currentView = view;
         localStorage.setItem('schedulaView', view);
-        this.init();
-        this.shift(-timespan);
+        localStorage.removeItem('schedulaShiftPos');
+        const items = document.getElementById('scheduler-items');
+        if (items)
+            items.setAttribute('transform', 'translate(0,0)');
+        this.refresh();
     }
     restoreView() {
         let savedView = localStorage.getItem('schedulaView');
@@ -1803,8 +1849,10 @@ export class SchedulaCore {
                 if (items) {
                     let minpos = 0;
                     let maxpos = -((this.settings.timeUnitsCount - this.settings.timeUnitsView - 1) * this.settings.timeWidth);
-                    if (pos > minpos) pos = minpos;
-                    if (pos < maxpos) pos = maxpos;
+                    if (pos > minpos)
+                        pos = minpos;
+                    if (pos < maxpos)
+                        pos = maxpos;
                     items.setAttribute('transform', 'translate(' + pos + ',0)');
                 }
             }
@@ -1817,7 +1865,7 @@ export class SchedulaCore {
         var dt = this.settings.date;
         if (dt && parent) {
             let lastmonth = -1;
-            let increment = 60 * 1000 * this.settings.timeUnitVal; //one day = 864000000
+            let increment = 60 * 1000 * this.settings.timeUnitVal;
             for (let i = 0; i < this.settings.timeUnitsCount; i++) {
                 var cdate = new Date(dt.getTime() + (i * increment));
                 let w = this.settings.timeWidth;
@@ -1860,7 +1908,7 @@ export class SchedulaCore {
                     monthBox.setAttribute('class', "monthbox");
                     let that = this;
                     monthBox.addEventListener('click', (event) => {
-                        that.setView(event, SchedulaView.Month);
+                        that.switchViewMode(event, SchedulaView.Month);
                     });
                     const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
                     title.innerHTML = t;
@@ -1928,7 +1976,7 @@ export class SchedulaCore {
                     elem.classList.add('week-element');
                     let that = this;
                     elem.addEventListener('click', (event) => {
-                        that.setView(event, SchedulaView.Week);
+                        that.switchViewMode(event, SchedulaView.Week);
                     });
                     let txt = this.getWeekOfYear(cdate).toString();
                     const title = document.createElementNS('http://www.w3.org/2000/svg', "title");
@@ -1981,7 +2029,7 @@ export class SchedulaCore {
                 elem.setAttribute('fill', 'transparent');
                 let that = this;
                 elem.addEventListener('click', (event) => {
-                    that.setView(event, SchedulaView.Day);
+                    that.switchViewMode(event, SchedulaView.Day);
                 });
                 parent.append(elem);
                 var tx = x + (this.settings.timeWidth / 2);
@@ -2019,7 +2067,7 @@ export class SchedulaCore {
                 dummy.classList.add('time-unit');
                 dummy.setAttribute('data-date', cdate.toUTCString());
                 dummy.addEventListener('click', (event) => {
-                    that.setView(event, SchedulaView.Day);
+                    that.switchViewMode(event, SchedulaView.Day);
                     if (typeof timeMouseClick == 'function') {
                         timeMouseClick(event, cdate);
                     }
@@ -2044,9 +2092,6 @@ export class SchedulaCore {
         return day;
     }
     getTemplate() {
-        // Original code fetched from Azure, let's keep it or replace logic if needed
-        // For now, minimal implementation as per scheduler.ts, just console log
-        // fetch(...)
     }
     drawHeader() {
         const parent = document.getElementById('scheduler-header');
@@ -2065,4 +2110,3 @@ export class SchedulaCore {
         }
     }
 }
-//# sourceMappingURL=SchedulaCore.js.map

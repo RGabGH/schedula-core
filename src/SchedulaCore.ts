@@ -480,6 +480,11 @@ export class SchedulaCore implements ISchedulaCore {
     }
 
     private escapePressed() {
+        // Close custom popup provider if active
+        if (this.settings.popupProvider) {
+            this.settings.popupProvider.hide();
+        }
+
         if (this.action == 'moving') {
             this.element.setAttribute('x', this.element.getAttribute('data-x') ?? '0');
             this.element.setAttribute('y', this.element.getAttribute('data-y') ?? '0');
@@ -1604,6 +1609,13 @@ export class SchedulaCore implements ISchedulaCore {
         if (dx > 5 || dy > 5) return;
         const item = element.item;
         if (!item) return;
+
+        // Delegate to external popup provider if configured
+        if (this.settings.popupProvider) {
+            this.settings.popupProvider.show(item, event as MouseEvent, this);
+            return;
+        }
+
         const popup = this.ensurePopup();
         // Reset tabs to info
         popup.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
