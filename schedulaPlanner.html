@@ -49,8 +49,7 @@
         <button class="btn btn-outline-secondary m-1" onclick="setStyle('round-rect')">roundrect</button>
         <button class="btn btn-outline-secondary m-1" onclick="setStyle('arrow')">arrow</button>
         <button class="btn btn-outline-secondary m-1" onclick="setStyle('circle')">circle</button>
-
-
+        <button class="btn btn-outline-secondary m-1" onclick="toggleLinks()">links</button>
     </div>
 
     <div id="scheduler"></div>
@@ -72,13 +71,58 @@
         import { SchedulaCore } from './src/SchedulaCore.js';
         import { SchedulaSettings } from './src/models/SchedulaSettings.js';
         import { SchedulaTemplate } from './src/ui/SchedulaTemplate.js';
+        // import { CustomTaskPopup } from './src/models/CustomTaskPopup.js'; // Non serve importarlo se l'utente ne definisce uno suo
+
+        /**
+         * ESEMPIO DI POPUP CUSTOM DEFINITO DALL'UTILIZZATORE (CLIENT SIDE)
+         * Questa classe può essere definita direttamente nel file HTML o in un file JS esterno
+         * senza dover ricompilare la libreria.
+         */
+        class MyUserPopup {
+            constructor() {
+                // Creazione elemento DOM al volo
+                this.element = document.createElement('div');
+                this.element.style.cssText = `
+                    position: fixed;
+                    background: white;
+                    border: 1px solid #aaa;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                    padding: 15px;
+                    z-index: 10000;
+                    display: none;
+                    border-radius: 4px;
+                    min-width: 200px;
+                    font-family: sans-serif;
+                `;
+                document.body.appendChild(this.element);
+            }
+
+            // Metodo richiesto dall'interfaccia ITaskPopup
+            show(item, event, scheduler) {
+                this.element.innerHTML = `
+                    <h4 style="margin-top:0; color: #333;">${item.label || item.text1 || 'Task Personalizzato'}</h4>
+                    <p style="font-size: 14px;"><strong>ID:</strong> ${item.id}</p>
+                    <p style="font-size: 14px;">${item.text2 || 'Nessuna descrizione'}</p>
+                    <button onclick="this.parentElement.style.display='none'" style="cursor:pointer; padding: 4px 8px;">Chiudi</button>
+                `;
+                this.element.style.left = event.clientX + 'px';
+                this.element.style.top = event.clientY + 'px';
+                this.element.style.display = 'block';
+            }
+
+            // Metodo richiesto dall'interfaccia ITaskPopup
+            hide() {
+                this.element.style.display = 'none';
+            }
+        }
 
         // Initialize settings
-        // Assuming global 'settings' variable was expected, we create it here or use a new one.
-        // Old code: const scheduler = new Scheduler("scheduler", medicaldata, settings);
-        // settings came from scheduler-settings.js.
-        // We will create a new instance.
         const settings = new SchedulaSettings();
+        
+        // ASSEGNAZIONE DEL POPUP CUSTOM
+        // L'utente istanzia la sua classe e la passa alle impostazioni
+        // settings.popupProvider = new MyUserPopup();
+
         // Set date to match medical data
         settings.date = new Date('2026-02-19');
 
@@ -119,6 +163,12 @@
 
         window.setStyle = function (style) {
             scheduler.setStyle(style);
+        }
+
+        window.toggleLinks = function () {
+            scheduler.settings.drawLinks = !scheduler.settings.drawLinks;
+            scheduler.settings.itemsLinks = scheduler.settings.drawLinks;
+            scheduler.refresh();
         }
 
         window.setData = function (dati) {

@@ -931,6 +931,9 @@ export class SchedulaCore {
             if (rx > 0)
                 itemrect.setAttribute('rx', rx.toString());
             itemrect.setAttribute("fill", item.Color1);
+            if (item.Color1) {
+                itemrect.classList.add('custom-color');
+            }
             if (item.Classes) {
                 let classes = item.Classes.split(' ');
                 classes.forEach((c) => {
@@ -1408,7 +1411,11 @@ export class SchedulaCore {
         const fmt = (mins) => mins != null ? new Date(mins * 60000).toLocaleString() : '';
         document.getElementById('popup-field-from').value = fmt(item.From);
         document.getElementById('popup-field-to').value = fmt(item.To);
-        document.getElementById('popup-field-color').value = item.Color1 || '#000000';
+        let color = item.Color1 || item.Color || '#000000';
+        if (color.length === 4) {
+            color = '#' + color[1] + color[1] + color[2] + color[2] + color[3] + color[3];
+        }
+        document.getElementById('popup-field-color').value = color;
         document.getElementById('popup-field-completion').value = (_a = item.Completion) !== null && _a !== void 0 ? _a : '';
         document.getElementById('popup-field-ref').value = item.Reference || '';
         document.getElementById('popup-field-json').value = JSON.stringify(item, null, 2);
@@ -1419,6 +1426,7 @@ export class SchedulaCore {
             item.Text = document.getElementById('popup-field-text').value;
             item.Description = document.getElementById('popup-field-desc').value;
             item.Color1 = document.getElementById('popup-field-color').value;
+            if (item.Color) item.Color = item.Color1;
             const comp = parseInt(document.getElementById('popup-field-completion').value);
             item.Completion = isNaN(comp) ? undefined : comp;
             item.Reference = document.getElementById('popup-field-ref').value;

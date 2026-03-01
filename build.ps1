@@ -81,19 +81,18 @@ Get-ChildItem -Filter "*.html" | Where-Object { $_.Name -notmatch "tests.html" }
 Write-Host "Minifying and Obfuscating JavaScript files..." -ForegroundColor Cyan
 npx -y javascript-obfuscator "$distFolder/js" --output "$distFolder/js" --compact true --control-flow-flattening true --dead-code-injection true --string-array true --string-array-rotate true --string-array-shuffle true --string-array-threshold 0.75
 
-# 8. Fix paths in scheduler.html
-Write-Host "Updating paths in dist/scheduler.html..." -ForegroundColor Cyan
-$htmlPath = "$distFolder/scheduler.html"
-if (Test-Path $htmlPath) {
+# 8. Fix paths in HTML files
+Write-Host "Updating paths in dist HTML files..." -ForegroundColor Cyan
+Get-ChildItem -Path $distFolder -Filter "*.html" | ForEach-Object {
+    $htmlPath = $_.FullName
     $content = Get-Content $htmlPath -Raw
     
     # Update script src for icons.js (now icons.min.js)
     $content = $content -replace 'src="icons.js"', 'src="js/icons.min.js"'
     
     # Replace the module script block with simplified bundle usage
-    # Regex to catch the imports with either .js or .min.js extensions
-    $importRegex = '(?s)import \{ SchedulaCore \} from ''\./js/src/SchedulaCore(\.min)?\.js'';\s*import \{ SchedulaSettings \} from ''\./js/src/models/SchedulaSettings(\.min)?\.js'';\s*import \{ SchedulaTemplate \} from ''\./js/src/ui/SchedulaTemplate(\.min)?\.js'';'
-    $content = $content -replace $importRegex, ''
+    # Remove all import statements (generic regex)
+    $content = $content -replace '(?m)^\s*import .* from .*;\r?\n?', ''
     
     # Remove type="module" and add the bundle script tag
     $content = $content -replace '<script type="module">', "<script src=`"js/smartscheduler.min.js`"></script>`r`n    <script>"
