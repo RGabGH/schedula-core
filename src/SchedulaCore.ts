@@ -5,6 +5,10 @@ import { SchedulaCalendar, CalendarMousePos, SchedulaCalendarItem } from './mode
 import { SchedulaItem } from './ui/SchedulaItem.js';
 import { ISchedulaCore } from './models/ISchedulaCore.js';
 import { SchedulaView, mousePos } from './models/SchedulaView.js';
+import { ISchedulaPlugin } from './models/ISchedulaPlugin.js';
+import { IDragDropPlugin } from './models/IDragDropPlugin.js';
+import { ILinksPlugin } from './models/ILinksPlugin.js';
+import { IEventsPlugin } from './models/IEventsPlugin.js';
 
 declare function resourceClick(event: any, resource: any): void;
 declare function itemMouseEnter(event: any, item: any): void;
@@ -51,6 +55,46 @@ export class SchedulaCore implements ISchedulaCore {
     private connLine: SVGLineElement | null = null;
     private currentView: SchedulaView = SchedulaView.Month;
 
+    /** Plugin registry — maps plugin name to plugin instance */
+    private _plugins: Map<string, ISchedulaPlugin> = new Map();
+
+    // ── Public accessors for plugin use ──────────────────────────────────────
+    public get schedulerSVGElement(): SVGSVGElement | null { return this.schedulerSVG; }
+    public get schedulerItemsElement(): HTMLElement | null { return this.schedulerItems; }
+    public get schedulerId(): string { return this.scheduler_id; }
+    public get currentAction(): string { return this.action; }
+    public set currentAction(val: string) { this.action = val; }
+    public get mousePosition(): mousePos { return this.mpos; }
+    public get actionMemoPosition(): mousePos { return this.actionMemoPos; }
+    public set actionMemoPosition(val: mousePos) { this.actionMemoPos = val; }
+    public get calendarPosition(): CalendarMousePos { return this.calendarMousePos; }
+    public get viewRatio(): number { return this.ratio; }
+    public get splitBarElement(): HTMLElement | null { return this.splitBar; }
+    public get splitBarCurrentPos(): number { return this.splitBarPos; }
+    public set splitBarCurrentPos(val: number) { this.splitBarPos = val; }
+    public get currentElement(): any { return this.element; }
+    public set currentElement(val: any) { this.element = val; }
+    public get linkPointPos(): mousePos { return this.linkPoint; }
+    public set linkPointPos(val: mousePos) { this.linkPoint = val; }
+    public get currentLinkId(): string { return this.linkId; }
+    public set currentLinkId(val: string) { this.linkId = val; }
+    public get connPointElements() {
+        return {
+            p1: this.itemConnPoint1,
+            p2: this.itemConnPoint2,
+            p3: this.itemConnPoint3,
+            p4: this.itemConnPoint4,
+            line: this.connLine
+        };
+    }
+    public set connPointElements(val: { p1: SVGCircleElement | null, p2: SVGCircleElement | null, p3: SVGCircleElement | null, p4: SVGCircleElement | null, line: SVGLineElement | null }) {
+        this.itemConnPoint1 = val.p1;
+        this.itemConnPoint2 = val.p2;
+        this.itemConnPoint3 = val.p3;
+        this.itemConnPoint4 = val.p4;
+        this.connLine = val.line;
+    }
+
     constructor(scheduler: string, jsonData: any, settings?: SchedulaSettings) {
 
         this.scheduler_id = scheduler;
@@ -60,6 +104,21 @@ export class SchedulaCore implements ISchedulaCore {
         else { this.settings = new SchedulaSettings() };
 
         this.initCalendar();
+    }
+
+    // ── Plugin registry ──────────────────────────────────────────────────────
+
+    public registerPlugin(plugin: ISchedulaPlugin): void {
+        if (this._plugins.has(plugin.name)) {
+            console.warn(`[SchedulaCore] Plugin '${plugin.name}' already registered — skipping.`);
+            return;
+        }
+        plugin.init(this);
+        this._plugins.set(plugin.name, plugin);
+    }
+
+    public getPlugin<T extends ISchedulaPlugin>(name: string): T | null {
+        return (this._plugins.get(name) as T) ?? null;
     }
 
     private initCalendar() {
@@ -157,7 +216,6 @@ export class SchedulaCore implements ISchedulaCore {
             if (this.settings.theme) {
                 this.schedulerContainer.classList.add(this.settings.theme);
             }
-            //append template
 
             if (this.settings.template) {
                 this.template = this.settings.template;
@@ -165,25 +223,25 @@ export class SchedulaCore implements ISchedulaCore {
 
             this.schedulerContainer.innerHTML = this.template;
             document.body.style.overflow = 'auto';
-            //get svg element
             this.schedulerSVG = document.querySelector('#main-svg') as SVGSVGElement;
 
             let defs = this.schedulerSVG.getElementById('defs');
             const parser = new DOMParser();
             const wrapped = `<svg xmlns="http://www.w3.org/2000/svg">${this.settings.icons}</svg>`;
             const doc = parser.parseFromString(wrapped, "image/svg+xml");
-
             const icons = doc.documentElement.childNodes;
-
             icons.forEach((node) => {
                 if (node.nodeType === Node.ELEMENT_NODE) {
-                    const importedNode = this.schedulerSVG!.ownerDocument!.importNode(node, true);
+                    this.schedulerSVG!.ownerDocument!.importNode(node, true);
                     defs!.appendChild(node);
                 }
             });
 
             this.schedulerItems = document.getElementById('scheduler-items')!;
             this.splitBar = document.getElementById('scheduler-splitter')!;
+
+            // Register plugins from settings (if not already registered)
+            this.settings.plugins.forEach(p => this.registerPlugin(p));
 
             // Restore saved view from localStorage
             this.restoreView();
@@ -205,9 +263,9 @@ export class SchedulaCore implements ISchedulaCore {
                             this.svgMouseUp(event);
                         });
                         this.schedulerSVG.addEventListener('drop', (event: any) => {
-                            this.dropEventManagement(event);
+                            const dragDrop = this.getPlugin<IDragDropPlugin>('dragdrop');
+                            if (dragDrop) dragDrop.onDrop(event);
                         });
-
                         this.schedulerSVG.addEventListener('dragover', (event) => {
                             if ((event.target as HTMLElement).classList.contains('box-element')) {
                                 event.preventDefault();
@@ -229,13 +287,11 @@ export class SchedulaCore implements ISchedulaCore {
                     this.schedulerContainer.textContent = "Error: Template is null";
                     console.log('Error: Template is null');
                 }
-
             }
             else {
                 console.log('scheduler id is null or div');
             }
         }
-
     }
 
     private dropEventManagement(evt: any) {
@@ -349,14 +405,12 @@ export class SchedulaCore implements ISchedulaCore {
 
         h += 5;
 
-
         this.schedulerSVG.viewBox.baseVal.x = 0;
         this.schedulerSVG.viewBox.baseVal.y = 0;
         this.schedulerSVG.viewBox.baseVal.width = w / this.zoom;
         this.schedulerSVG.viewBox.baseVal.height = h / this.zoom;
 
         this.ratio = this.schedulerSVG.viewBox.baseVal.width / this.schedulerSVG.clientWidth;
-
 
         this.resourceFilteredCount = 0;
         if (this.settings.groupFilter != 0) {
@@ -365,36 +419,35 @@ export class SchedulaCore implements ISchedulaCore {
             }).length
         }
 
-
-
         this.drawHeader();
         this.drawMonths();
         this.drawWeeks();
         this.drawTimeUnits();
 
         this.drawBackGroud();
-        this.drawEvents();
-        this.drawInfoUnits();
+
+        // Events and info units — delegate to EventsPlugin if registered
+        const eventsPlugin = this.getPlugin<IEventsPlugin>('events');
+        if (eventsPlugin) {
+            eventsPlugin.drawEvents();
+            eventsPlugin.drawInfoUnits();
+        }
+
         this.drawResBg();
-
         this.initSplitter();
-
         this.drawItems();
-
         this.drawResources();
 
         var that = this;
-
         this.splitBar!.addEventListener('mousedown', function (event) {
             that.splitterBarMouseDown(event);
         });
-        if (this.settings.itemsLinks == true) {
-            this.initLinks();
 
-        }
-        if (this.settings.drawLinks == true) {
-
-            this.drawLinks();
+        // Links — delegate to LinksPlugin if registered
+        const linksPlugin = this.getPlugin<ILinksPlugin>('links');
+        if (linksPlugin) {
+            if (this.settings.itemsLinks) linksPlugin.initLinks();
+            if (this.settings.drawLinks) linksPlugin.drawLinks();
         }
 
         if (this.settings.viewShifters == true) {
@@ -402,14 +455,12 @@ export class SchedulaCore implements ISchedulaCore {
             let step = this.settings.shifterStep;
             let that = this;
             if (cdx != null) {
-
                 cdx.style.visibility = 'visible';
                 cdx.addEventListener('click', function () {
                     that.shift(-step);
                 });
             }
             const csx = document.getElementById("shifter-sx");
-
             if (csx != null) {
                 csx.style.visibility = 'visible';
                 csx.addEventListener('click', function () {
@@ -417,11 +468,15 @@ export class SchedulaCore implements ISchedulaCore {
                 });
             }
         }
-
     }
 
     private svgMouseUp(event: any) {
-        this.clearAction();
+        const dragDrop = this.getPlugin<IDragDropPlugin>('dragdrop');
+        if (dragDrop) {
+            dragDrop.onMouseUp(event);
+        } else {
+            this.clearAction();
+        }
     }
 
     public removeItem(id: string) {
@@ -446,10 +501,7 @@ export class SchedulaCore implements ISchedulaCore {
         this.mpos.x = event.pageX;
         this.mpos.y = event.pageY;
 
-        let offsets = document.getElementById(this.scheduler_id)?.getBoundingClientRect() ?? {
-            x: 0,
-            y: 0
-        };
+        let offsets = document.getElementById(this.scheduler_id)?.getBoundingClientRect() ?? { x: 0, y: 0 };
 
         this.schedulerMousePos.x = (this.mpos.x - offsets.x) * this.ratio;
         this.schedulerMousePos.y = (this.mpos.y - offsets.y) * this.ratio;
@@ -465,35 +517,47 @@ export class SchedulaCore implements ISchedulaCore {
         this.calendarMousePos.resourceIndex = Math.floor((this.calendarMousePos.y - this.headerHeight) / this.settings.resourceHeight);
         this.calendarMousePos.date = new Date(mydate.getTime() + (this.calendarMousePos.timeOffset * 86400000) + (mydate.getTimezoneOffset() * 60000));
 
-        if (this.action == 'linking') {
-            this.linkItem();
-        }
-        else if (this.action == 'moving') {
-            this.moveItem();
-        }
-        else if (this.action == 'sizing') {
-            this.resizeItem();
-        }
-        else if (this.action == 'splitter') {
+        if (this.action === 'splitter') {
             this.splitArea();
+            return;
+        }
+
+        if (this.action === 'linking') {
+            const links = this.getPlugin<ILinksPlugin>('links');
+            if (links) links.onLinkMouseMove(event);
+            else this.linkItem();
+            return;
+        }
+
+        if (this.action === 'moving' || this.action === 'sizing') {
+            const dragDrop = this.getPlugin<IDragDropPlugin>('dragdrop');
+            if (dragDrop) dragDrop.onMouseMove(event);
+            else if (this.action === 'moving') this.moveItem();
+            else if (this.action === 'sizing') this.resizeItem();
         }
     }
 
     private escapePressed() {
-        // Close custom popup provider if active
+        // Delegate to popupProvider if active
         if (this.settings.popupProvider) {
             this.settings.popupProvider.hide();
         }
 
+        // Delegate to DragDropPlugin if registered
+        const dragDrop = this.getPlugin<IDragDropPlugin>('dragdrop');
+        if (dragDrop) {
+            dragDrop.onEscape();
+            return;
+        }
+
+        // Fallback (no plugin) — restore element position visually
         if (this.action == 'moving') {
             this.element.setAttribute('x', this.element.getAttribute('data-x') ?? '0');
             this.element.setAttribute('y', this.element.getAttribute('data-y') ?? '0');
             this.element.querySelector('rect.item')?.classList.remove('moving');
-
         } else if (this.action == 'sizing') {
             this.element.setAttribute('width', this.element.getAttribute('data-w') ?? '0');
             this.element.querySelector('rect.item')?.classList.remove('sizing');
-
         } else if (this.action == 'linking') {
             this.resetLinkLine();
         }
@@ -1035,8 +1099,12 @@ export class SchedulaCore implements ISchedulaCore {
 
     private clearItems() {
         this.clearGroupSafe('scheduler-items');
-        // Re-append connection points/lines if needed or ensure they are recreated
-        if (this.settings.itemsLinks) this.initLinks();
+        // Re-init connection points via LinksPlugin if registered
+        if (this.settings.itemsLinks) {
+            const links = this.getPlugin<ILinksPlugin>('links');
+            if (links) links.initLinks();
+            else this.initLinks();
+        }
     }
 
     public drawItem(item: any, resindex: number, mask: boolean = true) {
@@ -1551,113 +1619,43 @@ export class SchedulaCore implements ISchedulaCore {
     }
 
     private itemMouseDown(event: any, data: any) {
-        if (this.action == '') {
-            if (event.button == 0 && this.settings.canMoveItems && event.target.classList.contains('items')) { // check class 'items' or 'item' ? 'item' based on drawItem
-                // In drawItem, class is 'item'.
-                this.action = 'moving';
+        const dragDrop = this.getPlugin<IDragDropPlugin>('dragdrop');
+        if (dragDrop) {
+            dragDrop.onItemMouseDown(event, data);
+        } else {
+            // Fallback — basic action assignment (no interactivity without plugin)
+            if (typeof (window as any).itemMouseDown === 'function') {
+                (window as any).itemMouseDown(event, data);
             }
-            if (event.button == 0 && this.settings.canMoveItems && event.target.classList.contains('item')) {
-                this.action = 'moving';
-            }
-            else if (event.button == 0 && this.settings.canResizeItems && event.target.classList.contains('resize')) {
-                this.action = 'sizing';
-            }
-
-        }
-        if (this.action != '') {
-            this.element = event.target.parentElement;
-            if (event.target.classList.contains('item')) event.target.classList.add(this.action);
-            if (event.target.classList.contains('resize')) {
-                let id = event.target.parentElement.getAttribute('data-id');
-                document.querySelector('svg[data-id="' + id + '"]>rect.item')!.classList.add(this.action);
-            }
-            this.element.setAttribute('data-x', data.element.getAttribute('x'));
-            this.element.setAttribute('data-y', data.element.getAttribute('y'));
-
-            this.element.setAttribute('data-w', data.element.getAttribute('width'));
-            this.actionMemoPos.x = event.pageX;
-            this.actionMemoPos.y = event.pageY;
-        }
-
-        this._clickStart = { x: event.pageX, y: event.pageY };
-        if (typeof itemMouseDown == 'function') {
-            itemMouseDown(event, data);
         }
     }
 
     private itemMouseUp(event: any, data: any) {
-        let itemClone = Object.assign({}, data.item)
-        this.element = event.target.parentElement;
-        this.processItemAction2(this.element, data.item, event.ctrlKey);
-
-        this.setAction('');
-        let datalink = this.element?.getAttribute('data-link');
-        if (datalink != null) {
-            this.drawLinks();
+        const dragDrop = this.getPlugin<IDragDropPlugin>('dragdrop');
+        if (dragDrop) {
+            dragDrop.onItemMouseUp(event, data);
+        } else {
+            this.setAction('');
         }
-        if (typeof modified == 'function') {
-            if ((itemClone.To != data.item.To) || (itemClone.From != data.item.From) || itemClone.Resource != data.item.Resource) {
-                modified();
-            }
-        }
+        // Redraw links after any move
+        const linksPlugin = this.getPlugin<ILinksPlugin>('links');
+        if (linksPlugin && this.settings.drawLinks) linksPlugin.drawLinks();
         this.storeData();
     }
 
     private itemClick(event: any, element: any) {
-        const dx = Math.abs(event.pageX - this._clickStart.x);
-        const dy = Math.abs(event.pageY - this._clickStart.y);
-        if (dx > 5 || dy > 5) return;
-        const item = element.item;
-        if (!item) return;
-
-        // Delegate to external popup provider if configured
-        if (this.settings.popupProvider) {
-            this.settings.popupProvider.show(item, event as MouseEvent, this);
-            return;
+        if (typeof (window as any).taskClick === 'function') {
+            (window as any).taskClick(event, element?.item);
         }
-
-        const popup = this.ensurePopup();
-        // Reset tabs to info
-        popup.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        popup.querySelectorAll('.tabcontent').forEach(t => t.classList.remove('active'));
-        (popup.querySelector('.tab-btn[data-tab="info"]') as HTMLElement).classList.add('active');
-        document.getElementById('scheduler-popup-tab-info')!.classList.add('active');
-        // Populate fields
-        document.getElementById('scheduler-popup-title')!.textContent = item.Text || 'Task';
-        (document.getElementById('popup-field-text') as HTMLInputElement).value = item.Text || '';
-        (document.getElementById('popup-field-desc') as HTMLInputElement).value = item.Description || '';
-        const fmt = (mins: number) => mins != null ? new Date(mins * 60000).toLocaleString() : '';
-        (document.getElementById('popup-field-from') as HTMLInputElement).value = fmt(item.From);
-        (document.getElementById('popup-field-to') as HTMLInputElement).value = fmt(item.To);
-        (document.getElementById('popup-field-color') as HTMLInputElement).value = item.Color1 || '#000000';
-        (document.getElementById('popup-field-completion') as HTMLInputElement).value = item.Completion ?? '';
-        (document.getElementById('popup-field-ref') as HTMLInputElement).value = item.Reference || '';
-        (document.getElementById('popup-field-json') as HTMLTextAreaElement).value = JSON.stringify(item, null, 2);
-        // Re-attach Save button to avoid duplicate listeners
-        const saveBtn = document.getElementById('popup-btn-save')!;
-        const newSave = saveBtn.cloneNode(true) as HTMLElement;
-        saveBtn.parentNode!.replaceChild(newSave, saveBtn);
-        newSave.addEventListener('click', () => {
-            item.Text = (document.getElementById('popup-field-text') as HTMLInputElement).value;
-            item.Description = (document.getElementById('popup-field-desc') as HTMLInputElement).value;
-            item.Color1 = (document.getElementById('popup-field-color') as HTMLInputElement).value;
-            const comp = parseInt((document.getElementById('popup-field-completion') as HTMLInputElement).value);
-            item.Completion = isNaN(comp) ? undefined : comp;
-            item.Reference = (document.getElementById('popup-field-ref') as HTMLInputElement).value;
-            popup.style.display = 'none';
-            this.init();
-        });
-        // Re-attach Cancel button
-        const cancelBtn = document.getElementById('popup-btn-cancel')!;
-        const newCancel = cancelBtn.cloneNode(true) as HTMLElement;
-        cancelBtn.parentNode!.replaceChild(newCancel, cancelBtn);
-        newCancel.addEventListener('click', () => { popup.style.display = 'none'; });
-        // Re-attach Close button
-        const closeBtn = document.getElementById('scheduler-popup-close')!;
-        const newClose = closeBtn.cloneNode(true) as HTMLElement;
-        closeBtn.parentNode!.replaceChild(newClose, closeBtn);
-        newClose.addEventListener('click', () => { popup.style.display = 'none'; });
-        popup.style.display = 'block';
+        const dragDrop = this.getPlugin<IDragDropPlugin>('dragdrop');
+        if (dragDrop) {
+            dragDrop.onItemClick(event, element);
+        } else {
+            // Fallback: delegate to popupProvider only
+            if (this.settings.popupProvider && element?.item) {
+                this.settings.popupProvider.show(element.item, event as MouseEvent, this);
+            }
+        }
     }
 
     private ensurePopup(): HTMLElement {
@@ -1763,49 +1761,44 @@ export class SchedulaCore implements ISchedulaCore {
     }
 
     private itemOver(event: any, item: any) {
-        if (this.settings.itemsLinks == true) {
-            const cx = parseFloat(event.currentTarget.getAttribute('x') ?? '0');
-            const cy = parseFloat(event.currentTarget.getAttribute('y') ?? '0');
-            const cw = parseFloat(event.currentTarget.getAttribute('width') ?? '0');
-            const ch = parseFloat(event.currentTarget.getAttribute('height') ?? '0');
-
-            const cx1 = cx;
-            const cy1 = cy + ch / 2;
-            const cx2 = cx + cw / 2;
-            const cy2 = cy;
-            const cx3 = cx + cw;
-            const cy3 = cy + ch;
-
-            this.itemConnPoint1!.setAttribute('cx', cx1.toString());
-            this.itemConnPoint1!.setAttribute('cy', cy1.toString());
-            this.itemConnPoint2!.setAttribute('cx', cx2.toString());
-            this.itemConnPoint2!.setAttribute('cy', cy2.toString());
-            this.itemConnPoint3!.setAttribute('cx', cx2.toString());
-            this.itemConnPoint3!.setAttribute('cy', cy3.toString());
-            this.itemConnPoint4!.setAttribute('cx', cx3.toString());
-            this.itemConnPoint4!.setAttribute('cy', cy1.toString());
-            this.itemConnPoint1!.setAttribute('target', event.currentTarget.getAttribute('data-id'));
-            this.itemConnPoint2!.setAttribute('target', event.currentTarget.getAttribute('data-id'));
-            this.itemConnPoint3!.setAttribute('target', event.currentTarget.getAttribute('data-id'));
-            this.itemConnPoint4!.setAttribute('target', event.currentTarget.getAttribute('data-id'));
-            this.showLinkpoints();
+        // Connection points via LinksPlugin
+        if (this.settings.itemsLinks) {
+            const linksPlugin = this.getPlugin<ILinksPlugin>('links');
+            if (linksPlugin) {
+                const el = event.currentTarget;
+                const cx = parseFloat(el.getAttribute('x') ?? '0');
+                const cy = parseFloat(el.getAttribute('y') ?? '0');
+                const cw = parseFloat(el.getAttribute('width') ?? '0');
+                const ch = parseFloat(el.getAttribute('height') ?? '0');
+                const pts = this.connPointElements;
+                if (pts.p1) { pts.p1.setAttribute('cx', cx.toString()); pts.p1.setAttribute('cy', (cy + ch / 2).toString()); pts.p1.setAttribute('target', el.getAttribute('data-id')); }
+                if (pts.p2) { pts.p2.setAttribute('cx', (cx + cw / 2).toString()); pts.p2.setAttribute('cy', cy.toString()); pts.p2.setAttribute('target', el.getAttribute('data-id')); }
+                if (pts.p3) { pts.p3.setAttribute('cx', (cx + cw / 2).toString()); pts.p3.setAttribute('cy', (cy + ch).toString()); pts.p3.setAttribute('target', el.getAttribute('data-id')); }
+                if (pts.p4) { pts.p4.setAttribute('cx', (cx + cw).toString()); pts.p4.setAttribute('cy', (cy + ch / 2).toString()); pts.p4.setAttribute('target', el.getAttribute('data-id')); }
+                document.querySelectorAll('.link-point').forEach(e => (e as HTMLElement).style.visibility = 'visible');
+            }
         }
-        if (typeof itemMouseEnter === 'function') {
-            itemMouseEnter(event, item);
-        }
+        // Delegate itemMouseEnter to DragDropPlugin or global function
+        const dragDrop = this.getPlugin<IDragDropPlugin>('dragdrop');
+        if (dragDrop) dragDrop.onItemOver(event, item);
+        else if (typeof (window as any).itemMouseEnter === 'function') (window as any).itemMouseEnter(event, item);
     }
 
     private itemOut(event: any, item: any) {
-        if (this.settings.itemsLinks == true) {
-            this.schedulerItems?.append(this.connLine!);
-            this.schedulerItems?.append(this.itemConnPoint1!);
-            this.schedulerItems?.append(this.itemConnPoint2!);
-            this.schedulerItems?.append(this.itemConnPoint3!);
-            this.schedulerItems?.append(this.itemConnPoint4!);
+        // Keep connection points appended to items layer when mouse leaves
+        if (this.settings.itemsLinks) {
+            const pts = this.connPointElements;
+            const itemsEl = this.schedulerItems;
+            if (pts.line) itemsEl?.append(pts.line);
+            if (pts.p1) itemsEl?.append(pts.p1);
+            if (pts.p2) itemsEl?.append(pts.p2);
+            if (pts.p3) itemsEl?.append(pts.p3);
+            if (pts.p4) itemsEl?.append(pts.p4);
         }
-        if (typeof itemMouseExit === 'function') {
-            itemMouseExit(event, item);
-        }
+        // Delegate to DragDropPlugin or global function
+        const dragDrop = this.getPlugin<IDragDropPlugin>('dragdrop');
+        if (dragDrop) dragDrop.onItemOut(event, item);
+        else if (typeof (window as any).itemMouseExit === 'function') (window as any).itemMouseExit(event, item);
     }
 
     private dropOnElement(event: any, element: any) { }
@@ -1861,64 +1854,8 @@ export class SchedulaCore implements ISchedulaCore {
         this.action = action;
     }
 
-    private processItemAction2(element: any, data: any, ctrl: boolean) {
-        let x = parseFloat(element.getAttribute('x') ?? '0');
-        let y = parseFloat(element.getAttribute('y') ?? '0');
-        let w = parseFloat(element.getAttribute('width') ?? '0');
-        let dx = parseFloat(element.getAttribute('data-x') ?? '0');
-        let dy = parseFloat(element.getAttribute('data-y') ?? '0');
-        let dw = parseFloat(element.getAttribute('data-w') ?? '0');
-        let axisXsteps = this.settings.gridStep / (this.settings.timeUnitVal / this.settings.timeWidth);
-        let gridOffset = this.settings.gridOffset / (this.settings.timeUnitVal / this.settings.timeWidth);
 
-        x = this.getModulo(x, axisXsteps, gridOffset);
-        y = this.getModulo(y, this.settings.resourceHeight, this.headerHeight + this.settings.itemsPadding);
-        w = this.getModulo(w, axisXsteps);
 
-        let moved = Math.abs(dx - x) > (axisXsteps / 2) || y != dy;
-        let resized = Math.abs(dw - w) > (axisXsteps / 3);
-
-        let si = new SchedulaItem(this, data, this.calendar!);
-        if (moved) {
-            si.X = x;
-            si.Y = y;
-        } else {
-            element.setAttribute('x', dx.toString());
-            element.setAttribute('y', dy.toString());
-            if (resized) {
-                si.W = w;
-            }
-            else element.setAttribute('width', dw.toString());
-        }
-
-        if (this.settings.checkInterferences) {
-            let interference = si.checkInterference();
-            if (!interference) {
-                if (!this.settings.shiftItems || !ctrl) {
-                    si.X = dx;
-                    si.Y = dy;
-                }
-                else {
-                    let item = this.data.Resources[si.Resource].Items.filter((i: any) => (i.Offset + i.Width) > si.Offset && i.Offset < si.Offset)
-                        .sort((a: any, b: any) => { return a.Offset - b.Offset })[0];
-                    if (item) {
-                        let si2 = new SchedulaItem(this, item, this.calendar!);
-                        si.X = si2.X + si2.W;
-                    }
-                    let xxx = si.X + si.W;
-                    let items = this.data.Resources[si.Resource].Items.filter((i: any) => i.Offset >= si.Offset && i.Id != si.Id)
-                        .sort((a: any, b: any) => { return parseInt(a.Offset) - parseInt(b.Offset) });
-                    for (let i = 0; i < items.length; i++) {
-                        let item = items[i];
-                        let si2 = new SchedulaItem(this, item, this.calendar!);
-                        if (xxx > si2.X) si2.X = xxx;
-                        xxx = si2.X + si2.W;
-                        interference = si2.checkInterference();
-                    }
-                }
-            }
-        }
-    }
 
     private drawEvents() {
         if (this.settings.viewEvents == true) {

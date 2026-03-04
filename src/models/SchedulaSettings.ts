@@ -1,5 +1,6 @@
 
 import { ITaskPopup } from './ITaskPopup.js';
+import { ISchedulaPlugin } from './ISchedulaPlugin.js';
 
 export class SchedulaSettings {
 
@@ -98,5 +99,17 @@ export class SchedulaSettings {
      * The provider must implement the `ITaskPopup` interface.
      */
     popupProvider?: ITaskPopup;
+
+    /**
+     * List of plugins to register with the core at init() time.
+     * Each plugin must implement `ISchedulaPlugin`.
+     * PRO plugins (DragDropPlugin, LinksPlugin, EventsPlugin) go here.
+     *
+     * @example
+     * ```typescript
+     * settings.plugins = [new DragDropPlugin(), new LinksPlugin()];
+     * ```
+     */
+    plugins: ISchedulaPlugin[] = [];
 
 }
