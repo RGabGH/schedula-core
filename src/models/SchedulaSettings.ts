@@ -112,4 +112,9 @@ export class SchedulaSettings {
      */
     plugins: ISchedulaPlugin[] = [];
 
+    /**
+     * If true, enables popup functionality when clicking on an item.
+     * The actual popup shown depends on the registered plugins or popupProvider.
+     */
+    enablePopup: boolean = true;
 }

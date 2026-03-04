@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "msedge",
+            "request": "launch",
+            "name": "Debug Schedula (Edge)",
+            "file": "${workspaceFolder}/schedulaPlanner.html",
+            "preLaunchTask": "Build Debug",
+            "sourceMaps": true,
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Debug Schedula (Chrome)",
+            "file": "${workspaceFolder}/schedulaPlanner.html",
+            "preLaunchTask": "Build Debug",
+            "sourceMaps": true,
+            "webRoot": "${workspaceFolder}"
+        }
+    ]
+}

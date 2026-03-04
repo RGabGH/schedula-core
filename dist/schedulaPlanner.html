@@ -2,60 +2,91 @@
 <html>
 
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css">
-
     <link rel="stylesheet" href="css/smartscheduler.css">
     <link rel="stylesheet" href="css/scheduler-themes.css">
     <link rel="stylesheet" href="bootstrap/bootstrap.css">
     <link rel="stylesheet" href="css/popup.css">
+    <title>SchedulaCore — Plugin Test</title>
 
-    <title></title>
+    <style>
+        #plugin-status {
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            padding: 4px 10px;
+            background: #1e293b;
+            color: #fff;
+            font-family: monospace;
+            font-size: 13px;
+            border-radius: 6px;
+            margin: 4px 0 4px 8px;
+            vertical-align: middle;
+        }
 
+        .badge-ok {
+            background: #22c55e;
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .badge-off {
+            background: #ef4444;
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
+    <!-- Draggable external task for drop-onto-scheduler test -->
     <div id="mydivid" style="height: 50px;" draggable="true" ondragstart="startdrag(event);" data-text1="DROPPED TASK"
         data-text2="dropped task description" data-order="123456789" data-classes="" data-w="2880" data-key="orderID"
         data-color="#874556" data-ref="reference" data-pieces="4" data-json="">NEW TASK</div>
+
     <div id="themesdiv" class="row m-1 align-items-center">
         <span class="me-2 fw-bold">Themes:</span>
         <button type="button" class="btn btn-sm btn-outline-secondary m-1" onclick="setTheme('')">Default</button>
         <button type="button" class="btn btn-sm btn-dark m-1" onclick="setTheme('theme-dark')">Dark</button>
         <button type="button" class="btn btn-sm btn-primary m-1" onclick="setTheme('theme-blue')">Blue</button>
         <button type="button" class="btn btn-sm btn-light m-1 border" onclick="setTheme('theme-soft')">Soft</button>
+        <!-- Plugin status badges (populated by JS after init) -->
+        <span id="plugin-status"></span>
     </div>
+
     <div id="datadiv" class="row m-1">
         <button class="btn btn-outline-secondary m-1" onclick="setData(hotelSchedulerData)">hotel</button>
         <button class="btn btn-outline-secondary m-1" onclick="setData(hrSchedulerData)">humans</button>
         <button class="btn btn-outline-secondary m-1" onclick="setData(productionSchedulerData)">production</button>
         <button class="btn btn-outline-secondary m-1" onclick="setData(clinicSchedulerData)">medical</button>
         <input type="text" class="form-control col-1 m-1" placeholder="search..." onkeyup="filterItems(this)">
-
     </div>
+
     <div id="adjust" class="row m-1">
         <button class="btn btn-outline-secondary m-1" onclick="setView(40)"><- 40 -></button>
         <button class="btn btn-outline-secondary m-1" onclick="setView(30)"><- 30 -></button>
         <button class="btn btn-outline-secondary m-1" onclick="setView(20)"><- 20 -></button>
         <button class="btn btn-outline-secondary m-1" onclick="setView(10)"><- 10 -></button>
-
-
     </div>
+
     <div id="styleselect" class="row m-1">
         <button class="btn btn-outline-secondary m-1" onclick="setStyle('rect')">rect</button>
         <button class="btn btn-outline-secondary m-1" onclick="setStyle('round-rect')">roundrect</button>
         <button class="btn btn-outline-secondary m-1" onclick="setStyle('arrow')">arrow</button>
         <button class="btn btn-outline-secondary m-1" onclick="setStyle('circle')">circle</button>
-
-
+        <button class="btn btn-outline-secondary m-1" onclick="toggleLinks()">links</button>
     </div>
 
     <div id="scheduler"></div>
 
-
+    <!-- Data files -->
     <script src="data/scheduler-data.js"></script>
     <script src="data/hr-data.js"></script>
     <script src="data/medical-data.js"></script>
@@ -63,148 +94,171 @@
     <script src="data/hotel-data.js"></script>
     <script src="data/ss-data-hotel.js"></script>
 
-
-
+    <!-- Icons -->
     <script src="js/icons.min.js"></script>
 
+    <!-- PRO Bundle: Core + DragDropPlugin + LinksPlugin + EventsPlugin (IIFE, no module imports needed) -->
+    <script src="tmp/pro-test.js"></script>
 
-    <script src="js/smartscheduler.min.js"></script>
     <script>
-        // import { CustomTaskPopup } from './src/models/CustomTaskPopup.js'; // Non serve importarlo se l'utente ne definisce uno suo
+        // ── Plugin status badge ────────────────────────────────────────
+        function renderPluginBadges(sched) {
+            var pluginNames = ['dragdrop', 'links', 'events'];
+            var labels = { dragdrop: 'DragDrop', links: 'Links', events: 'Events' };
+            var el = document.getElementById('plugin-status');
+            el.textContent = 'Plugins: ';
+            pluginNames.forEach(function (name) {
+                var ok = sched.getPlugin(name) !== null;
+                var b = document.createElement('span');
+                b.className = ok ? 'badge-ok' : 'badge-off';
+                b.textContent = labels[name] + (ok ? ' \u2713' : ' \u2717');
+                el.appendChild(b);
+            });
+        }
 
         /**
-         * ESEMPIO DI POPUP CUSTOM DEFINITO DALL'UTILIZZATORE (CLIENT SIDE)
-         * Questa classe può essere definita direttamente nel file HTML o in un file JS esterno
-         * senza dover ricompilare la libreria.
+         * ESEMPIO DI POPUP CUSTOM PER LA VERSIONE CORE (STANDALONE)
+         * Questa classe mostra come l'utente può implementare la propria UI
+         * senza dipendere dai plugin PRO.
          */
         class MyUserPopup {
             constructor() {
-                // Creazione elemento DOM al volo
                 this.element = document.createElement('div');
                 this.element.style.cssText = `
                     position: fixed;
-                    background: white;
-                    border: 1px solid #aaa;
-                    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-                    padding: 15px;
+                    background: #fff;
+                    border: 2px solid #334155;
+                    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+                    padding: 20px;
                     z-index: 10000;
                     display: none;
-                    border-radius: 4px;
-                    min-width: 200px;
+                    border-radius: 8px;
+                    min-width: 250px;
                     font-family: sans-serif;
                 `;
                 document.body.appendChild(this.element);
             }
 
-            // Metodo richiesto dall'interfaccia ITaskPopup
             show(item, event, scheduler) {
                 this.element.innerHTML = `
-                    <h4 style="margin-top:0; color: #333;">${item.label || item.text1 || 'Task Personalizzato'}</h4>
-                    <p style="font-size: 14px;"><strong>ID:</strong> ${item.id}</p>
-                    <p style="font-size: 14px;">${item.text2 || 'Nessuna descrizione'}</p>
-                    <button onclick="this.parentElement.style.display='none'" style="cursor:pointer; padding: 4px 8px;">Chiudi</button>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #e2e8f0; padding-bottom:10px;">
+                        <h3 style="margin:0; font-size:16px; color:#1e293b;">Core Preview</h3>
+                        <button onclick="this.closest('div').parentElement.parentElement.style.display='none'" style="border:none; background:none; cursor:pointer; font-size:18px;">&times;</button>
+                    </div>
+                    <div style="font-size:14px; color:#475569; line-height:1.6;">
+                        <p><strong>Item:</strong> ${item.Text || 'Untitled'}</p>
+                        <p><strong>Resource:</strong> ${item.Resource}</p>
+                        <p style="margin-top:10px; font-style:italic; font-size:12px; color:#94a3b8;">Questo è un popup custom definito nell'HTML per la versione Core Open Source.</p>
+                    </div>
                 `;
                 this.element.style.left = event.clientX + 'px';
                 this.element.style.top = event.clientY + 'px';
                 this.element.style.display = 'block';
             }
 
-            // Metodo richiesto dall'interfaccia ITaskPopup
             hide() {
                 this.element.style.display = 'none';
             }
         }
 
-        // Initialize settings
-        const settings = new SchedulaSettings();
-        
-        // ASSEGNAZIONE DEL POPUP CUSTOM
-        // L'utente istanzia la sua classe e la passa alle impostazioni
-      //  settings.popupProvider = new MyUserPopup();
+        // ── Settings + Plugin registration ────────────────────────────
+        var settings = new SchedulaSettings();
 
-        // Set date to match medical data
-        settings.date = new Date('2026-02-19');
+        // DECOMMENTA questa riga se vuoi testare un popup custom nel Core
+        // settings.popupProvider = new MyUserPopup();
+
+        // PRO plugins registered via settings.plugins — the Core receives them in init()
+        // settings.plugins = [
+        //     new DragDropPlugin(),
+        //     new LinksPlugin(),
+        //     new EventsPlugin()
+        // ];
+
+        settings.date = new Date();
+        settings.canMoveItems = true;
+        settings.canResizeItems = true;
+        settings.drawLinks = false;
+        settings.itemsLinks = false;
 
         if (typeof iconssvg !== 'undefined') {
             settings.icons = iconssvg;
         }
 
-        const scheduler = new SchedulaCore("scheduler", clinicSchedulerData, settings);
+        // ── Init ───────────────────────────────────────────────────────
+        var scheduler = new SchedulaCore("scheduler", clinicSchedulerData, settings);
         scheduler.init();
 
-        // Expose scheduler to window for debugging and other functions
+        renderPluginBadges(scheduler);
+
         window.scheduler = scheduler;
 
+        // ── UI helpers ─────────────────────────────────────────────────
         window.filterItems = function (input) {
-            console.log(input.value);
             scheduler.filterItems(input.value);
-        }
+        };
 
         window.setTheme = function (theme) {
-            const schedulerDiv = document.getElementById("scheduler");
-            // Reset classes
-            schedulerDiv.classList.remove('theme-dark', 'theme-blue', 'theme-soft');
+            var el = document.getElementById("scheduler");
+            el.classList.remove('theme-dark', 'theme-blue', 'theme-soft');
             document.body.classList.remove('theme-dark', 'theme-blue', 'theme-soft');
-
             if (theme) {
-                schedulerDiv.classList.add(theme);
+                el.classList.add(theme);
                 document.body.classList.add(theme);
             }
-        }
-
-        window.setColor = function (id, color) {
-            scheduler.setItemColor(id, color);
-        }
+        };
 
         window.setView = function (num) {
             scheduler.setView(num);
-        }
+        };
 
         window.setStyle = function (style) {
             scheduler.setStyle(style);
-        }
+        };
+
+        window.toggleLinks = function () {
+            scheduler.settings.drawLinks = !scheduler.settings.drawLinks;
+            scheduler.settings.itemsLinks = scheduler.settings.drawLinks;
+            scheduler.refresh();
+        };
 
         window.setData = function (dati) {
-            console.log('load data');
             scheduler.setData(dati);
-        }
+        };
 
+        // ── Scheduler callbacks ────────────────────────────────────────
         window.modified = function () {
-            console.log('mods');
-        }
-
-        window.gridMouseOver = function (event, item) {
-            console.log(event);
-            console.log(item);
-        }
+            console.log('[modified] data changed');
+        };
 
         window.resourceClick = function (event, resource) {
-            alert('Resource:' + resource.Name + ' cliccked!');
-        }
+            alert('Resource: ' + (resource.resource && resource.resource.Name ? resource.resource.Name : '?') + ' clicked!');
+        };
 
-        window.itemMouseEnter = function (event, item) { }
-        window.itemMouseExit = function (event, item) { }
-        window.itemMouseDown = function (event, item) { }
-        window.timeMouseClick = function (event, item) { }
-        window.gridMouseClick = function (event, item) { }
+        window.itemMouseEnter = function (event, item) { };
+        window.itemMouseExit = function (event, item) { };
+        window.itemMouseDown = function (event, item) { };
+        window.timeMouseClick = function (event, item) { };
+        window.gridMouseClick = function (event, item) { };
+        window.gridMouseOver = function (event, item) { };
 
+        // ── External drag support ──────────────────────────────────────
         window.startdrag = function (evt) {
-            // Add the target element's id to the data transfer object
-            var data = {};
-            data.text1 = evt.target.getAttribute('data-text1');
-            data.text2 = evt.target.getAttribute('data-text2');
-            data.order = evt.target.getAttribute('data-order');
-            data.classes = evt.target.getAttribute('data-classes');
-            data.width = evt.target.getAttribute('data-w');
-            data.key = evt.target.getAttribute('data-key');
-            data.color1 = evt.target.getAttribute('data-color');
-            data.ref = evt.target.getAttribute('data-ref');
-            data.pieces = evt.target.getAttribute('data-qt');
-            data.json = evt.target.getAttribute('data-json');
-            data.element = evt.target;
+            var data = {
+                text1: evt.target.getAttribute('data-text1'),
+                text2: evt.target.getAttribute('data-text2'),
+                order: evt.target.getAttribute('data-order'),
+                classes: evt.target.getAttribute('data-classes'),
+                width: evt.target.getAttribute('data-w'),
+                key: evt.target.getAttribute('data-key'),
+                color1: evt.target.getAttribute('data-color'),
+                ref: evt.target.getAttribute('data-ref'),
+                pieces: evt.target.getAttribute('data-qt'),
+                json: evt.target.getAttribute('data-json'),
+                elementId: evt.target.id
+            };
             evt.dataTransfer.setData("task", JSON.stringify(data));
             evt.dataTransfer.effectAllowed = "move";
-        }
+        };
     </script>
 
 </body>

@@ -1,0 +1,22 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Debug",
+            "type": "shell",
+            "command": "npx esbuild src/index-pro.ts --bundle --outfile=tmp/pro-test.js --sourcemap --format=iife --target=es2015",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build All (Script)",
+            "type": "shell",
+            "command": "./build.ps1",
+            "group": "build",
+            "problemMatcher": []
+        }
+    ]
+}

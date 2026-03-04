@@ -11,9 +11,11 @@ import { SchedulaSettings } from './models/SchedulaSettings';
 import { SchedulaTemplate } from './ui/SchedulaTemplate';
 
 // PRO plugins
-import { DragDropPlugin } from './plugins/DragDropPlugin';
-import { LinksPlugin } from './plugins/LinksPlugin';
-import { EventsPlugin } from './plugins/EventsPlugin';
+import { DragDropPlugin } from './plugins/DragDropPlugin.js';
+import { LinksPlugin } from './plugins/LinksPlugin.js';
+import { EventsPlugin } from './plugins/EventsPlugin.js';
+import { AdvancedPopupPlugin } from './plugins/AdvancedPopupPlugin.js';
+import { DefaultPopupPlugin } from './plugins/DefaultPopupPlugin.js';
 
 // Expose all classes globally (IIFE bundle — window.XXX access)
 (window as any).SchedulaCore = SchedulaCore;
@@ -22,10 +24,12 @@ import { EventsPlugin } from './plugins/EventsPlugin';
 (window as any).DragDropPlugin = DragDropPlugin;
 (window as any).LinksPlugin = LinksPlugin;
 (window as any).EventsPlugin = EventsPlugin;
+(window as any).AdvancedPopupPlugin = AdvancedPopupPlugin;
+(window as any).DefaultPopupPlugin = DefaultPopupPlugin;
 
 // Named exports for ESM consumers
 export { SchedulaCore, SchedulaSettings, SchedulaTemplate };
-export { DragDropPlugin, LinksPlugin, EventsPlugin };
+export { DragDropPlugin, LinksPlugin, EventsPlugin, DefaultPopupPlugin };
 
 // Type exports
 export type { ITaskPopup } from './models/ITaskPopup';

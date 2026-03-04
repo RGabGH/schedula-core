@@ -3,7 +3,7 @@
     "target": "ES2015",
     "outDir": "dist/js",
     "rootDir": "./",
-    "sourceMap": false,
+    "sourceMap": true,
     "removeComments": true,
     "module": "ESNext",
     "moduleResolution": "node",

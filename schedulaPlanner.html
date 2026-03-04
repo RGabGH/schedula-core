@@ -103,8 +103,8 @@
     <script>
         // ── Plugin status badge ────────────────────────────────────────
         function renderPluginBadges(sched) {
-            var pluginNames = ['dragdrop', 'links', 'events'];
-            var labels = { dragdrop: 'DragDrop', links: 'Links', events: 'Events' };
+            var pluginNames = ['dragdrop', 'links', 'events', 'advancedpopup'];
+            var labels = { dragdrop: 'DragDrop', links: 'Links', events: 'Events', advancedpopup: 'PopupPRO' };
             var el = document.getElementById('plugin-status');
             el.textContent = 'Plugins: ';
             pluginNames.forEach(function (name) {
@@ -116,15 +116,64 @@
             });
         }
 
+        /**
+         * ESEMPIO DI POPUP CUSTOM PER LA VERSIONE CORE (STANDALONE)
+         * Questa classe mostra come l'utente può implementare la propria UI
+         * senza dipendere dai plugin PRO.
+         */
+        class MyUserPopup {
+            constructor() {
+                this.element = document.createElement('div');
+                this.element.style.cssText = `
+                    position: fixed;
+                    background: #fff;
+                    border: 2px solid #334155;
+                    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+                    padding: 20px;
+                    z-index: 10000;
+                    display: none;
+                    border-radius: 8px;
+                    min-width: 250px;
+                    font-family: sans-serif;
+                `;
+                document.body.appendChild(this.element);
+            }
+
+            show(item, event, scheduler) {
+                this.element.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #e2e8f0; padding-bottom:10px;">
+                        <h3 style="margin:0; font-size:16px; color:#1e293b;">Core Preview</h3>
+                        <button onclick="this.closest('div').parentElement.parentElement.style.display='none'" style="border:none; background:none; cursor:pointer; font-size:18px;">&times;</button>
+                    </div>
+                    <div style="font-size:14px; color:#475569; line-height:1.6;">
+                        <p><strong>Item:</strong> ${item.Text || 'Untitled'}</p>
+                        <p><strong>Resource:</strong> ${item.Resource}</p>
+                        <p style="margin-top:10px; font-style:italic; font-size:12px; color:#94a3b8;">Questo è un popup custom definito nell'HTML per la versione Core Open Source.</p>
+                    </div>
+                `;
+                this.element.style.left = event.clientX + 'px';
+                this.element.style.top = event.clientY + 'px';
+                this.element.style.display = 'block';
+            }
+
+            hide() {
+                this.element.style.display = 'none';
+            }
+        }
+
         // ── Settings + Plugin registration ────────────────────────────
         var settings = new SchedulaSettings();
 
+        // DECOMMENTA questa riga se vuoi testare un popup custom nel Core
+        // settings.popupProvider = new MyUserPopup();
+
         // PRO plugins registered via settings.plugins — the Core receives them in init()
-        // settings.plugins = [
-        //     new DragDropPlugin(),
-        //     new LinksPlugin(),
-        //     new EventsPlugin()
-        // ];
+        settings.plugins = [
+            new DragDropPlugin(),
+            new LinksPlugin(),
+            new EventsPlugin(),
+            new AdvancedPopupPlugin()
+        ];
 
         settings.date = new Date();
         settings.canMoveItems = true;

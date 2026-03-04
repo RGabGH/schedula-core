@@ -9,6 +9,7 @@ import { ISchedulaPlugin } from './models/ISchedulaPlugin.js';
 import { IDragDropPlugin } from './models/IDragDropPlugin.js';
 import { ILinksPlugin } from './models/ILinksPlugin.js';
 import { IEventsPlugin } from './models/IEventsPlugin.js';
+import { DefaultPopupPlugin } from './plugins/DefaultPopupPlugin.js';
 
 declare function resourceClick(event: any, resource: any): void;
 declare function itemMouseEnter(event: any, item: any): void;
@@ -243,6 +244,11 @@ export class SchedulaCore implements ISchedulaCore {
             // Register plugins from settings (if not already registered)
             this.settings.plugins.forEach(p => this.registerPlugin(p));
 
+            // Ensure a default popup plugin is available if no other popup plugin is registered
+            if (!this.getPlugin('defaultpopup') && !this.getPlugin('advancedpopup') && !this.settings.popupProvider) {
+                this.registerPlugin(new DefaultPopupPlugin());
+            }
+
             // Restore saved view from localStorage
             this.restoreView();
 
@@ -255,22 +261,25 @@ export class SchedulaCore implements ISchedulaCore {
                     this.processData();
                     this.storeData();
 
+                    // SVG specific events attached every time we run init() because the SVG is recreated
+                    this.schedulerSVG.addEventListener('mousemove', (event) => {
+                        this.handleMouseMove(event);
+                    });
+                    this.schedulerSVG.addEventListener('mouseup', (event) => {
+                        this.svgMouseUp(event);
+                    });
+                    this.schedulerSVG.addEventListener('drop', (event: any) => {
+                        const dragDrop = this.getPlugin<IDragDropPlugin>('dragdrop');
+                        if (dragDrop) dragDrop.onDrop(event);
+                    });
+                    this.schedulerSVG.addEventListener('dragover', (event) => {
+                        if ((event.target as HTMLElement).classList.contains('box-element')) {
+                            event.preventDefault();
+                        }
+                    });
+
+                    // Window/Document events only attached once
                     if (!this.eventsSetup) {
-                        this.schedulerSVG.addEventListener('mousemove', (event) => {
-                            this.handleMouseMove(event);
-                        });
-                        this.schedulerSVG.addEventListener('mouseup', (event) => {
-                            this.svgMouseUp(event);
-                        });
-                        this.schedulerSVG.addEventListener('drop', (event: any) => {
-                            const dragDrop = this.getPlugin<IDragDropPlugin>('dragdrop');
-                            if (dragDrop) dragDrop.onDrop(event);
-                        });
-                        this.schedulerSVG.addEventListener('dragover', (event) => {
-                            if ((event.target as HTMLElement).classList.contains('box-element')) {
-                                event.preventDefault();
-                            }
-                        });
                         let scheduler = this;
                         document.addEventListener('keyup', (function (e) {
                             if (e.key === "Escape") {
@@ -1084,17 +1093,64 @@ export class SchedulaCore implements ISchedulaCore {
     }
 
     private drawItems() {
-        if (!this.data.Resources) return;
-
-        let date = this.settings.date;
+        this.clearItems();
         let scheduler = this;
-        this.data.Resources.forEach(function (resource: any, ri: any) {
-            if (resource.Items) {
-                resource.Items.forEach(function (item: any, ii: any) {
+        let cdate = this.settings.date;
+
+        this.data.Resources?.forEach((resource: any, ri: number) => {
+            if ((this.settings.groupFilter == 0) || (resource.group == this.settings.groupFilter)) {
+                resource.Items?.forEach(function (item: any) {
                     scheduler.drawItem(item, ri);
                 })
             }
         });
+    }
+
+    /**
+     * Refreshes a single item visually without redrawing the whole SVG.
+     * @param item The item data object to refresh
+     */
+    public refreshItem(item: any): void {
+        if (!item || !item.Id) return;
+
+        // Find the existing SVG element and remove it
+        const oldElement = document.querySelector(`svg[data-id="${item.Id}"]`);
+        if (oldElement) {
+            oldElement.remove();
+        }
+
+        // Find the resource index for this item
+        let resIndex = -1;
+        this.data.Resources?.forEach((res: any, idx: number) => {
+            if (res.Items && res.Items.some((i: any) => i.Id === item.Id)) {
+                resIndex = idx;
+            }
+        });
+
+        if (resIndex !== -1) {
+            // Re-process single item dates
+            let date = this.settings.date;
+            let from = (date.getTime() / 60000) + (item.Offset);
+            let to = (date.getTime() / 60000) + parseInt(((item.Offset + item.Width)));
+            item.From = from;
+            item.To = to;
+
+            // Optional: calculate effort via calendar
+            if (this.calendar != null && this.settings.calcEffort == true && item.Effort == undefined) {
+                let schedulerItem = new SchedulaItem(this, item, this.calendar);
+                schedulerItem.From = from;
+                schedulerItem.Duration = to - from;
+            }
+
+            // Draw the single item
+            this.drawItem(item, resIndex);
+
+            // Re-draw links if connected
+            const links = this.getPlugin<ILinksPlugin>('links');
+            if (links && this.settings.drawLinks) {
+                links.drawLinks();
+            }
+        }
     }
 
     private clearItems() {
@@ -1647,14 +1703,28 @@ export class SchedulaCore implements ISchedulaCore {
         if (typeof (window as any).taskClick === 'function') {
             (window as any).taskClick(event, element?.item);
         }
-        const dragDrop = this.getPlugin<IDragDropPlugin>('dragdrop');
-        if (dragDrop) {
-            dragDrop.onItemClick(event, element);
-        } else {
-            // Fallback: delegate to popupProvider only
-            if (this.settings.popupProvider && element?.item) {
-                this.settings.popupProvider.show(element.item, event as MouseEvent, this);
-            }
+
+        // Se i popup sono disabilitati globalmente
+        if (!this.settings.enablePopup || !element?.item) return;
+
+        // 1. Custom Provider (scritto manualmente dall'utente)
+        if (this.settings.popupProvider) {
+            this.settings.popupProvider.show(element.item, event as MouseEvent, this);
+            return;
+        }
+
+        // 2. Advanced Popup Plugin (PRO)
+        const advancedPopup = this.getPlugin<any>('advancedpopup');
+        if (advancedPopup && typeof advancedPopup.onItemClick === 'function') {
+            advancedPopup.onItemClick(event, element);
+            return;
+        }
+
+        // 3. Default Popup Plugin (Core Open Source)
+        const defaultPopup = this.getPlugin<any>('defaultpopup');
+        if (defaultPopup && typeof defaultPopup.onItemClick === 'function') {
+            defaultPopup.onItemClick(event, element);
+            return;
         }
     }
 

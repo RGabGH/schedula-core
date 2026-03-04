@@ -18,9 +18,6 @@ export interface IDragDropPlugin extends ISchedulaPlugin {
     /** Called when the user releases the mouse on an item */
     onItemMouseUp(event: MouseEvent, data: any): void;
 
-    /** Called on item click (after distinguishing from drag) */
-    onItemClick(event: MouseEvent, element: any): void;
-
     /** Called when a task/item is dragged from an external element and dropped onto the grid */
     onDrop(event: DragEvent): void;
 

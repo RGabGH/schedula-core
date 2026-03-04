@@ -1,0 +1,250 @@
+{
+  "inputs": {
+    "src/models/SchedulaSettings.js": {
+      "bytes": 2629,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/ui/SchedulaTemplate.js": {
+      "bytes": 8991,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/models/SchedulaCalendar.js": {
+      "bytes": 7350,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/ui/SchedulaItem.js": {
+      "bytes": 11904,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/models/SchedulaView.js": {
+      "bytes": 473,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/SchedulaCore.ts": {
+      "bytes": 108161,
+      "imports": [
+        {
+          "path": "src/models/SchedulaSettings.js",
+          "kind": "import-statement",
+          "original": "./models/SchedulaSettings.js"
+        },
+        {
+          "path": "src/ui/SchedulaTemplate.js",
+          "kind": "import-statement",
+          "original": "./ui/SchedulaTemplate.js"
+        },
+        {
+          "path": "src/models/SchedulaCalendar.js",
+          "kind": "import-statement",
+          "original": "./models/SchedulaCalendar.js"
+        },
+        {
+          "path": "src/ui/SchedulaItem.js",
+          "kind": "import-statement",
+          "original": "./ui/SchedulaItem.js"
+        },
+        {
+          "path": "./models/ISchedulaCore.js",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "src/models/SchedulaView.js",
+          "kind": "import-statement",
+          "original": "./models/SchedulaView.js"
+        },
+        {
+          "path": "./models/ISchedulaPlugin.js",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "./models/IDragDropPlugin.js",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "./models/ILinksPlugin.js",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "./models/IEventsPlugin.js",
+          "kind": "import-statement",
+          "external": true
+        }
+      ],
+      "format": "esm"
+    },
+    "src/models/SchedulaSettings.ts": {
+      "bytes": 3128,
+      "imports": [
+        {
+          "path": "./ITaskPopup.js",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "./ISchedulaPlugin.js",
+          "kind": "import-statement",
+          "external": true
+        }
+      ],
+      "format": "esm"
+    },
+    "src/ui/SchedulaTemplate.ts": {
+      "bytes": 8968,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/plugins/DragDropPlugin.ts": {
+      "bytes": 13314,
+      "imports": [
+        {
+          "path": "../models/IDragDropPlugin.js",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "src/ui/SchedulaItem.js",
+          "kind": "import-statement",
+          "original": "../ui/SchedulaItem.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/plugins/LinksPlugin.ts": {
+      "bytes": 8321,
+      "imports": [
+        {
+          "path": "../models/ILinksPlugin.js",
+          "kind": "import-statement",
+          "external": true
+        }
+      ],
+      "format": "esm"
+    },
+    "src/plugins/EventsPlugin.ts": {
+      "bytes": 4781,
+      "imports": [
+        {
+          "path": "../models/IEventsPlugin.js",
+          "kind": "import-statement",
+          "external": true
+        }
+      ],
+      "format": "esm"
+    },
+    "src/plugins/AdvancedPopupPlugin.ts": {
+      "bytes": 8337,
+      "imports": [
+        {
+          "path": "../models/ISchedulaPlugin.js",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "../models/ITaskPopup.js",
+          "kind": "import-statement",
+          "external": true
+        }
+      ],
+      "format": "esm"
+    },
+    "src/index-pro.ts": {
+      "bytes": 1575,
+      "imports": [
+        {
+          "path": "src/SchedulaCore.ts",
+          "kind": "import-statement",
+          "original": "./SchedulaCore"
+        },
+        {
+          "path": "src/models/SchedulaSettings.ts",
+          "kind": "import-statement",
+          "original": "./models/SchedulaSettings"
+        },
+        {
+          "path": "src/ui/SchedulaTemplate.ts",
+          "kind": "import-statement",
+          "original": "./ui/SchedulaTemplate"
+        },
+        {
+          "path": "src/plugins/DragDropPlugin.ts",
+          "kind": "import-statement",
+          "original": "./plugins/DragDropPlugin.js"
+        },
+        {
+          "path": "src/plugins/LinksPlugin.ts",
+          "kind": "import-statement",
+          "original": "./plugins/LinksPlugin.js"
+        },
+        {
+          "path": "src/plugins/EventsPlugin.ts",
+          "kind": "import-statement",
+          "original": "./plugins/EventsPlugin.js"
+        },
+        {
+          "path": "src/plugins/AdvancedPopupPlugin.ts",
+          "kind": "import-statement",
+          "original": "./plugins/AdvancedPopupPlugin.js"
+        }
+      ],
+      "format": "esm"
+    }
+  },
+  "outputs": {
+    "tmp/pro-test.js": {
+      "imports": [],
+      "exports": [],
+      "entryPoint": "src/index-pro.ts",
+      "inputs": {
+        "src/models/SchedulaSettings.js": {
+          "bytesInOutput": 1681
+        },
+        "src/ui/SchedulaTemplate.js": {
+          "bytesInOutput": 8779
+        },
+        "src/models/SchedulaCalendar.js": {
+          "bytesInOutput": 3217
+        },
+        "src/ui/SchedulaItem.js": {
+          "bytesInOutput": 6773
+        },
+        "src/models/SchedulaView.js": {
+          "bytesInOutput": 198
+        },
+        "src/SchedulaCore.ts": {
+          "bytesInOutput": 53980
+        },
+        "src/models/SchedulaSettings.ts": {
+          "bytesInOutput": 1717
+        },
+        "src/ui/SchedulaTemplate.ts": {
+          "bytesInOutput": 8779
+        },
+        "src/plugins/DragDropPlugin.ts": {
+          "bytesInOutput": 5104
+        },
+        "src/plugins/LinksPlugin.ts": {
+          "bytesInOutput": 3705
+        },
+        "src/plugins/EventsPlugin.ts": {
+          "bytesInOutput": 2303
+        },
+        "src/plugins/AdvancedPopupPlugin.ts": {
+          "bytesInOutput": 5307
+        },
+        "src/index-pro.ts": {
+          "bytesInOutput": 170
+        }
+      },
+      "bytes": 101725
+    }
+  }
+}
