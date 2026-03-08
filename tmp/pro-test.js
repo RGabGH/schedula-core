@@ -1,4 +1,21 @@
 (() => {
+  var __defProp = Object.defineProperty;
+  var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __propIsEnum = Object.prototype.propertyIsEnumerable;
+  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+  var __spreadValues = (a, b) => {
+    for (var prop in b || (b = {}))
+      if (__hasOwnProp.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    if (__getOwnPropSymbols)
+      for (var prop of __getOwnPropSymbols(b)) {
+        if (__propIsEnum.call(b, prop))
+          __defNormalProp(a, prop, b[prop]);
+      }
+    return a;
+  };
+
   // src/models/SchedulaSettings.js
   var SchedulaSettings = class {
     constructor() {
@@ -835,9 +852,17 @@
   var DefaultPopupPlugin = class {
     constructor() {
       this.name = "defaultpopup";
+      this._currentItem = null;
+      /**
+       * Custom brand color used in the popup header. Override as needed.
+       */
+      this.brandColor = "#1e293b";
     }
     init(core) {
       this._core = core;
+      if (!core.settings.popupProvider) {
+        core.settings.popupProvider = this;
+      }
     }
     destroy() {
       const popup = document.getElementById("scheduler-default-popup");
@@ -847,14 +872,37 @@
     onItemClick(event, element) {
       const item = element == null ? void 0 : element.item;
       if (!item) return;
+      this._currentItem = item;
       const popup = this._ensurePopup();
       this._populatePopup(popup, item);
       popup.style.display = "block";
     }
     show(item, event, scheduler) {
+      this._currentItem = item;
       const popup = this._ensurePopup();
       this._populatePopup(popup, item);
       popup.style.display = "block";
+    }
+    refreshItem(item) {
+      var _a;
+      const popup = document.getElementById("scheduler-default-popup");
+      if (!popup || popup.style.display === "none") return;
+      this._currentItem = item;
+      const fmt = (mins) => mins != null ? new Date(Math.trunc(mins) * 6e4).toLocaleString(void 0, {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      }) : "";
+      popup.querySelector("#scheduler-default-popup-title").textContent = item.Text || "Task";
+      popup.querySelector("#default-popup-field-text").value = item.Text || "";
+      popup.querySelector("#default-popup-field-desc").value = item.Description || "";
+      popup.querySelector("#default-popup-field-from").value = fmt(item.From);
+      popup.querySelector("#default-popup-field-to").value = fmt(item.To);
+      this._applyColor(popup, item.Color1);
+      popup.querySelector("#default-popup-field-completion").value = (_a = item.Completion) != null ? _a : "";
+      popup.querySelector("#default-popup-field-ref").value = item.Reference || "";
     }
     hide() {
       const popup = document.getElementById("scheduler-default-popup");
@@ -869,26 +917,27 @@
         popup.style.cssText = "display:none;position:fixed;z-index:9999;";
         popup.innerHTML = `
                 <div class="popup-container">
-                    <div class="popup-header" id="scheduler-default-popup-header">
-                        <button class="close-button" id="scheduler-default-popup-close">&#x2715;</button>
-                        <span id="scheduler-default-popup-title">Task</span>
+                    <div class="popup-header" id="scheduler-default-popup-header" style="background:${this.brandColor};">
+                        <button class="close-button" id="scheduler-default-popup-close" style="color:#fff;">&#x2715;</button>
+                        <span id="scheduler-default-popup-title" style="color:#fff;">Task</span>
                     </div>
                     <div class="popup-content">
                         <div class="tab">
-                            <button class="tab-btn active" data-tab="info">Info</button>
-                            <button class="tab-btn" data-tab="json">JSON</button>
+                            <button class="tab-btn active" data-tab="general">General</button>
+                            <button class="tab-btn" data-tab="data">Data</button>
                         </div>
-                        <div class="tabcontent active" id="scheduler-default-popup-tab-info">
+                        <div class="tabcontent active" id="scheduler-default-popup-tab-general">
                             <div class="formgroup"><label>Text</label><input class="taskinput" id="default-popup-field-text" type="text"></div>
                             <div class="formgroup"><label>Description</label><input class="taskinput" id="default-popup-field-desc" type="text"></div>
                             <div class="formgroup"><label>From</label><input class="taskinput" id="default-popup-field-from" type="text" readonly></div>
                             <div class="formgroup"><label>To</label><input class="taskinput" id="default-popup-field-to" type="text" readonly></div>
-                            <div class="formgroup"><label>Color</label><input class="taskinput" id="default-popup-field-color" type="color"></div>
+                            <div class="formgroup"><label>Color</label><div class="color-field-wrapper"><div class="color-swatch" id="default-popup-color-swatch"></div><span class="color-field-label" id="default-popup-color-label">Non assegnato</span><input type="color" id="default-popup-field-color" tabindex="-1" style="position:absolute;opacity:0;width:0;height:0;pointer-events:none"><button type="button" class="color-clear-btn" id="default-popup-color-clear">&#x2715;</button></div></div>
                             <div class="formgroup"><label>Completion %</label><input class="taskinput" id="default-popup-field-completion" type="number" min="0" max="100"></div>
                             <div class="formgroup"><label>Reference</label><input class="taskinput" id="default-popup-field-ref" type="text"></div>
                         </div>
-                        <div class="tabcontent" id="scheduler-default-popup-tab-json">
-                            <textarea id="default-popup-field-json"></textarea>
+                        <div class="tabcontent" id="scheduler-default-popup-tab-data">
+                            <!-- Custom fields from item.data are injected here at runtime -->
+                            <div id="default-popup-custom-fields" style="padding:8px;font-size:13px;color:#475569;"></div>
                         </div>
                     </div>
                     <div class="popup-footer">
@@ -897,6 +946,25 @@
                     </div>
                 </div>`;
         document.body.appendChild(popup);
+        const colorSwatch = popup.querySelector("#default-popup-color-swatch");
+        const colorInput = popup.querySelector("#default-popup-field-color");
+        const colorLabel = popup.querySelector("#default-popup-color-label");
+        const colorClear = popup.querySelector("#default-popup-color-clear");
+        colorSwatch.addEventListener("click", () => colorInput.click());
+        colorInput.addEventListener("input", () => {
+          colorSwatch.style.background = colorInput.value;
+          colorSwatch.dataset.color = colorInput.value;
+          colorSwatch.classList.add("has-color");
+          colorLabel.textContent = colorInput.value;
+          colorClear.style.display = "";
+        });
+        colorClear.addEventListener("click", () => {
+          colorSwatch.style.background = "";
+          colorSwatch.dataset.color = "";
+          colorSwatch.classList.remove("has-color");
+          colorLabel.textContent = "Non assegnato";
+          colorClear.style.display = "none";
+        });
         popup.querySelectorAll(".tab-btn").forEach((btn) => {
           btn.addEventListener("click", () => {
             var _a;
@@ -914,23 +982,41 @@
     _populatePopup(popup, item) {
       var _a;
       const core = this._core;
-      const fmt = (mins) => mins != null ? new Date(mins * 6e4).toLocaleString() : "";
+      const fmt = (mins) => mins != null ? new Date(Math.trunc(mins) * 6e4).toLocaleString(void 0, {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      }) : "";
       popup.querySelector("#scheduler-default-popup-title").textContent = item.Text || "Task";
       popup.querySelector("#default-popup-field-text").value = item.Text || "";
       popup.querySelector("#default-popup-field-desc").value = item.Description || "";
       popup.querySelector("#default-popup-field-from").value = fmt(item.From);
       popup.querySelector("#default-popup-field-to").value = fmt(item.To);
-      popup.querySelector("#default-popup-field-color").value = item.Color1 || "#000000";
+      this._applyColor(popup, item.Color1);
       popup.querySelector("#default-popup-field-completion").value = (_a = item.Completion) != null ? _a : "";
       popup.querySelector("#default-popup-field-ref").value = item.Reference || "";
-      popup.querySelector("#default-popup-field-json").value = JSON.stringify(item, null, 2);
+      const customContainer = popup.querySelector("#default-popup-custom-fields");
+      customContainer.innerHTML = "";
+      if (item.data && typeof item.data === "object") {
+        Object.entries(item.data).forEach(([key, value]) => {
+          const row = document.createElement("div");
+          row.className = "formgroup";
+          row.innerHTML = `<label>${key}</label><input class="taskinput" type="text" value="${value != null ? value : ""}" readonly data-custom-key="${key}">`;
+          customContainer.appendChild(row);
+        });
+      } else {
+        customContainer.innerHTML = '<p style="color:#94a3b8;font-style:italic;">No custom data (item.data) available.</p>';
+      }
       const saveBtn = popup.querySelector("#default-popup-btn-save");
       const newSave = saveBtn.cloneNode(true);
       saveBtn.parentNode.replaceChild(newSave, saveBtn);
       newSave.addEventListener("click", () => {
         item.Text = popup.querySelector("#default-popup-field-text").value;
         item.Description = popup.querySelector("#default-popup-field-desc").value;
-        item.Color1 = popup.querySelector("#default-popup-field-color").value;
+        const swatchEl = popup.querySelector("#default-popup-color-swatch");
+        item.Color1 = swatchEl.dataset.color || void 0;
         const comp = parseInt(popup.querySelector("#default-popup-field-completion").value);
         item.Completion = isNaN(comp) ? void 0 : comp;
         item.Reference = popup.querySelector("#default-popup-field-ref").value;
@@ -950,9 +1036,32 @@
       newClose.addEventListener("click", () => {
         popup.style.display = "none";
       });
-      popup.style.left = "50%";
-      popup.style.top = "50%";
-      popup.style.transform = "translate(-50%,-50%)";
+      if (popup.style.display === "none" || popup.style.display === "") {
+        popup.style.left = "50%";
+        popup.style.top = "50%";
+        popup.style.transform = "translate(-50%,-50%)";
+      }
+    }
+    _applyColor(popup, color) {
+      const swatch = popup.querySelector("#default-popup-color-swatch");
+      const label = popup.querySelector("#default-popup-color-label");
+      const clearBtn = popup.querySelector("#default-popup-color-clear");
+      const input = popup.querySelector("#default-popup-field-color");
+      if (color) {
+        swatch.style.background = color;
+        swatch.dataset.color = color;
+        swatch.classList.add("has-color");
+        label.textContent = color;
+        input.value = color;
+        clearBtn.style.display = "";
+      } else {
+        swatch.style.background = "";
+        swatch.dataset.color = "";
+        swatch.classList.remove("has-color");
+        label.textContent = "Non assegnato";
+        input.value = "#5762ca";
+        clearBtn.style.display = "none";
+      }
     }
     _makePopupDraggable(popup) {
       const header = popup.querySelector("#scheduler-default-popup-header");
@@ -1129,9 +1238,9 @@
           i.day = item.Day;
           let dtfrom = new Date(item.DateFrom);
           let dtto = new Date(item.DateTo);
-          let f = dtfrom.getTime();
+          let f = Math.trunc(dtfrom.getTime() / 6e4) * 6e4;
           i.from = f;
-          i.duration = new Date(item.DateTo).getTime() / 6e4 - new Date(item.DateFrom).getTime() / 6e4;
+          i.duration = Math.round((dtto.getTime() - dtfrom.getTime()) / 6e4);
           i.type = "rule";
         });
       }
@@ -1220,7 +1329,7 @@
         this.schedulerItems = document.getElementById("scheduler-items");
         this.splitBar = document.getElementById("scheduler-splitter");
         this.settings.plugins.forEach((p) => this.registerPlugin(p));
-        if (!this.getPlugin("defaultpopup") && !this.getPlugin("advancedpopup") && !this.settings.popupProvider) {
+        if (!this.getPlugin("defaultpopup")) {
           this.registerPlugin(new DefaultPopupPlugin());
         }
         this.restoreView();
@@ -1463,7 +1572,7 @@
     }
     escapePressed() {
       var _a, _b, _c, _d, _e;
-      if (this.settings.popupProvider) {
+      if (this.settings.popupProvider && this.settings.licenseKey) {
         this.settings.popupProvider.hide();
       }
       const dragDrop = this.getPlugin("dragdrop");
@@ -1565,11 +1674,14 @@
     processData() {
       var _a;
       if (!this.data.Resources) return;
+      this.settings.date = new Date(this.settings.date.getFullYear(), this.settings.date.getMonth(), this.settings.date.getDate());
       let date = this.settings.date;
       let scheduler = this;
       (_a = this.data.Resources) == null ? void 0 : _a.forEach((resource, ri) => {
         if (resource.Items) {
           resource.Items.forEach(function(item, ii) {
+            item.Offset = Math.trunc(item.Offset);
+            item.Width = Math.trunc(item.Width);
             let from = date.getTime() / 6e4 + item.Offset;
             let to = date.getTime() / 6e4 + parseInt(item.Offset + item.Width);
             item.From = from;
@@ -1952,6 +2064,8 @@
       });
       if (resIndex !== -1) {
         let date = this.settings.date;
+        item.Offset = Math.trunc(item.Offset);
+        item.Width = Math.trunc(item.Width);
         let from = date.getTime() / 6e4 + item.Offset;
         let to = date.getTime() / 6e4 + parseInt(item.Offset + item.Width);
         item.From = from;
@@ -2027,7 +2141,10 @@
         itemrect.setAttribute("width", "100%");
         itemrect.setAttribute("height", "100%");
         if (rx > 0) itemrect.setAttribute("rx", rx.toString());
-        itemrect.setAttribute("fill", item.Color1);
+        if (item.Color1) {
+          itemrect.classList.add("custom-color");
+          itemrect.style.fill = item.Color1;
+        }
         if (item.Classes) {
           let classes = item.Classes.split(" ");
           classes.forEach((c) => {
@@ -2443,13 +2560,8 @@
         window.taskClick(event, element == null ? void 0 : element.item);
       }
       if (!this.settings.enablePopup || !(element == null ? void 0 : element.item)) return;
-      if (this.settings.popupProvider) {
+      if (this.settings.popupProvider && this.settings.licenseKey) {
         this.settings.popupProvider.show(element.item, event, this);
-        return;
-      }
-      const advancedPopup = this.getPlugin("advancedpopup");
-      if (advancedPopup && typeof advancedPopup.onItemClick === "function") {
-        advancedPopup.onItemClick(event, element);
         return;
       }
       const defaultPopup = this.getPlugin("defaultpopup");
@@ -3359,6 +3471,7 @@
   var DragDropPlugin = class {
     constructor() {
       this.name = "dragdrop";
+      this._dragItem = null;
     }
     init(core) {
       this._core = core;
@@ -3389,6 +3502,7 @@
         element.setAttribute("y", (y + variationy).toString());
       }
       (_c = core.schedulerItemsElement) == null ? void 0 : _c.append(element);
+      this._liveRefreshPopup();
     }
     _resize() {
       var _a, _b;
@@ -3402,6 +3516,16 @@
       const variationx = Math.round((mpos.x - memo.x) * ratio * 100) / 100;
       element.setAttribute("width", (w + variationx).toString());
       (_b = core.schedulerItemsElement) == null ? void 0 : _b.append(element);
+      this._liveRefreshPopup();
+    }
+    _liveRefreshPopup() {
+      if (!this._dragItem) return;
+      const core = this._core;
+      if (!core.settings.enablePopup) return;
+      const popupProvider = core.settings.popupProvider && core.settings.licenseKey ? core.settings.popupProvider : core.getPlugin("defaultpopup");
+      if (popupProvider && typeof popupProvider.refreshItem === "function") {
+        popupProvider.refreshItem(this._dragItem);
+      }
     }
     // ── Mouse up (finalize action) ─────────────────────────────────────────
     onMouseUp(event) {
@@ -3421,14 +3545,23 @@
           });
           if (itemData) {
             this.processItemAction(element, itemData, event.ctrlKey);
+            if (core.settings.enablePopup) {
+              const popupProvider = core.settings.popupProvider || core.getPlugin("advancedpopup") || core.getPlugin("defaultpopup");
+              if (popupProvider && typeof popupProvider.refreshItem === "function") {
+                popupProvider.refreshItem(itemData);
+              }
+            }
           }
+          this._dragItem = null;
         }
       }
-      (_b = core.schedulerItemsElement) == null ? void 0 : _b.querySelectorAll("rect.item").forEach(
-        (el) => {
-          el.classList.remove(action);
-        }
-      );
+      if (action) {
+        (_b = core.schedulerItemsElement) == null ? void 0 : _b.querySelectorAll("rect.item").forEach(
+          (el) => {
+            el.classList.remove(action);
+          }
+        );
+      }
       core.currentAction = "";
       if (typeof window.modified === "function") window.modified();
       if (core.settings.storeData) localStorage.setItem("data", JSON.stringify(core.data));
@@ -3472,8 +3605,12 @@
         const ok = si.checkInterference();
         if (!ok) {
           if (!settings.shiftItems || !ctrl) {
-            si.X = dx;
-            si.Y = dy;
+            if (resized && !moved) {
+              si.W = dw;
+            } else {
+              si.X = dx;
+              si.Y = dy;
+            }
           } else {
             const previous = (_i = (_h = (_g = core.data.Resources[si.Resource]) == null ? void 0 : _g.Items) == null ? void 0 : _h.filter((i) => i.Offset + i.Width > si.Offset && i.Offset < si.Offset)) == null ? void 0 : _i.sort((a, b) => a.Offset - b.Offset)[0];
             if (previous) {
@@ -3501,7 +3638,7 @@
     }
     // ── Item mousedown ─────────────────────────────────────────────────────
     onItemMouseDown(event, data) {
-      var _a;
+      var _a, _b;
       const core = this._core;
       if (core.currentAction !== "") return;
       if (event.button === 0 && core.settings.canMoveItems && event.target.classList.contains("item")) {
@@ -3525,6 +3662,7 @@
         const memo = core.actionMemoPosition;
         memo.x = event.pageX;
         memo.y = event.pageY;
+        this._dragItem = (_b = data.item) != null ? _b : null;
       }
       if (typeof window.itemMouseDown === "function") {
         window.itemMouseDown(event, data);
@@ -3886,174 +4024,309 @@
     }
   };
 
-  // src/plugins/AdvancedPopupPlugin.ts
-  var AdvancedPopupPlugin = class {
-    constructor() {
-      this.name = "advancedpopup";
-      /**
-       * Custom brand color used in the popup header. Override as needed.
-       */
-      this.brandColor = "#1e293b";
+  // src/license/LicenseValidator.ts
+  var _S = [78, 167, 44, 245];
+  var _PREFIX = "SCHED";
+  function _hash(bytes) {
+    let h = _S[0];
+    for (const b of bytes) {
+      h = (h << 4 ^ h >>> 4 ^ b ^ _S[h & 3]) & 255;
     }
+    return h;
+  }
+  var _INVALID = {
+    valid: false,
+    customerId: 0,
+    perpetual: false,
+    expiresAt: null,
+    expired: false,
+    flags: 0
+  };
+  function validateLicense(key) {
+    if (!key || typeof key !== "string") return __spreadValues({}, _INVALID);
+    const parts = key.toUpperCase().trim().split("-");
+    if (parts.length !== 4 || parts[0] !== _PREFIX) return __spreadValues({}, _INVALID);
+    const [, g1, g2, g3] = parts;
+    if (g1.length !== 5 || g2.length !== 5 || g3.length !== 5) return __spreadValues({}, _INVALID);
+    const v1 = parseInt(g1, 36);
+    const v2 = parseInt(g2, 36);
+    const v3 = parseInt(g3, 36);
+    if (isNaN(v1) || isNaN(v2) || isNaN(v3)) return __spreadValues({}, _INVALID);
+    const r1 = v1 >> 16 & 255;
+    const idHi = v1 >> 8 & 255;
+    const idLo = v1 & 255;
+    const r2 = v2 >> 16 & 255;
+    const expiryOffset = v2 >> 8 & 255;
+    const flags = v2 & 255;
+    const r3 = v3 >> 16 & 255;
+    const salt = v3 >> 8 & 255;
+    const crc = v3 & 255;
+    if (!(r1 & 128) || !(r2 & 128) || !(r3 & 128)) return __spreadValues({}, _INVALID);
+    if (r1 !== (_hash([idHi, idLo, salt]) | 128)) return __spreadValues({}, _INVALID);
+    if (r2 !== (_hash([expiryOffset, flags, salt]) | 128)) return __spreadValues({}, _INVALID);
+    if (crc !== _hash([idHi, idLo, expiryOffset, flags, salt])) return __spreadValues({}, _INVALID);
+    if (r3 !== (_hash([r1, r2, crc]) | 128)) return __spreadValues({}, _INVALID);
+    const customerId = idHi << 8 | idLo;
+    let expiresAt = null;
+    let expired = false;
+    if (expiryOffset > 0) {
+      const expYear = 2025 + Math.floor((expiryOffset - 1) / 12);
+      const expMonth = (expiryOffset - 1) % 12;
+      expiresAt = new Date(expYear, expMonth, 1);
+      const now = /* @__PURE__ */ new Date();
+      const nowOffset = (now.getFullYear() - 2025) * 12 + now.getMonth();
+      expired = nowOffset >= expiryOffset;
+    }
+    return { valid: true, customerId, perpetual: expiryOffset === 0, expiresAt, expired, flags };
+  }
+  function isPro(key) {
+    const info = validateLicense(key);
+    return info.valid && !info.expired;
+  }
+
+  // src/plugins/ContextMenuPlugin.ts
+  var ContextMenuPlugin = class {
+    constructor() {
+      this.name = "contextmenu";
+      this._core = null;
+      this._menu = null;
+      this._currentCtx = null;
+      this._onCtxMenu = (e) => this._handleContextMenu(e);
+      this._onHide = () => this._hideMenu();
+      this._onKeydown = (e) => {
+        if (e.key === "Escape") this._hideMenu();
+      };
+    }
+    // ── Lifecycle ────────────────────────────────────────────────────────────
     init(core) {
       this._core = core;
+      if (!isPro(core.settings.licenseKey)) {
+        console.warn("[ContextMenuPlugin] A valid PRO licenseKey is required \u2014 plugin disabled.");
+        return;
+      }
+      this._createMenuEl();
+      const svg = core.schedulerSVGElement;
+      if (svg) svg.addEventListener("contextmenu", this._onCtxMenu);
+      document.addEventListener("click", this._onHide);
+      document.addEventListener("keydown", this._onKeydown);
+      window.addEventListener("resize", this._onHide);
+      window.addEventListener("scroll", this._onHide, true);
     }
     destroy() {
-      const popup = document.getElementById("scheduler-advanced-popup");
-      if (popup) popup.remove();
+      var _a, _b;
+      const svg = (_a = this._core) == null ? void 0 : _a.schedulerSVGElement;
+      if (svg) svg.removeEventListener("contextmenu", this._onCtxMenu);
+      document.removeEventListener("click", this._onHide);
+      document.removeEventListener("keydown", this._onKeydown);
+      window.removeEventListener("resize", this._onHide);
+      window.removeEventListener("scroll", this._onHide, true);
+      (_b = this._menu) == null ? void 0 : _b.remove();
+      this._menu = null;
       this._core = null;
     }
-    onItemClick(event, element) {
-      const item = element == null ? void 0 : element.item;
-      if (!item) return;
-      const popup = this._ensurePopup();
-      this._populatePopup(popup, item);
-      popup.style.display = "block";
+    // ── Menu DOM helpers ─────────────────────────────────────────────────────
+    _createMenuEl() {
+      const el = document.createElement("div");
+      el.className = "dropdown-menu schedula-ctx-menu";
+      el.addEventListener("contextmenu", (e) => e.preventDefault());
+      document.body.appendChild(el);
+      this._menu = el;
     }
-    show(item, event, scheduler) {
-      const popup = this._ensurePopup();
-      this._populatePopup(popup, item);
-      popup.style.display = "block";
+    _showMenu(x, y) {
+      const menu = this._menu;
+      menu.style.display = "block";
+      menu.style.left = "0px";
+      menu.style.top = "0px";
+      const { width, height } = menu.getBoundingClientRect();
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      let px = x;
+      let py = y;
+      if (px + width > vw - 6) px = vw - width - 6;
+      if (py + height > vh - 6) py = vh - height - 6;
+      if (px < 6) px = 6;
+      if (py < 6) py = 6;
+      menu.style.left = `${px}px`;
+      menu.style.top = `${py}px`;
     }
-    hide() {
-      const popup = document.getElementById("scheduler-advanced-popup");
-      if (popup) popup.style.display = "none";
+    _hideMenu() {
+      if (!this._menu) return;
+      this._menu.style.display = "none";
+      this._menu.innerHTML = "";
+      this._currentCtx = null;
     }
-    _ensurePopup() {
-      let popup = document.getElementById("scheduler-advanced-popup");
-      if (!popup) {
-        popup = document.createElement("div");
-        popup.id = "scheduler-advanced-popup";
-        popup.className = "scheduler-popup";
-        popup.style.cssText = "display:none;position:fixed;z-index:9999;";
-        popup.innerHTML = `
-                <div class="popup-container">
-                    <div class="popup-header" id="scheduler-advanced-popup-header" style="background:${this.brandColor};">
-                        <button class="close-button" id="scheduler-advanced-popup-close" style="color:#fff;">&#x2715;</button>
-                        <span id="scheduler-advanced-popup-title" style="color:#fff;">Task</span>
-                    </div>
-                    <div class="popup-content">
-                        <div class="tab">
-                            <button class="tab-btn active" data-tab="info">Info</button>
-                            <button class="tab-btn" data-tab="custom">Custom</button>
-                            <button class="tab-btn" data-tab="json">JSON</button>
-                        </div>
-                        <div class="tabcontent active" id="scheduler-advanced-popup-tab-info">
-                            <div class="formgroup"><label>Text</label><input class="taskinput" id="adv-popup-field-text" type="text"></div>
-                            <div class="formgroup"><label>Description</label><input class="taskinput" id="adv-popup-field-desc" type="text"></div>
-                            <div class="formgroup"><label>From</label><input class="taskinput" id="adv-popup-field-from" type="text" readonly></div>
-                            <div class="formgroup"><label>To</label><input class="taskinput" id="adv-popup-field-to" type="text" readonly></div>
-                            <div class="formgroup"><label>Color</label><input class="taskinput" id="adv-popup-field-color" type="color"></div>
-                            <div class="formgroup"><label>Completion %</label><input class="taskinput" id="adv-popup-field-completion" type="number" min="0" max="100"></div>
-                            <div class="formgroup"><label>Reference</label><input class="taskinput" id="adv-popup-field-ref" type="text"></div>
-                        </div>
-                        <div class="tabcontent" id="scheduler-advanced-popup-tab-custom">
-                            <!-- Custom fields from item.data are injected here at runtime -->
-                            <div id="adv-popup-custom-fields" style="padding:8px;font-size:13px;color:#475569;"></div>
-                        </div>
-                        <div class="tabcontent" id="scheduler-advanced-popup-tab-json">
-                            <textarea id="adv-popup-field-json"></textarea>
-                        </div>
-                    </div>
-                    <div class="popup-footer">
-                        <button class="scheduler-popup-btn" id="adv-popup-btn-cancel">Cancel</button>
-                        <button class="scheduler-popup-btn" id="adv-popup-btn-save">Save</button>
-                    </div>
-                </div>`;
-        document.body.appendChild(popup);
-        popup.querySelectorAll(".tab-btn").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            var _a;
-            popup.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
-            popup.querySelectorAll(".tabcontent").forEach((t) => t.classList.remove("active"));
-            btn.classList.add("active");
-            const tab = btn.dataset.tab;
-            (_a = document.getElementById(`scheduler-advanced-popup-tab-${tab}`)) == null ? void 0 : _a.classList.add("active");
-          });
+    _addItem(label, onClick, disabled = false) {
+      const a = document.createElement("a");
+      a.href = "#";
+      a.className = "dropdown-item";
+      a.textContent = label;
+      if (disabled) {
+        a.classList.add("disabled");
+        a.setAttribute("aria-disabled", "true");
+        a.tabIndex = -1;
+      } else if (onClick) {
+        a.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onClick();
+          this._hideMenu();
         });
-        this._makePopupDraggable(popup);
       }
-      return popup;
+      this._menu.appendChild(a);
     }
-    _populatePopup(popup, item) {
+    _addDivider() {
+      const hr = document.createElement("hr");
+      hr.className = "dropdown-divider";
+      this._menu.appendChild(hr);
+    }
+    // ── Context detection ────────────────────────────────────────────────────
+    _getContext(e) {
       var _a;
-      const core = this._core;
-      const fmt = (mins) => mins != null ? new Date(mins * 6e4).toLocaleString() : "";
-      popup.querySelector("#scheduler-advanced-popup-title").textContent = item.Text || "Task";
-      popup.querySelector("#adv-popup-field-text").value = item.Text || "";
-      popup.querySelector("#adv-popup-field-desc").value = item.Description || "";
-      popup.querySelector("#adv-popup-field-from").value = fmt(item.From);
-      popup.querySelector("#adv-popup-field-to").value = fmt(item.To);
-      popup.querySelector("#adv-popup-field-color").value = item.Color1 || "#000000";
-      popup.querySelector("#adv-popup-field-completion").value = (_a = item.Completion) != null ? _a : "";
-      popup.querySelector("#adv-popup-field-ref").value = item.Reference || "";
-      popup.querySelector("#adv-popup-field-json").value = JSON.stringify(item, null, 2);
-      const customContainer = popup.querySelector("#adv-popup-custom-fields");
-      customContainer.innerHTML = "";
-      if (item.data && typeof item.data === "object") {
-        Object.entries(item.data).forEach(([key, value]) => {
-          const row = document.createElement("div");
-          row.className = "formgroup";
-          row.innerHTML = `<label>${key}</label><input class="taskinput" type="text" value="${value != null ? value : ""}" readonly data-custom-key="${key}">`;
-          customContainer.appendChild(row);
-        });
-      } else {
-        customContainer.innerHTML = '<p style="color:#94a3b8;font-style:italic;">No custom data (item.data) available.</p>';
+      const target = e.target;
+      const taskEl = target.closest("svg.svg-item");
+      if (taskEl == null ? void 0 : taskEl.dataset.id) {
+        return { type: "task", date: "", taskId: taskEl.dataset.id, taskRef: taskEl.dataset.ref, taskKey: taskEl.dataset.key };
       }
-      const saveBtn = popup.querySelector("#adv-popup-btn-save");
-      const newSave = saveBtn.cloneNode(true);
-      saveBtn.parentNode.replaceChild(newSave, saveBtn);
-      newSave.addEventListener("click", () => {
-        item.Text = popup.querySelector("#adv-popup-field-text").value;
-        item.Description = popup.querySelector("#adv-popup-field-desc").value;
-        item.Color1 = popup.querySelector("#adv-popup-field-color").value;
-        const comp = parseInt(popup.querySelector("#adv-popup-field-completion").value);
-        item.Completion = isNaN(comp) ? void 0 : comp;
-        item.Reference = popup.querySelector("#adv-popup-field-ref").value;
-        popup.style.display = "none";
-        core.refreshItem(item);
-        if (typeof window.modified === "function") window.modified();
-      });
-      const cancelBtn = popup.querySelector("#adv-popup-btn-cancel");
-      const newCancel = cancelBtn.cloneNode(true);
-      cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
-      newCancel.addEventListener("click", () => {
-        popup.style.display = "none";
-      });
-      const closeBtn = popup.querySelector("#scheduler-advanced-popup-close");
-      const newClose = closeBtn.cloneNode(true);
-      closeBtn.parentNode.replaceChild(newClose, closeBtn);
-      newClose.addEventListener("click", () => {
-        popup.style.display = "none";
-      });
-      popup.style.left = "50%";
-      popup.style.top = "50%";
-      popup.style.transform = "translate(-50%,-50%)";
+      const dayunit = target.closest("rect.time-unit");
+      if (dayunit == null ? void 0 : dayunit.dataset.date) {
+        return { type: "day", date: dayunit.dataset.date };
+      }
+      const cell = (_a = target.closest("rect.box-element")) != null ? _a : target.closest("rect.box-element-empty");
+      if (cell == null ? void 0 : cell.dataset.date) {
+        return { type: "cell", date: cell.dataset.date, resourceId: cell.dataset.res };
+      }
+      return null;
     }
-    _makePopupDraggable(popup) {
-      const header = popup.querySelector("#scheduler-advanced-popup-header");
-      if (!header) return;
-      let isDragging = false, startX = 0, startY = 0, startLeft = 0, startTop = 0;
-      header.addEventListener("mousedown", (e) => {
-        isDragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
-        const rect = popup.getBoundingClientRect();
-        startLeft = rect.left + window.scrollX;
-        startTop = rect.top + window.scrollY;
-        popup.style.left = startLeft + "px";
-        popup.style.top = startTop + "px";
-        popup.style.transform = "none";
-        e.preventDefault();
-      });
-      document.addEventListener("mousemove", (e) => {
-        if (!isDragging) return;
-        popup.style.left = startLeft + e.clientX - startX + "px";
-        popup.style.top = startTop + e.clientY - startY + "px";
-      });
-      document.addEventListener("mouseup", () => {
-        isDragging = false;
-      });
+    // ── Action dispatch ──────────────────────────────────────────────────────
+    _dispatch(ctx, actionName, description, capacity, classes) {
+      var _a;
+      const isDelete = actionName === "Elimina";
+      const detail = ctx.type === "task" ? { action: actionName, TaskId: ctx.taskId, TaskRef: ctx.taskRef, TaskKey: ctx.taskKey } : {
+        DateFrom: ctx.date,
+        DateTo: ctx.date,
+        Name: isDelete ? "" : actionName,
+        Description: description,
+        Capacity: capacity,
+        Classes: classes,
+        ResourceId: ctx.resourceId ? parseInt(ctx.resourceId, 10) : null,
+        isDelete
+      };
+      const eventName = ctx.type === "task" ? "schedulatask:action" : "schedulacalendar:action";
+      const svg = (_a = this._core) == null ? void 0 : _a.schedulerSVGElement;
+      svg == null ? void 0 : svg.dispatchEvent(new CustomEvent(eventName, { bubbles: true, detail }));
+    }
+    // ── Context menu event handler ───────────────────────────────────────────
+    _handleContextMenu(e) {
+      const ctx = this._getContext(e);
+      if (!ctx) return;
+      e.preventDefault();
+      this._currentCtx = ctx;
+      this._buildMenu(ctx);
+      if (this._menu.children.length > 0) {
+        this._showMenu(e.clientX, e.clientY);
+      } else {
+        this._hideMenu();
+      }
+    }
+    // ── Menu building ────────────────────────────────────────────────────────
+    _findItem(taskId) {
+      var _a, _b, _c, _d;
+      for (const res of (_c = (_b = (_a = this._core) == null ? void 0 : _a.data) == null ? void 0 : _b.Resources) != null ? _c : []) {
+        const item = (_d = res.Items) == null ? void 0 : _d.find((i) => i.Id == taskId);
+        if (item) return item;
+      }
+      return null;
+    }
+    _getPopupProvider() {
+      var _a, _b, _c, _d, _e;
+      if ((_b = (_a = this._core) == null ? void 0 : _a.settings) == null ? void 0 : _b.popupProvider) return this._core.settings.popupProvider;
+      for (const p of (_e = (_d = (_c = this._core) == null ? void 0 : _c.settings) == null ? void 0 : _d.plugins) != null ? _e : []) {
+        if (typeof p.show === "function") return p;
+      }
+      return null;
+    }
+    _buildMenu(ctx) {
+      var _a;
+      this._menu.innerHTML = "";
+      const ro = ((_a = this._core) == null ? void 0 : _a.settings.canMoveItems) === false;
+      if (ctx.type === "task") {
+        this._addItem("Modifica", () => {
+          const item = this._findItem(ctx.taskId);
+          const provider = this._getPopupProvider();
+          if (!item || !provider) return;
+          const existingPopup = document.querySelector(".scheduler-popup");
+          const isVisible = existingPopup && existingPopup.style.display !== "none";
+          if (isVisible && typeof provider.refreshItem === "function") {
+            provider.refreshItem(item);
+          } else {
+            const rect = this._menu.getBoundingClientRect();
+            const fakeEvent = new MouseEvent("click", { clientX: rect.left, clientY: rect.top, bubbles: true });
+            provider.show(item, fakeEvent, this._core);
+          }
+        }, ro);
+        this._addDivider();
+        this._addItem("Elimina", () => {
+          var _a2;
+          if (!confirm("Confermi di voler eliminare questo task?")) return;
+          const item = this._findItem(ctx.taskId);
+          if (item) {
+            item.Deleted = true;
+            item.Modified = true;
+          }
+          (_a2 = document.querySelector(`svg[data-id="${ctx.taskId}"]`)) == null ? void 0 : _a2.remove();
+          if (typeof window.modified === "function") window.modified();
+        }, ro);
+        return;
+      }
+      if (ctx.type === "day") {
+        this._addItem("Festivo", () => this._withConfirm("Festivo", () => this._dispatch(ctx, "Festivo", "Chiusura festiva", 0, "timeoff")), ro);
+        this._addItem("Chiuso", () => this._withConfirm("Chiuso", () => this._dispatch(ctx, "Chiuso", "Chiusura", 0, "closed")), ro);
+        this._addItem("Manutenzione", () => this._withConfirm("Manutenzione", () => this._dispatch(ctx, "Manutenzione", "Manutenzione", 0, "maintenance")), ro);
+        this._addDivider();
+        this._addItem("8 ore", () => this._withConfirm("8 ore", () => this._dispatch(ctx, "8 ore", "Capacit\xE0 8 ore", 480, "cap8h")), ro);
+        this._addItem("16 ore", () => this._withConfirm("16 ore", () => this._dispatch(ctx, "16 ore", "Capacit\xE0 16 ore", 960, "cap16h")), ro);
+        this._addItem("24 ore", () => this._withConfirm("24 ore", () => this._dispatch(ctx, "24 ore", "Capacit\xE0 24 ore", 1440, "cap24h")), ro);
+        this._addItem("Ore custom...", () => this._promptCustomHours(ctx), ro);
+        this._addDivider();
+        this._addItem("Elimina regola", () => {
+          if (confirm("Confermi di voler ripristinare questo giorno?"))
+            this._dispatch(ctx, "Elimina", "", 0, "");
+        }, ro);
+        return;
+      }
+      if (ctx.type === "cell") {
+        this._addItem("Non disponibile", () => this._withConfirm("Non disponibile", () => this._dispatch(ctx, "Non disponibile", "Risorsa non disponibile", 0, "closed")), ro);
+        this._addItem("Assenza", () => this._withConfirm("Assenza", () => this._dispatch(ctx, "Assenza", "Assenza risorsa", 0, "closed")), ro);
+        this._addItem("Ferie", () => this._withConfirm("Ferie", () => this._dispatch(ctx, "Ferie", "Ferie risorsa", 0, "absent")), ro);
+        this._addItem("Manutenzione", () => this._withConfirm("Manutenzione", () => this._dispatch(ctx, "Manutenzione", "Manutenzione", 0, "maintenance")), ro);
+        this._addDivider();
+        this._addItem("8 ore", () => this._withConfirm("8 ore", () => this._dispatch(ctx, "8 ore", "Capacit\xE0 8 ore", 480, "cap8h")), ro);
+        this._addItem("16 ore", () => this._withConfirm("16 ore", () => this._dispatch(ctx, "16 ore", "Capacit\xE0 16 ore", 960, "cap16h")), ro);
+        this._addItem("24 ore", () => this._withConfirm("24 ore", () => this._dispatch(ctx, "24 ore", "Capacit\xE0 24 ore", 1440, "cap24h")), ro);
+        this._addItem("Ore custom...", () => this._promptCustomHours(ctx), ro);
+        this._addDivider();
+        this._addItem("Elimina regola", () => {
+          if (confirm("Confermi di voler ripristinare questa risorsa per il giorno selezionato?"))
+            this._dispatch(ctx, "Elimina", "", 0, "");
+        }, ro);
+      }
+    }
+    // ── Small UX helpers ─────────────────────────────────────────────────────
+    _withConfirm(name, action) {
+      if (confirm(`Confermi di voler impostare "${name}"?`)) action();
+    }
+    _promptCustomHours(ctx) {
+      const raw = prompt("Ore di capacit\xE0 (es. 5 o 5.5):", "");
+      if (raw === null) return;
+      const hours = parseFloat(raw.replace(",", "."));
+      if (isNaN(hours) || hours < 0 || hours > 24) {
+        alert("Valore non valido. Inserisci un numero tra 0 e 24.");
+        return;
+      }
+      const name = `${hours} ore`;
+      if (confirm(`Confermi di voler impostare "${name}"?`)) {
+        this._dispatch(ctx, name, "Capacit\xE0 custom", Math.round(hours * 60), "cap-custom");
+      }
     }
   };
 
@@ -4064,7 +4337,9 @@
   window.DragDropPlugin = DragDropPlugin;
   window.LinksPlugin = LinksPlugin;
   window.EventsPlugin = EventsPlugin;
-  window.AdvancedPopupPlugin = AdvancedPopupPlugin;
   window.DefaultPopupPlugin = DefaultPopupPlugin;
+  window.ContextMenuPlugin = ContextMenuPlugin;
+  window.validateLicense = validateLicense;
+  window.isPro = isPro;
 })();
 //# sourceMappingURL=pro-test.js.map

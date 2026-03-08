@@ -14,8 +14,9 @@ import { SchedulaTemplate } from './ui/SchedulaTemplate';
 import { DragDropPlugin } from './plugins/DragDropPlugin.js';
 import { LinksPlugin } from './plugins/LinksPlugin.js';
 import { EventsPlugin } from './plugins/EventsPlugin.js';
-import { AdvancedPopupPlugin } from './plugins/AdvancedPopupPlugin.js';
 import { DefaultPopupPlugin } from './plugins/DefaultPopupPlugin.js';
+import { ContextMenuPlugin } from './plugins/ContextMenuPlugin.js';
+import { validateLicense, isPro } from './license/LicenseValidator.js';
 
 // Expose all classes globally (IIFE bundle — window.XXX access)
 (window as any).SchedulaCore = SchedulaCore;
@@ -24,12 +25,15 @@ import { DefaultPopupPlugin } from './plugins/DefaultPopupPlugin.js';
 (window as any).DragDropPlugin = DragDropPlugin;
 (window as any).LinksPlugin = LinksPlugin;
 (window as any).EventsPlugin = EventsPlugin;
-(window as any).AdvancedPopupPlugin = AdvancedPopupPlugin;
 (window as any).DefaultPopupPlugin = DefaultPopupPlugin;
+(window as any).ContextMenuPlugin = ContextMenuPlugin;
+(window as any).validateLicense = validateLicense;
+(window as any).isPro = isPro;
 
 // Named exports for ESM consumers
 export { SchedulaCore, SchedulaSettings, SchedulaTemplate };
-export { DragDropPlugin, LinksPlugin, EventsPlugin, DefaultPopupPlugin };
+export { DragDropPlugin, LinksPlugin, EventsPlugin, DefaultPopupPlugin, ContextMenuPlugin };
+export { validateLicense, isPro };
 
 // Type exports
 export type { ITaskPopup } from './models/ITaskPopup';

@@ -9,6 +9,7 @@ import { SchedulaItem } from '../ui/SchedulaItem.js';
 export class DragDropPlugin implements IDragDropPlugin {
     readonly name = 'dragdrop';
     private _core: any;
+    private _dragItem: any = null;
 
     init(core: any): void {
         this._core = core;
@@ -45,6 +46,7 @@ export class DragDropPlugin implements IDragDropPlugin {
             element.setAttribute('y', (y + variationy).toString());
         }
         core.schedulerItemsElement?.append(element);
+        this._liveRefreshPopup();
     }
 
     private _resize(): void {
@@ -60,6 +62,19 @@ export class DragDropPlugin implements IDragDropPlugin {
 
         element.setAttribute('width', (w + variationx).toString());
         core.schedulerItemsElement?.append(element);
+        this._liveRefreshPopup();
+    }
+
+    private _liveRefreshPopup(): void {
+        if (!this._dragItem) return;
+        const core = this._core;
+        if (!core.settings.enablePopup) return;
+        const popupProvider = (core.settings.popupProvider && core.settings.licenseKey)
+            ? core.settings.popupProvider
+            : core.getPlugin('defaultpopup');
+        if (popupProvider && typeof popupProvider.refreshItem === 'function') {
+            popupProvider.refreshItem(this._dragItem);
+        }
     }
 
     // ── Mouse up (finalize action) ─────────────────────────────────────────
@@ -78,13 +93,26 @@ export class DragDropPlugin implements IDragDropPlugin {
                 });
                 if (itemData) {
                     this.processItemAction(element, itemData, (event as any).ctrlKey);
+
+                    // Final popup refresh with committed data
+                    if (core.settings.enablePopup) {
+                        const popupProvider = core.settings.popupProvider ||
+                            core.getPlugin('advancedpopup') ||
+                            core.getPlugin('defaultpopup');
+                        if (popupProvider && typeof popupProvider.refreshItem === 'function') {
+                            popupProvider.refreshItem(itemData);
+                        }
+                    }
                 }
+                this._dragItem = null;
             }
         }
 
-        core.schedulerItemsElement?.querySelectorAll('rect.item').forEach(
-            (el: Element) => { el.classList.remove(action); }
-        );
+        if (action) {
+            core.schedulerItemsElement?.querySelectorAll('rect.item').forEach(
+                (el: Element) => { el.classList.remove(action); }
+            );
+        }
         core.currentAction = '';
 
         if (typeof (window as any).modified === 'function') (window as any).modified();
@@ -138,8 +166,12 @@ export class DragDropPlugin implements IDragDropPlugin {
             const ok = si.checkInterference();
             if (!ok) {
                 if (!settings.shiftItems || !ctrl) {
-                    si.X = dx;
-                    si.Y = dy;
+                    if (resized && !moved) {
+                        si.W = dw;
+                    } else {
+                        si.X = dx;
+                        si.Y = dy;
+                    }
                 } else {
                     // Push colliding items forward (Ctrl + move)
                     const previous = core.data.Resources[si.Resource]?.Items
@@ -200,6 +232,9 @@ export class DragDropPlugin implements IDragDropPlugin {
             const memo = core.actionMemoPosition;
             memo.x = event.pageX;
             memo.y = event.pageY;
+
+            // Cache the dragged item for live popup refresh
+            this._dragItem = data.item ?? null;
         }
 
         if (typeof (window as any).itemMouseDown === 'function') {

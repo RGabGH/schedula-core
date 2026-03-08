@@ -94,8 +94,15 @@ export class SchedulaSettings {
     ];
 
     /**
+     * PRO license key. Required to enable custom popup providers (popupProvider).
+     * Free/open-source users cannot inject a custom popup — the built-in DefaultPopupPlugin
+     * is always used when no valid licenseKey is present.
+     */
+    licenseKey?: string;
+
+    /**
      * Optional custom popup provider for task items.
-     * When set, overrides the built-in popup entirely.
+     * Requires a valid licenseKey — ignored silently for free users.
      * The provider must implement the `ITaskPopup` interface.
      */
     popupProvider?: ITaskPopup;

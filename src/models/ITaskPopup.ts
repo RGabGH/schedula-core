@@ -30,4 +30,11 @@ export interface ITaskPopup {
      * Called to hide/close the popup (e.g. on Escape or external close triggers).
      */
     hide(): void;
+
+    /**
+     * Called when the item is modified externally (e.g. dragged or resized).
+     * Provides a chance for the popup to update its UI with the live data.
+     * @param item The updated task data object
+     */
+    refreshItem?(item: any): void;
 }

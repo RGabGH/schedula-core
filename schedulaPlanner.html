@@ -42,14 +42,36 @@
             border-radius: 4px;
             font-weight: bold;
         }
+
+        .task-drag-source {
+            display: inline-flex;
+            align-items: center;
+            padding: 0 12px;
+            height: 28px;
+            background: #5762ca;
+            color: #fff;
+            font-family: monospace;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: grab;
+            user-select: none;
+            margin: 6px 8px;
+            box-shadow: 0 2px 6px rgba(87,98,202,0.4);
+            letter-spacing: 0.02em;
+        }
+        .theme-dark .task-drag-source  { background: #5762ca; box-shadow: 0 2px 6px rgba(87,98,202,0.4); }
+        .theme-blue .task-drag-source  { background: #3b82f6; box-shadow: 0 2px 6px rgba(59,130,246,0.4); }
+        .theme-soft .task-drag-source  { background: #818cf8; box-shadow: 0 2px 6px rgba(129,140,248,0.4); }
     </style>
 </head>
 
 <body>
     <!-- Draggable external task for drop-onto-scheduler test -->
-    <div id="mydivid" style="height: 50px;" draggable="true" ondragstart="startdrag(event);" data-text1="DROPPED TASK"
-        data-text2="dropped task description" data-order="123456789" data-classes="" data-w="2880" data-key="orderID"
-        data-color="#874556" data-ref="reference" data-pieces="4" data-json="">NEW TASK</div>
+    <div id="task-drag-source" class="task-drag-source" draggable="true" ondragstart="startdrag(event);"
+        data-text1="NEW TASK" data-text2="Dropped task description" data-order="123456789"
+        data-classes="" data-w="2880" data-key="orderID" data-color=""
+        data-ref="reference" data-pieces="4" data-json="">&#9654; NEW TASK</div>
 
     <div id="themesdiv" class="row m-1 align-items-center">
         <span class="me-2 fw-bold">Themes:</span>
@@ -91,7 +113,7 @@
     <script src="data/hr-data.js"></script>
     <script src="data/medical-data.js"></script>
     <script src="data/production-data.js"></script>
-    <script src="data/hotel-data.js"></script>
+    
     <script src="data/ss-data-hotel.js"></script>
 
     <!-- Icons -->
@@ -103,8 +125,8 @@
     <script>
         // ── Plugin status badge ────────────────────────────────────────
         function renderPluginBadges(sched) {
-            var pluginNames = ['dragdrop', 'links', 'events', 'advancedpopup'];
-            var labels = { dragdrop: 'DragDrop', links: 'Links', events: 'Events', advancedpopup: 'PopupPRO' };
+            var pluginNames = ['dragdrop', 'links', 'events', 'contextmenu'];
+            var labels = { dragdrop: 'DragDrop', links: 'Links', events: 'Events', contextmenu: 'ContextMenu' };
             var el = document.getElementById('plugin-status');
             el.textContent = 'Plugins: ';
             pluginNames.forEach(function (name) {
@@ -114,6 +136,26 @@
                 b.textContent = labels[name] + (ok ? ' \u2713' : ' \u2717');
                 el.appendChild(b);
             });
+
+            // PRO / Free license badge
+            var licInfo = (typeof validateLicense === 'function')
+                ? validateLicense(sched.settings && sched.settings.licenseKey)
+                : { valid: false, expired: false, perpetual: false, expiresAt: null, customerId: 0 };
+            var isProLic = licInfo.valid && !licInfo.expired;
+            var lic = document.createElement('span');
+            lic.className = isProLic ? 'badge-ok' : 'badge-off';
+            lic.textContent = isProLic ? 'PRO \u2713' : 'Free \u2717';
+            if (isProLic) {
+                lic.title = licInfo.perpetual
+                    ? 'Licenza PRO perpetua — cliente #' + licInfo.customerId
+                    : 'Licenza PRO — scade ' + licInfo.expiresAt.toLocaleDateString('it-IT', { year: 'numeric', month: 'long' }) + ' — cliente #' + licInfo.customerId;
+            } else if (licInfo.valid && licInfo.expired) {
+                lic.title = 'Licenza PRO scaduta il ' + licInfo.expiresAt.toLocaleDateString('it-IT', { year: 'numeric', month: 'long' });
+                lic.textContent = 'PRO scaduta \u26A0';
+            } else {
+                lic.title = 'Licenza Free — funzionalità PRO non disponibili';
+            }
+            el.appendChild(lic);
         }
 
         /**
@@ -172,7 +214,9 @@
             new DragDropPlugin(),
             new LinksPlugin(),
             new EventsPlugin(),
-            new AdvancedPopupPlugin()
+            new DefaultPopupPlugin(),
+            new ContextMenuPlugin()
+          // ,  new AdvancedPopupPlugin()
         ];
 
         settings.date = new Date();
@@ -185,9 +229,12 @@
             settings.icons = iconssvg;
         }
 
+        settings.licenseKey = 'SCHED-6TTDT-6TTDT-8Y8DL';
+       
         // ── Init ───────────────────────────────────────────────────────
         var scheduler = new SchedulaCore("scheduler", clinicSchedulerData, settings);
         scheduler.init();
+       
 
         renderPluginBadges(scheduler);
 
@@ -207,7 +254,7 @@
                 document.body.classList.add(theme);
             }
         };
-
+ setTheme('theme-blue');
         window.setView = function (num) {
             scheduler.setView(num);
         };
@@ -254,8 +301,7 @@
                 color1: evt.target.getAttribute('data-color'),
                 ref: evt.target.getAttribute('data-ref'),
                 pieces: evt.target.getAttribute('data-qt'),
-                json: evt.target.getAttribute('data-json'),
-                elementId: evt.target.id
+                json: evt.target.getAttribute('data-json')
             };
             evt.dataTransfer.setData("task", JSON.stringify(data));
             evt.dataTransfer.effectAllowed = "move";

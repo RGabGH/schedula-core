@@ -2,19 +2,34 @@ import { ISchedulaPlugin } from '../models/ISchedulaPlugin.js';
 import { ITaskPopup } from '../models/ITaskPopup.js';
 
 /**
- * DefaultPopupPlugin — Core popup included in the open-source bundle.
- * Shows a full-featured form (text, description, color, completion, reference, JSON tab)
- * and allows editing and saving any task item.
+ * DefaultPopupPlugin — the single built-in popup for both Core and PRO.
  *
- * PRO customers can replace this with AdvancedPopupPlugin or any custom implementation
- * registered via settings.plugins or settings.popupProvider.
+ * Features:
+ * - Branded header (customise via `brandColor`)
+ * - General tab: Text, Description, From/To (read-only), Color picker, Completion %, Reference
+ * - Data tab: custom key/value pairs from `item.data` (read-only rows)
+ * - Draggable popup
+ * - Live refresh during drag/resize (via `refreshItem`)
+ *
+ * PRO customers who need a fully custom popup can implement `ITaskPopup` and
+ * assign it to `settings.popupProvider` together with a valid `settings.licenseKey`.
  */
 export class DefaultPopupPlugin implements ISchedulaPlugin, ITaskPopup {
     readonly name = 'defaultpopup';
     private _core: any;
+    private _currentItem: any = null;
+
+    /**
+     * Custom brand color used in the popup header. Override as needed.
+     */
+    brandColor: string = '#1e293b';
 
     init(core: any): void {
         this._core = core;
+        // Auto-register as popupProvider only if none is already set
+        if (!core.settings.popupProvider) {
+            core.settings.popupProvider = this;
+        }
     }
 
     destroy(): void {
@@ -26,16 +41,35 @@ export class DefaultPopupPlugin implements ISchedulaPlugin, ITaskPopup {
     onItemClick(event: MouseEvent, element: any): void {
         const item = element?.item;
         if (!item) return;
-
+        this._currentItem = item;
         const popup = this._ensurePopup();
         this._populatePopup(popup, item);
         popup.style.display = 'block';
     }
 
     show(item: any, event: MouseEvent, scheduler: any): void {
+        this._currentItem = item;
         const popup = this._ensurePopup();
         this._populatePopup(popup, item);
         popup.style.display = 'block';
+    }
+
+    refreshItem(item: any): void {
+        const popup = document.getElementById('scheduler-default-popup');
+        if (!popup || popup.style.display === 'none') return;
+        this._currentItem = item;
+        const fmt = (mins: number) => mins != null ? new Date(Math.trunc(mins) * 60000).toLocaleString(undefined, {
+            year: 'numeric', month: 'numeric', day: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        }) : '';
+        (popup.querySelector('#scheduler-default-popup-title') as HTMLElement).textContent = item.Text || 'Task';
+        (popup.querySelector('#default-popup-field-text') as HTMLInputElement).value = item.Text || '';
+        (popup.querySelector('#default-popup-field-desc') as HTMLInputElement).value = item.Description || '';
+        (popup.querySelector('#default-popup-field-from') as HTMLInputElement).value = fmt(item.From);
+        (popup.querySelector('#default-popup-field-to') as HTMLInputElement).value = fmt(item.To);
+        this._applyColor(popup, item.Color1);
+        (popup.querySelector('#default-popup-field-completion') as HTMLInputElement).value = item.Completion ?? '';
+        (popup.querySelector('#default-popup-field-ref') as HTMLInputElement).value = item.Reference || '';
     }
 
     hide(): void {
@@ -52,26 +86,27 @@ export class DefaultPopupPlugin implements ISchedulaPlugin, ITaskPopup {
             popup.style.cssText = 'display:none;position:fixed;z-index:9999;';
             popup.innerHTML = `
                 <div class="popup-container">
-                    <div class="popup-header" id="scheduler-default-popup-header">
-                        <button class="close-button" id="scheduler-default-popup-close">&#x2715;</button>
-                        <span id="scheduler-default-popup-title">Task</span>
+                    <div class="popup-header" id="scheduler-default-popup-header" style="background:${this.brandColor};">
+                        <button class="close-button" id="scheduler-default-popup-close" style="color:#fff;">&#x2715;</button>
+                        <span id="scheduler-default-popup-title" style="color:#fff;">Task</span>
                     </div>
                     <div class="popup-content">
                         <div class="tab">
-                            <button class="tab-btn active" data-tab="info">Info</button>
-                            <button class="tab-btn" data-tab="json">JSON</button>
+                            <button class="tab-btn active" data-tab="general">General</button>
+                            <button class="tab-btn" data-tab="data">Data</button>
                         </div>
-                        <div class="tabcontent active" id="scheduler-default-popup-tab-info">
+                        <div class="tabcontent active" id="scheduler-default-popup-tab-general">
                             <div class="formgroup"><label>Text</label><input class="taskinput" id="default-popup-field-text" type="text"></div>
                             <div class="formgroup"><label>Description</label><input class="taskinput" id="default-popup-field-desc" type="text"></div>
                             <div class="formgroup"><label>From</label><input class="taskinput" id="default-popup-field-from" type="text" readonly></div>
                             <div class="formgroup"><label>To</label><input class="taskinput" id="default-popup-field-to" type="text" readonly></div>
-                            <div class="formgroup"><label>Color</label><input class="taskinput" id="default-popup-field-color" type="color"></div>
+                            <div class="formgroup"><label>Color</label><div class="color-field-wrapper"><div class="color-swatch" id="default-popup-color-swatch"></div><span class="color-field-label" id="default-popup-color-label">Non assegnato</span><input type="color" id="default-popup-field-color" tabindex="-1" style="position:absolute;opacity:0;width:0;height:0;pointer-events:none"><button type="button" class="color-clear-btn" id="default-popup-color-clear">&#x2715;</button></div></div>
                             <div class="formgroup"><label>Completion %</label><input class="taskinput" id="default-popup-field-completion" type="number" min="0" max="100"></div>
                             <div class="formgroup"><label>Reference</label><input class="taskinput" id="default-popup-field-ref" type="text"></div>
                         </div>
-                        <div class="tabcontent" id="scheduler-default-popup-tab-json">
-                            <textarea id="default-popup-field-json"></textarea>
+                        <div class="tabcontent" id="scheduler-default-popup-tab-data">
+                            <!-- Custom fields from item.data are injected here at runtime -->
+                            <div id="default-popup-custom-fields" style="padding:8px;font-size:13px;color:#475569;"></div>
                         </div>
                     </div>
                     <div class="popup-footer">
@@ -80,6 +115,25 @@ export class DefaultPopupPlugin implements ISchedulaPlugin, ITaskPopup {
                     </div>
                 </div>`;
             document.body.appendChild(popup);
+            const colorSwatch = popup.querySelector('#default-popup-color-swatch') as HTMLElement;
+            const colorInput = popup.querySelector('#default-popup-field-color') as HTMLInputElement;
+            const colorLabel = popup.querySelector('#default-popup-color-label') as HTMLElement;
+            const colorClear = popup.querySelector('#default-popup-color-clear') as HTMLElement;
+            colorSwatch.addEventListener('click', () => colorInput.click());
+            colorInput.addEventListener('input', () => {
+                colorSwatch.style.background = colorInput.value;
+                colorSwatch.dataset.color = colorInput.value;
+                colorSwatch.classList.add('has-color');
+                colorLabel.textContent = colorInput.value;
+                colorClear.style.display = '';
+            });
+            colorClear.addEventListener('click', () => {
+                colorSwatch.style.background = '';
+                colorSwatch.dataset.color = '';
+                colorSwatch.classList.remove('has-color');
+                colorLabel.textContent = 'Non assegnato';
+                colorClear.style.display = 'none';
+            });
             popup.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     popup!.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -96,24 +150,43 @@ export class DefaultPopupPlugin implements ISchedulaPlugin, ITaskPopup {
 
     private _populatePopup(popup: HTMLElement, item: any): void {
         const core = this._core;
-        const fmt = (mins: number) => mins != null ? new Date(mins * 60000).toLocaleString() : '';
+        const fmt = (mins: number) => mins != null ? new Date(Math.trunc(mins) * 60000).toLocaleString(undefined, {
+            year: 'numeric', month: 'numeric', day: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        }) : '';
+
         (popup.querySelector('#scheduler-default-popup-title') as HTMLElement).textContent = item.Text || 'Task';
         (popup.querySelector('#default-popup-field-text') as HTMLInputElement).value = item.Text || '';
         (popup.querySelector('#default-popup-field-desc') as HTMLInputElement).value = item.Description || '';
         (popup.querySelector('#default-popup-field-from') as HTMLInputElement).value = fmt(item.From);
         (popup.querySelector('#default-popup-field-to') as HTMLInputElement).value = fmt(item.To);
-        (popup.querySelector('#default-popup-field-color') as HTMLInputElement).value = item.Color1 || '#000000';
+        this._applyColor(popup, item.Color1);
         (popup.querySelector('#default-popup-field-completion') as HTMLInputElement).value = item.Completion ?? '';
         (popup.querySelector('#default-popup-field-ref') as HTMLInputElement).value = item.Reference || '';
-        (popup.querySelector('#default-popup-field-json') as HTMLTextAreaElement).value = JSON.stringify(item, null, 2);
 
+        // ── Custom data fields from item.data ──────────────────────────────
+        const customContainer = popup.querySelector('#default-popup-custom-fields') as HTMLElement;
+        customContainer.innerHTML = '';
+        if (item.data && typeof item.data === 'object') {
+            Object.entries(item.data).forEach(([key, value]) => {
+                const row = document.createElement('div');
+                row.className = 'formgroup';
+                row.innerHTML = `<label>${key}</label><input class="taskinput" type="text" value="${value ?? ''}" readonly data-custom-key="${key}">`;
+                customContainer.appendChild(row);
+            });
+        } else {
+            customContainer.innerHTML = '<p style="color:#94a3b8;font-style:italic;">No custom data (item.data) available.</p>';
+        }
+
+        // ── Save button ────────────────────────────────────────────────────
         const saveBtn = popup.querySelector('#default-popup-btn-save')!;
         const newSave = saveBtn.cloneNode(true) as HTMLElement;
         saveBtn.parentNode!.replaceChild(newSave, saveBtn);
         newSave.addEventListener('click', () => {
             item.Text = (popup.querySelector('#default-popup-field-text') as HTMLInputElement).value;
             item.Description = (popup.querySelector('#default-popup-field-desc') as HTMLInputElement).value;
-            item.Color1 = (popup.querySelector('#default-popup-field-color') as HTMLInputElement).value;
+            const swatchEl = popup.querySelector('#default-popup-color-swatch') as HTMLElement;
+            item.Color1 = swatchEl.dataset.color || undefined;
             const comp = parseInt((popup.querySelector('#default-popup-field-completion') as HTMLInputElement).value);
             item.Completion = isNaN(comp) ? undefined : comp;
             item.Reference = (popup.querySelector('#default-popup-field-ref') as HTMLInputElement).value;
@@ -132,9 +205,34 @@ export class DefaultPopupPlugin implements ISchedulaPlugin, ITaskPopup {
         closeBtn.parentNode!.replaceChild(newClose, closeBtn);
         newClose.addEventListener('click', () => { popup.style.display = 'none'; });
 
-        popup.style.left = '50%';
-        popup.style.top = '50%';
-        popup.style.transform = 'translate(-50%,-50%)';
+        // Only center on first open — preserve position if popup was already visible
+        if (popup.style.display === 'none' || popup.style.display === '') {
+            popup.style.left = '50%';
+            popup.style.top = '50%';
+            popup.style.transform = 'translate(-50%,-50%)';
+        }
+    }
+
+    private _applyColor(popup: HTMLElement, color: string | null | undefined): void {
+        const swatch = popup.querySelector('#default-popup-color-swatch') as HTMLElement;
+        const label = popup.querySelector('#default-popup-color-label') as HTMLElement;
+        const clearBtn = popup.querySelector('#default-popup-color-clear') as HTMLElement;
+        const input = popup.querySelector('#default-popup-field-color') as HTMLInputElement;
+        if (color) {
+            swatch.style.background = color;
+            swatch.dataset.color = color;
+            swatch.classList.add('has-color');
+            label.textContent = color;
+            input.value = color;
+            clearBtn.style.display = '';
+        } else {
+            swatch.style.background = '';
+            swatch.dataset.color = '';
+            swatch.classList.remove('has-color');
+            label.textContent = 'Non assegnato';
+            input.value = '#5762ca';
+            clearBtn.style.display = 'none';
+        }
     }
 
     private _makePopupDraggable(popup: HTMLElement): void {

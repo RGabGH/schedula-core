@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Build output (PRO bundle — distributed separately, not in public repo)
+tmp/
+dist/js/smartscheduler.min.js
+dist/js/schedula-core.min.js
+
+# PRO source — never public
+src/license/
+src/index-pro.ts
+src/plugins/DragDropPlugin.ts
+src/plugins/LinksPlugin.ts
+src/plugins/EventsPlugin.ts
+src/plugins/DefaultPopupPlugin.ts
+src/plugins/AdvancedPopupPlugin.ts
+src/plugins/ContextMenuPlugin.ts
+
+# Key generator — private tool
+tools/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.suo
+.vscode/settings.json

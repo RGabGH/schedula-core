@@ -125,7 +125,7 @@
    
   }
 
-  #scheduler-popup>.popup-container>.popup-content>.tabcontent>textarea{
+  .scheduler-popup .tabcontent textarea{
     width: 100%;
     height: calc(100% - 50px);
     resize: none;
@@ -136,7 +136,7 @@
     text-wrap: nowrap;
    
   }
-  #scheduler-popup>.popup-container>.popup-content>.tabcontent>.formgroup
+  .scheduler-popup .tabcontent .formgroup
   {
     display: flex;
     flex-direction: row;
@@ -161,3 +161,80 @@
     border: 1px solid #ddd;
     border-radius: 3px;
   }
+
+  /* ── Color field ─────────────────────────────────────── */
+  .color-field-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    width: 72%;
+  }
+  .color-swatch {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    border: 1px solid #cbd5e1;
+    cursor: pointer;
+    flex-shrink: 0;
+    /* checkered "transparent" pattern */
+    background-color: #fff;
+    background-image:
+      linear-gradient(45deg, #d1d5db 25%, transparent 25%),
+      linear-gradient(-45deg, #d1d5db 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #d1d5db 75%),
+      linear-gradient(-45deg, transparent 75%, #d1d5db 75%);
+    background-size: 8px 8px;
+    background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+    transition: box-shadow 0.15s;
+  }
+  .color-swatch:hover { box-shadow: 0 0 0 2px #6366f1; }
+  .color-swatch.has-color {
+    background-image: none;
+  }
+  .color-field-label {
+    flex: 1;
+    font-size: 12px;
+    color: #94a3b8;
+    font-style: italic;
+  }
+  .color-swatch.has-color ~ .color-field-label {
+    color: #334155;
+    font-family: monospace;
+    font-style: normal;
+  }
+  .color-clear-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #94a3b8;
+    font-size: 14px;
+    padding: 0 2px;
+    line-height: 1;
+  }
+  .color-clear-btn:hover { color: #ef4444; }
+
+/* ── ContextMenuPlugin ────────────────────────────────────── */
+.schedula-ctx-menu {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    min-width: 180px;
+    padding: 4px 0;
+    border-radius: 6px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+}
+/* Dark theme override */
+.theme-dark .schedula-ctx-menu {
+    background: #1e293b;
+    border-color: #334155;
+}
+.theme-dark .schedula-ctx-menu .dropdown-item {
+    color: #e2e8f0;
+}
+.theme-dark .schedula-ctx-menu .dropdown-item:hover:not(.disabled) {
+    background: #334155;
+    color: #f1f5f9;
+}
+.theme-dark .schedula-ctx-menu .dropdown-divider {
+    border-color: #334155;
+}

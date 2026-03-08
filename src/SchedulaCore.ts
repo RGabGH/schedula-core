@@ -138,9 +138,9 @@ export class SchedulaCore implements ISchedulaCore {
                 i.day = item.Day;
                 let dtfrom = new Date(item.DateFrom);
                 let dtto = new Date(item.DateTo);
-                let f = dtfrom.getTime();
+                let f = Math.trunc(dtfrom.getTime() / 60000) * 60000; // Round to whole minutes in ms
                 i.from = f;
-                i.duration = (new Date(item.DateTo).getTime() / 60000) - (new Date(item.DateFrom).getTime() / 60000);
+                i.duration = Math.round((dtto.getTime() - dtfrom.getTime()) / 60000);
                 i.type = 'rule';
             });
         }
@@ -244,8 +244,8 @@ export class SchedulaCore implements ISchedulaCore {
             // Register plugins from settings (if not already registered)
             this.settings.plugins.forEach(p => this.registerPlugin(p));
 
-            // Ensure a default popup plugin is available if no other popup plugin is registered
-            if (!this.getPlugin('defaultpopup') && !this.getPlugin('advancedpopup') && !this.settings.popupProvider) {
+            // Ensure the default popup plugin is always registered (free users cannot replace it)
+            if (!this.getPlugin('defaultpopup')) {
                 this.registerPlugin(new DefaultPopupPlugin());
             }
 
@@ -547,8 +547,8 @@ export class SchedulaCore implements ISchedulaCore {
     }
 
     private escapePressed() {
-        // Delegate to popupProvider if active
-        if (this.settings.popupProvider) {
+        // Delegate to popupProvider if active (PRO license required)
+        if (this.settings.popupProvider && this.settings.licenseKey) {
             this.settings.popupProvider.hide();
         }
 
@@ -673,11 +673,18 @@ export class SchedulaCore implements ISchedulaCore {
     private processData() {
         if (!this.data.Resources) return;
 
+        // Normalize base date to midnight (strip time component)
+        this.settings.date = new Date(this.settings.date.getFullYear(), this.settings.date.getMonth(), this.settings.date.getDate());
+
         let date = this.settings.date;
         let scheduler = this;
         this.data.Resources?.forEach((resource: any, ri: any) => {
             if (resource.Items) {
                 resource.Items.forEach(function (item: any, ii: any) {
+                    // Truncate to whole minutes
+                    item.Offset = Math.trunc(item.Offset);
+                    item.Width = Math.trunc(item.Width);
+
                     let from = (date.getTime() / 60000) + (item.Offset);
                     let to = (date.getTime() / 60000) + parseInt(((item.Offset + item.Width)));
 
@@ -1130,6 +1137,11 @@ export class SchedulaCore implements ISchedulaCore {
         if (resIndex !== -1) {
             // Re-process single item dates
             let date = this.settings.date;
+
+            // Truncate to whole minutes just in case
+            item.Offset = Math.trunc(item.Offset);
+            item.Width = Math.trunc(item.Width);
+
             let from = (date.getTime() / 60000) + (item.Offset);
             let to = (date.getTime() / 60000) + parseInt(((item.Offset + item.Width)));
             item.From = from;
@@ -1228,7 +1240,10 @@ export class SchedulaCore implements ISchedulaCore {
             itemrect.setAttribute('width', '100%');
             itemrect.setAttribute('height', '100%');
             if (rx > 0) itemrect.setAttribute('rx', rx.toString());
-            itemrect.setAttribute("fill", item.Color1);
+            if (item.Color1) {
+                itemrect.classList.add('custom-color');
+                itemrect.style.fill = item.Color1;
+            }
             if (item.Classes) {
                 let classes = item.Classes.split(' ');
                 classes.forEach((c: string) => {
@@ -1707,20 +1722,13 @@ export class SchedulaCore implements ISchedulaCore {
         // Se i popup sono disabilitati globalmente
         if (!this.settings.enablePopup || !element?.item) return;
 
-        // 1. Custom Provider (scritto manualmente dall'utente)
-        if (this.settings.popupProvider) {
+        // 1. Custom Provider — PRO license required
+        if (this.settings.popupProvider && this.settings.licenseKey) {
             this.settings.popupProvider.show(element.item, event as MouseEvent, this);
             return;
         }
 
-        // 2. Advanced Popup Plugin (PRO)
-        const advancedPopup = this.getPlugin<any>('advancedpopup');
-        if (advancedPopup && typeof advancedPopup.onItemClick === 'function') {
-            advancedPopup.onItemClick(event, element);
-            return;
-        }
-
-        // 3. Default Popup Plugin (Core Open Source)
+        // 2. Default Popup Plugin (built-in, always available)
         const defaultPopup = this.getPlugin<any>('defaultpopup');
         if (defaultPopup && typeof defaultPopup.onItemClick === 'function') {
             defaultPopup.onItemClick(event, element);

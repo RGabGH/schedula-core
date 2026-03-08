@@ -49,6 +49,8 @@ export class SchedulaItem {
         this._offset = itemData.Offset;
         this._width = itemData.Width;
         this._from = this.calcFrom();
+        this._data.From = this._from;
+        this._data.To = this._from + this._width;
         if (this._calendar != null) {
             this._effort = this._calendar.calcEffort(this);
             this._data.Effort = this._effort;
@@ -106,11 +108,12 @@ export class SchedulaItem {
     }
     set Offset(value: number) {
         if (value >= 0) {
-            this._offset = value;
+            // Strictly enforce integer minutes to avoid sub-minute resolution on drag/drop
+            this._offset = Math.round(value);
             this._from = this.calcFrom();
 
             if (this._calendar && this._settings.optimizeStart == true) {
-                this._from = this._calendar.optimazeStart(this);
+                this._from = Math.round(this._calendar.optimazeStart(this));
                 this._offset = this.calcOffset();
             }
 
@@ -142,8 +145,9 @@ export class SchedulaItem {
         return this._width;
     }
     set Width(value: number) {
-        if (value >= this._settings.gridStep) {
-            this._width = this.getModulo(value, this._settings.gridStep, this._settings.gridStep);
+        if (value > 0) {
+            // Force integer minutes
+            this._width = Math.round(this.getModulo(value, this._settings.gridStep, 0));
             this._w = this._width / this._settings.timeUnitVal * this._settings.timeWidth;
             this.setWidth(this._w);
             if (this._calendar) {
@@ -162,7 +166,7 @@ export class SchedulaItem {
         return parseFloat(this._element?.getAttribute('width') ?? '0');
     }
     set W(value: number) {
-        if (value > 0) {
+        if (value >= 0) {
             let val = value * this._settings.timeUnitVal / this._settings.timeWidth;
             this.Width = val;
         }
@@ -172,9 +176,9 @@ export class SchedulaItem {
         return parseFloat(this._element?.getAttribute('x') ?? '0');
     }
     set X(value: number) {
-        if (value > 0) {
+        if (value >= 0) {
             let offset = this.convertXToOffset(value);
-            this.Offset = this.getModulo(offset, this._settings.gridStep, this._settings.gridStep);
+            this.Offset = this.getModulo(offset, this._settings.gridStep, 0);
             this._x = this.convertOffsetToX();
             this._data.Offset = this._offset;
             this._data.Modified = true;
@@ -197,10 +201,10 @@ export class SchedulaItem {
         return this._effort;
     }
     set Effort(value: number) {
-        if (value >= this._settings.gridStep) {
-            this._effort = this.getModulo(value, this._settings.gridStep, this._settings.gridStep);
+        if (value > 0) {
+            this._effort = Math.round(this.getModulo(value, this._settings.gridStep, 0));
             if (this._calendar) {
-                this._width = this._calendar.calcDuration(this);
+                this._width = Math.round(this._calendar.calcDuration(this));
             }
             else this._width = this._effort;
 

@@ -125,7 +125,7 @@
    
   }
 
-  #scheduler-popup>.popup-container>.popup-content>.tabcontent>textarea{
+  .scheduler-popup .tabcontent textarea{
     width: 100%;
     height: calc(100% - 50px);
     resize: none;
@@ -136,7 +136,7 @@
     text-wrap: nowrap;
    
   }
-  #scheduler-popup>.popup-container>.popup-content>.tabcontent>.formgroup
+  .scheduler-popup .tabcontent .formgroup
   {
     display: flex;
     flex-direction: row;

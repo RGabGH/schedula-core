@@ -103,8 +103,8 @@
     <script>
         // ── Plugin status badge ────────────────────────────────────────
         function renderPluginBadges(sched) {
-            var pluginNames = ['dragdrop', 'links', 'events'];
-            var labels = { dragdrop: 'DragDrop', links: 'Links', events: 'Events' };
+            var pluginNames = ['dragdrop', 'links', 'events', 'advancedpopup'];
+            var labels = { dragdrop: 'DragDrop', links: 'Links', events: 'Events', advancedpopup: 'PopupPRO' };
             var el = document.getElementById('plugin-status');
             el.textContent = 'Plugins: ';
             pluginNames.forEach(function (name) {
@@ -168,11 +168,12 @@
         // settings.popupProvider = new MyUserPopup();
 
         // PRO plugins registered via settings.plugins — the Core receives them in init()
-        // settings.plugins = [
-        //     new DragDropPlugin(),
-        //     new LinksPlugin(),
-        //     new EventsPlugin()
-        // ];
+        settings.plugins = [
+            new DragDropPlugin(),
+            new LinksPlugin(),
+            new EventsPlugin()
+
+        ];
 
         settings.date = new Date();
         settings.canMoveItems = true;
