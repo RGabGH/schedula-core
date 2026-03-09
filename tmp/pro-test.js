@@ -286,7 +286,7 @@
     }
   };
 
-  // src/models/SchedulaCalendar.js
+  // src/models/SchedulaCalendar.ts
   var SchedulaCalendarItem = class {
     constructor() {
       this._duration = 1440;
@@ -296,6 +296,7 @@
       this._type = "";
       this._day = -1;
       this._orderIndex = 1e3;
+      this.resourceId = null;
       var now = /* @__PURE__ */ new Date();
       var date = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       this._from = Math.trunc(date.getTime() / this._denominator);
@@ -311,8 +312,7 @@
       return this._day;
     }
     set day(val) {
-      if (val >= -1 && val <= 6)
-        this._day = val;
+      if (val >= -1 && val <= 6) this._day = val;
     }
     get dateFrom() {
       return new Date(this._from * this._denominator).toString();
@@ -323,19 +323,16 @@
     get duration() {
       return this._duration;
     }
+    set duration(value) {
+      var duration = this.getModulo(value);
+      if (duration > 0) this._duration = duration;
+    }
     set denominator(value) {
       this.from *= this._denominator;
       this.from /= value;
       this._capacity *= this._denominator;
       this._capacity /= value;
       this._denominator = value;
-    }
-    set duration(value) {
-      var duration = value;
-      duration = this.getModulo(duration);
-      if (duration > 0) {
-        this._duration = duration;
-      }
     }
     set from(value) {
       let f = Math.trunc(value / this._denominator);
@@ -348,12 +345,18 @@
     get to() {
       return this._from + this._duration;
     }
+    set to(value) {
+      let v = Math.trunc(value / this._denominator);
+      v = this.getModulo(v);
+      if (v > 0 && v > this._from) this._duration = v - this._from;
+    }
     set type(value) {
       this._type = value;
       if (value == "rule") {
         this._orderIndex = 0;
-      } else if (value == "calendar") {
+      } else if (value == "calendar" || value == "exception") {
         this._orderIndex = 1;
+        this._type = "calendar";
       } else if (value == "event") {
         this._orderIndex = 2;
       } else {
@@ -367,30 +370,18 @@
     get orderIndex() {
       return this._orderIndex;
     }
-    set to(value) {
-      let v = Math.trunc(value / this._denominator);
-      v = this.getModulo(v);
-      if (v > 0 && v > this._from) {
-        this._duration = v - this._from;
-      }
-    }
     set dateFrom(value) {
       let dt = value;
-      if (!value.includes("T"))
-        dt += "T00:00:00";
+      if (!value.includes("T")) dt += "T00:00:00";
       let date = new Date(dt);
-      if (date.toString() != "Invalid Date") {
-        this.from = date.getTime();
-      } else
-        console.log(value + " - Invalid Date");
+      if (date.toString() != "Invalid Date") this.from = date.getTime();
+      else console.log(value + " - Invalid Date");
     }
     getModulo(value) {
       let v = value;
       let r = value % this._step;
-      if (r > this._step / 2)
-        v = v - r + this._step;
-      else
-        v -= r;
+      if (r > this._step / 2) v = v - r + this._step;
+      else v -= r;
       return v;
     }
   };
@@ -411,72 +402,81 @@
       if (item instanceof SchedulaCalendarItem) {
         this._items.push(item);
         return item;
-      } else
-        return null;
+      }
+      return null;
     }
     get items() {
       return this._items;
     }
     get itemCount() {
-      return this.items.length;
+      return this._items.length;
+    }
+    get reference() {
+      return this._reference;
+    }
+    /**
+     * Returns capacity in minutes for the given instant and day-of-week.
+     * If resourceId is provided, per-resource rules take precedence over global rules.
+     * Filter: item.resourceId == resourceId || item.resourceId == null
+     */
+    getCapacity(instant, day, resourceId) {
+      const filterByResource = (item) => item.resourceId == resourceId || item.resourceId == null;
+      const last = (arr) => arr.length ? arr[arr.length - 1] : void 0;
+      let capacity = this._capacity;
+      const dayRule = last(this._items.filter(
+        (item) => item.type == "rule" && item.day == day && item.from <= instant && item.to > instant && filterByResource(item)
+      ));
+      capacity = dayRule ? dayRule.capacity : capacity;
+      if (!dayRule) {
+        const baseRule = last(this._items.filter(
+          (item) => item.type == "rule" && item.day == -1 && item.from <= instant && item.to > instant && filterByResource(item)
+        ));
+        capacity = baseRule ? baseRule.capacity : capacity;
+      }
+      let calItem = last(this._items.filter(
+        (item) => item.type == "calendar" && item.day == day && item.from <= instant && item.to > instant && filterByResource(item)
+      ));
+      if (!calItem) {
+        calItem = last(this._items.filter(
+          (item) => item.type == "calendar" && item.day == -1 && item.from <= instant && item.to > instant && filterByResource(item)
+        ));
+      }
+      if (calItem) capacity = calItem.capacity;
+      return capacity;
     }
     calcDuration(item) {
-      let duration = 0;
-      let effort = 0;
-      let sum = 0;
-      let denom = this._denominator;
-      let reference = this._reference;
-      let step = this._step;
-      let minutes = 0;
-      let hours = 0;
-      let dayMinTot = 0;
+      var _a, _b, _c, _d, _e;
+      const resourceId = (_e = item.ResourceId) != null ? _e : (_d = (_c = (_b = (_a = item._scheduler) == null ? void 0 : _a.data) == null ? void 0 : _b.Resources) == null ? void 0 : _c[item.Resource]) == null ? void 0 : _d.Id;
+      let duration = 0, effort = 0, sum = 0;
+      const denom = this._denominator, step = this._step;
       while (effort < item.Effort) {
-        let cursor = item.From + sum;
+        const cursor = item.From + sum;
+        const dt = new Date(cursor * denom);
+        const capacity = this.getCapacity(cursor, dt.getUTCDay(), resourceId);
+        const dayMinTot = dt.getUTCHours() * 60 + dt.getUTCMinutes();
         let e = 0;
-        let dt = new Date(cursor * denom);
-        let capacity = this.getCapacity(cursor, dt.getUTCDay());
-        minutes = dt.getUTCMinutes();
-        hours = dt.getUTCHours();
-        dayMinTot = hours * 60 + minutes;
-        if (capacity > 0) {
-          if (dayMinTot >= capacity)
-            e = 0;
-          else
-            e = step;
-        }
+        if (capacity > 0 && dayMinTot < capacity) e = step;
         effort += e;
         effort = Math.round(effort * 1e3) / 1e3;
         sum += step;
       }
       duration = sum;
-      if (duration < step)
-        duration = step;
+      if (duration < step) duration = step;
       return duration;
     }
     calcEffort(item) {
-      let duration = item.Width;
-      let d = 0;
-      let effort = 0;
-      let denom = this._denominator;
-      let reference = this._reference;
-      let step = this._step;
-      let minutes = 0;
-      let hours = 0;
-      let dayMinTot = 0;
+      var _a, _b, _c, _d, _e;
+      const resourceId = (_e = item.ResourceId) != null ? _e : (_d = (_c = (_b = (_a = item._scheduler) == null ? void 0 : _a.data) == null ? void 0 : _b.Resources) == null ? void 0 : _c[item.Resource]) == null ? void 0 : _d.Id;
+      let d = 0, effort = 0;
+      const duration = item.Width;
+      const denom = this._denominator, step = this._step;
       while (d < duration) {
-        let cursor = item.From + d;
+        const cursor = item.From + d;
+        const dt = new Date(cursor * denom);
+        const capacity = this.getCapacity(cursor, dt.getUTCDay(), resourceId);
+        const dayMinTot = dt.getUTCHours() * 60 + dt.getUTCMinutes();
         let e = 0;
-        let dt = new Date(cursor * denom);
-        minutes = dt.getUTCMinutes();
-        hours = dt.getUTCHours();
-        dayMinTot = hours * 60 + minutes;
-        let capacity = this.getCapacity(cursor, dt.getUTCDay());
-        if (capacity > 0) {
-          if (dayMinTot >= capacity)
-            e = 0;
-          else
-            e = step;
-        }
+        if (capacity > 0 && dayMinTot < capacity) e = step;
         effort += e;
         effort = Math.ceil(effort * 100) / 100;
         d += step;
@@ -484,42 +484,19 @@
       return effort;
     }
     optimazeStart(item) {
+      var _a, _b, _c, _d, _e;
+      const resourceId = (_e = item.ResourceId) != null ? _e : (_d = (_c = (_b = (_a = item._scheduler) == null ? void 0 : _a.data) == null ? void 0 : _b.Resources) == null ? void 0 : _c[item.Resource]) == null ? void 0 : _d.Id;
       let sum = 0;
-      let denom = this._denominator;
-      let reference = this._reference;
-      let step = this._step;
-      let capacity = 0;
-      let go = true;
-      console.log("optimization start");
-      while (go && sum < reference * 20) {
-        let cursor = item.From + sum;
-        let dt = new Date(cursor * denom);
-        let minutes = dt.getUTCMinutes();
-        let hours = dt.getUTCHours();
-        let dayMinTot = hours * 60 + minutes;
-        capacity = this.getCapacity(cursor, dt.getUTCDay());
-        if (capacity == 0 || dayMinTot >= capacity) {
-          sum += step;
-          go = true;
-        } else
-          go = false;
+      const denom = this._denominator, step = this._step, reference = this._reference;
+      while (sum < reference * 20) {
+        const cursor = item.From + sum;
+        const dt = new Date(cursor * denom);
+        const capacity = this.getCapacity(cursor, dt.getUTCDay(), resourceId);
+        const dayMinTot = dt.getUTCHours() * 60 + dt.getUTCMinutes();
+        if (capacity == 0 || dayMinTot >= capacity) sum += step;
+        else break;
       }
       return item.From + sum;
-    }
-    getCapacity(instant, day) {
-      let capacity = this._capacity;
-      let dayRuleItem = this.items.filter((item) => item.type == "rule" && item.day == day && item.from <= instant && item.to > instant)[0];
-      capacity = dayRuleItem ? dayRuleItem.capacity : capacity;
-      if (dayRuleItem == void 0) {
-        let capacityRuleItem = this.items.filter((item) => item.type == "rule" && item.day == -1 && item.from <= instant && item.to > instant)[0];
-        capacity = capacityRuleItem ? capacityRuleItem.capacity : capacity;
-      }
-      let calendarItem = this.items.filter((item) => item.type == "calendar" && item.day == -1 && item.from <= instant && item.to > instant)[0];
-      capacity = calendarItem ? calendarItem.capacity : capacity;
-      return capacity;
-    }
-    get reference() {
-      return this._reference;
     }
   };
   var CalendarMousePos = class {
@@ -532,7 +509,7 @@
     }
   };
 
-  // src/ui/SchedulaItem.js
+  // src/ui/SchedulaItem.ts
   var SchedulaItem = class {
     constructor(scheduler, itemData, calendar) {
       this.Duration = 0;
@@ -561,11 +538,12 @@
       this._resource = -1;
       this._settings = scheduler.settings;
       this._calendar = scheduler.calendar;
-      if (calendar != null)
-        this._calendar = calendar;
+      if (calendar != null) this._calendar = calendar;
       this._offset = itemData.Offset;
       this._width = itemData.Width;
       this._from = this.calcFrom();
+      this._data.From = this._from;
+      this._data.To = this._from + this._width;
       if (this._calendar != null) {
         this._effort = this._calendar.calcEffort(this);
         this._data.Effort = this._effort;
@@ -574,12 +552,19 @@
     get Id() {
       return this._id;
     }
+    /** Resource Id string used by SchedulaCalendar.getCapacity for per-resource rules */
+    get ResourceId() {
+      var _a, _b;
+      const resIdx = this.Resource;
+      if (resIdx >= 0) return (_b = (_a = this._scheduler.data.Resources) == null ? void 0 : _a[resIdx]) == null ? void 0 : _b.Id;
+      return void 0;
+    }
     get Resource() {
       var _a;
       if (this._resource < 0) {
-        (_a = this._scheduler.data.Resources) === null || _a === void 0 ? void 0 : _a.forEach((resource, ri) => {
+        (_a = this._scheduler.data.Resources) == null ? void 0 : _a.forEach((resource, ri) => {
           var _a2;
-          (_a2 = resource.Items) === null || _a2 === void 0 ? void 0 : _a2.forEach((item) => {
+          (_a2 = resource.Items) == null ? void 0 : _a2.forEach((item) => {
             if (item.Id == this._data.Id) {
               this._resource = ri;
             }
@@ -593,18 +578,16 @@
       if (value >= 0) {
         let resourceIndex = Math.trunc(value);
         let y = this._settings.resourceHeight * resourceIndex + this._scheduler.headerHeight + this._settings.itemsPadding;
-        let x = parseFloat(((_a = this._element) === null || _a === void 0 ? void 0 : _a.getAttribute("x")) || "0");
+        let x = parseFloat(((_a = this._element) == null ? void 0 : _a.getAttribute("x")) || "0");
         if (resourceIndex != this._resource) {
-          (_b = this._scheduler.data.Resources[this.Resource].Items) === null || _b === void 0 ? void 0 : _b.splice((_c = this._scheduler.data.Resources[this.Resource].Items) === null || _c === void 0 ? void 0 : _c.indexOf(this._data), 1);
-          if (!this._scheduler.data.Resources[resourceIndex].Items)
-            this._scheduler.data.Resources[resourceIndex].Items = [];
+          (_c = this._scheduler.data.Resources[this.Resource].Items) == null ? void 0 : _c.splice((_b = this._scheduler.data.Resources[this.Resource].Items) == null ? void 0 : _b.indexOf(this._data), 1);
+          if (!this._scheduler.data.Resources[resourceIndex].Items) this._scheduler.data.Resources[resourceIndex].Items = [];
           this._data.Modified = true;
-          (_d = this._scheduler.data.Resources[resourceIndex].Items) === null || _d === void 0 ? void 0 : _d.push(this._data);
+          (_d = this._scheduler.data.Resources[resourceIndex].Items) == null ? void 0 : _d.push(this._data);
           this._resource = resourceIndex;
           this._data.Resource = this._resource;
           this.moveTo(x, y);
-        } else
-          this.moveTo(x, y);
+        } else this.moveTo(x, y);
       }
     }
     get From() {
@@ -621,10 +604,10 @@
     }
     set Offset(value) {
       if (value >= 0) {
-        this._offset = value;
+        this._offset = Math.round(value);
         this._from = this.calcFrom();
         if (this._calendar && this._settings.optimizeStart == true) {
-          this._from = this._calendar.optimazeStart(this);
+          this._from = Math.round(this._calendar.optimazeStart(this));
           this._offset = this.calcOffset();
         }
         let x = this.convertOffsetToX();
@@ -653,14 +636,13 @@
       return this._width;
     }
     set Width(value) {
-      if (value >= this._settings.gridStep) {
-        this._width = this.getModulo(value, this._settings.gridStep, this._settings.gridStep);
+      if (value > 0) {
+        this._width = Math.round(this.getModulo(value, this._settings.gridStep, 0));
         this._w = this._width / this._settings.timeUnitVal * this._settings.timeWidth;
         this.setWidth(this._w);
         if (this._calendar) {
           this._effort = this._calendar.calcEffort(this);
-        } else
-          this._effort = this._width;
+        } else this._effort = this._width;
         this._data.Width = this._width;
         this._data.Effort = this.Effort;
         this._data.To = this._from + this._width;
@@ -669,22 +651,22 @@
     }
     get W() {
       var _a, _b;
-      return parseFloat((_b = (_a = this._element) === null || _a === void 0 ? void 0 : _a.getAttribute("width")) !== null && _b !== void 0 ? _b : "0");
+      return parseFloat((_b = (_a = this._element) == null ? void 0 : _a.getAttribute("width")) != null ? _b : "0");
     }
     set W(value) {
-      if (value > 0) {
+      if (value >= 0) {
         let val = value * this._settings.timeUnitVal / this._settings.timeWidth;
         this.Width = val;
       }
     }
     get X() {
       var _a, _b;
-      return parseFloat((_b = (_a = this._element) === null || _a === void 0 ? void 0 : _a.getAttribute("x")) !== null && _b !== void 0 ? _b : "0");
+      return parseFloat((_b = (_a = this._element) == null ? void 0 : _a.getAttribute("x")) != null ? _b : "0");
     }
     set X(value) {
-      if (value > 0) {
+      if (value >= 0) {
         let offset = this.convertXToOffset(value);
-        this.Offset = this.getModulo(offset, this._settings.gridStep, this._settings.gridStep);
+        this.Offset = this.getModulo(offset, this._settings.gridStep, 0);
         this._x = this.convertOffsetToX();
         this._data.Offset = this._offset;
         this._data.Modified = true;
@@ -692,29 +674,26 @@
     }
     get Y() {
       var _a, _b;
-      return parseFloat((_b = (_a = this._element) === null || _a === void 0 ? void 0 : _a.getAttribute("y")) !== null && _b !== void 0 ? _b : "0");
+      return parseFloat((_b = (_a = this._element) == null ? void 0 : _a.getAttribute("y")) != null ? _b : "0");
     }
     set Y(value) {
       var _a, _b;
       let min = 0;
-      let max = (_b = (_a = this._scheduler.data.Resources) === null || _a === void 0 ? void 0 : _a.length) !== null && _b !== void 0 ? _b : 0;
+      let max = (_b = (_a = this._scheduler.data.Resources) == null ? void 0 : _a.length) != null ? _b : 0;
       let r = Math.trunc((value - this._scheduler.headerHeight - this._settings.itemsPadding) / this._settings.resourceHeight);
-      if (r < min)
-        r = min;
-      if (r > max)
-        r = max;
+      if (r < min) r = min;
+      if (r > max) r = max;
       this.Resource = r;
     }
     get Effort() {
       return this._effort;
     }
     set Effort(value) {
-      if (value >= this._settings.gridStep) {
-        this._effort = this.getModulo(value, this._settings.gridStep, this._settings.gridStep);
+      if (value > 0) {
+        this._effort = Math.round(this.getModulo(value, this._settings.gridStep, 0));
         if (this._calendar) {
-          this._width = this._calendar.calcDuration(this);
-        } else
-          this._width = this._effort;
+          this._width = Math.round(this._calendar.calcDuration(this));
+        } else this._width = this._effort;
         this._w = this._width / this._settings.timeUnitVal * this._settings.timeWidth;
         this.setWidth(this._w);
         this._data.Width = this._width;
@@ -724,9 +703,8 @@
     }
     moveTo(x, y) {
       var _a;
-      if (!this._element)
-        return;
-      if ((_a = this._settings.animation) !== null && _a !== void 0 ? _a : false) {
+      if (!this._element) return;
+      if ((_a = this._settings.animation) != null ? _a : false) {
         this.moveAnimatedTo(x, y);
       }
       this._element.setAttribute("x", x.toString());
@@ -734,10 +712,9 @@
     }
     moveAnimatedTo(x, y) {
       var _a, _b;
-      if (!this._element)
-        return;
-      let cx = parseFloat((_a = this._element.getAttribute("x")) !== null && _a !== void 0 ? _a : "0");
-      let cy = parseFloat((_b = this._element.getAttribute("y")) !== null && _b !== void 0 ? _b : "0");
+      if (!this._element) return;
+      let cx = parseFloat((_a = this._element.getAttribute("x")) != null ? _a : "0");
+      let cy = parseFloat((_b = this._element.getAttribute("y")) != null ? _b : "0");
       let animatex = document.createElementNS("http://www.w3.org/2000/svg", "animate");
       animatex.setAttribute("attributeName", "x");
       animatex.setAttribute("values", cx.toString() + ";" + x.toString());
@@ -762,13 +739,12 @@
       if (this._settings.animation == true) {
         this.setAnimatedWidth(width);
       }
-      (_a = this._element) === null || _a === void 0 ? void 0 : _a.setAttribute("width", width.toString());
+      (_a = this._element) == null ? void 0 : _a.setAttribute("width", width.toString());
     }
     setAnimatedWidth(width) {
       var _a;
-      if (!this._element)
-        return;
-      let w = parseFloat((_a = this._element.getAttribute("width")) !== null && _a !== void 0 ? _a : "0");
+      if (!this._element) return;
+      let w = parseFloat((_a = this._element.getAttribute("width")) != null ? _a : "0");
       let animatew = document.createElementNS("http://www.w3.org/2000/svg", "animate");
       animatew.setAttribute("attributeName", "width");
       animatew.setAttribute("values", w.toString() + ";" + width.toString());
@@ -780,7 +756,7 @@
       });
     }
     getModulo(value, step, min) {
-      const modulo = (value - (min !== null && min !== void 0 ? min : 0)) % step;
+      const modulo = (value - (min != null ? min : 0)) % step;
       const correction = modulo > step / 2 ? step - modulo : -modulo;
       let result = value + correction;
       result = min != null && result < min ? min : result;
@@ -819,8 +795,8 @@
       let result = true;
       let x1 = this.Offset;
       let x2 = this.Offset + this.Width;
-      if (this.Resource >= 0 && this.Resource < ((_b = (_a = this._scheduler.data.Resources) === null || _a === void 0 ? void 0 : _a.length) !== null && _b !== void 0 ? _b : 0)) {
-        (_c = this._scheduler.data.Resources[this.Resource].Items) === null || _c === void 0 ? void 0 : _c.forEach((item) => {
+      if (this.Resource >= 0 && this.Resource < ((_b = (_a = this._scheduler.data.Resources) == null ? void 0 : _a.length) != null ? _b : 0)) {
+        (_c = this._scheduler.data.Resources[this.Resource].Items) == null ? void 0 : _c.forEach((item) => {
           if (item.Id != this._data.Id) {
             let cx1 = item.Offset;
             let cx2 = item.Offset + item.Width;
@@ -1242,12 +1218,7 @@
       const calPlugin = this.getPlugin("calendar");
       if (calPlugin) calPlugin.applyData((_a = this.data) == null ? void 0 : _a.Calendar);
     }
-    getCalendarForResource(resourceId) {
-      const calPlugin = this.getPlugin("calendar");
-      if (calPlugin) {
-        const resCal = calPlugin.getResourceCalendar(String(resourceId));
-        if (resCal) return resCal;
-      }
+    getCalendarForResource(_resourceId) {
       return this.calendar;
     }
     setData(data) {
@@ -1711,6 +1682,7 @@
     // Note: Due to size limits, I am summarizing the remaining methods. I will need to complete the rest in a subsequent file part or assume they are copied from Scheduler.ts
     // For brevity in this task, I will include the critical rendering methods.
     drawBackGroud() {
+      var _a;
       var parent = document.getElementById("scheduler-background");
       if (parent) {
         var h = this.settings.resourceHeight * this.data.Resources.length;
@@ -1780,7 +1752,15 @@
               for (let rr = 0; rr < rcount; rr++) {
                 ry = this.headerHeight + rr * this.settings.resourceHeight;
                 rx = c * this.settings.timeWidth;
-                rw = this.settings.timeWidth * ratio;
+                let resRatio = ratio;
+                if (this.calendar && this.calendar.reference > 0) {
+                  const resId = (_a = this.data.Resources[rr]) == null ? void 0 : _a.Id;
+                  resRatio = this.calendar.getCapacity(cdate.getTime() / 6e4 + 10, cdate.getUTCDay(), resId) / this.calendar.reference;
+                  if (isNaN(resRatio)) resRatio = ratio;
+                  if (resRatio > 1) resRatio = 1;
+                  if (resRatio < 0) resRatio = 0;
+                }
+                rw = this.settings.timeWidth * resRatio;
                 if (isNaN(rw)) rw = 0;
                 const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
                 rect.setAttribute("x", rx.toString());
@@ -1788,8 +1768,8 @@
                 rect.setAttribute("width", rw.toString());
                 rect.setAttribute("height", this.settings.resourceHeight.toString());
                 rect.setAttribute("data-date", cdate.toUTCString());
-                rect.setAttribute("data-res", this.data.Resources[rr].id);
-                rect.setAttribute("class", "box-element");
+                rect.setAttribute("data-res", this.data.Resources[rr].Id);
+                rect.setAttribute("class", resRatio === 0 ? "box-element no-capacity" : "box-element");
                 rect.addEventListener("click", function(ev) {
                   if (typeof gridMouseClick == "function") {
                     gridMouseClick(ev, cdate);
@@ -4347,47 +4327,32 @@
   var CalendarPlugin = class {
     constructor() {
       this.name = "calendar";
-      this._resourceCalendars = /* @__PURE__ */ new Map();
     }
     init(core) {
+      var _a;
       this._core = core;
-      core.initCalendar();
+      this.applyData((_a = core.data) == null ? void 0 : _a.Calendar);
     }
     /**
-     * Builds the global SchedulaCalendar from Items without ResourceId,
-     * then builds per-resource calendars from Items with ResourceId.
-     * Called by core.initCalendar() whenever data changes.
+     * Builds one SchedulaCalendar with base rule + all items (global and per-resource).
+     * Sets core.calendar to the new calendar.
      */
     applyData(calendarData) {
-      var _a;
-      const cal = this._buildCalendar(calendarData);
+      var _a, _b;
+      const cal = new SchedulaCalendar();
+      const r = cal.newItem();
+      r.capacity = (_a = calendarData == null ? void 0 : calendarData.Reference) != null ? _a : cal.reference;
+      r.day = -1;
+      r.from = 0;
+      r.duration = 999999999;
+      r.type = "rule";
+      r.resourceId = null;
+      (_b = calendarData == null ? void 0 : calendarData.Items) == null ? void 0 : _b.forEach((item) => this._addRuleItem(cal, item));
       this._core.calendar = cal;
-      this._resourceCalendars.clear();
-      const items = (_a = calendarData == null ? void 0 : calendarData.Items) != null ? _a : [];
-      const resourceIds = [...new Set(
-        items.filter((i) => i.ResourceId != null).map((i) => String(i.ResourceId))
-      )];
-      resourceIds.forEach((id) => {
-        const rules = items.filter((i) => String(i.ResourceId) === id);
-        this._resourceCalendars.set(id, this._buildResourceCalendar(rules, cal));
-      });
     }
     /**
-     * Returns the per-resource SchedulaCalendar for the given resource Id,
-     * or null if no resource-specific rules are defined.
-     */
-    getResourceCalendar(resourceId) {
-      var _a;
-      return (_a = this._resourceCalendars.get(String(resourceId))) != null ? _a : null;
-    }
-    /**
-     * Adds or replaces a calendar exception for a specific resource.
-     * Writes to data.Calendar.Items with ResourceId — the single source of truth.
-     * Call scheduler.refresh() afterwards.
-     *
-     * @param resourceId  The resource Id (string or number)
-     * @param rule        { Day: 0-6, Capacity: minutes } for a weekly rule
-     *                    or { Day, Capacity, DateFrom, DateTo } for a date range
+     * Adds or replaces a calendar rule for a specific resource.
+     * Writes to data.Calendar.Items and rebuilds the calendar.
      */
     addResourceException(resourceId, rule) {
       var _a;
@@ -4399,40 +4364,10 @@
         (i) => String(i.ResourceId) !== id || i.Day !== rule.Day || i.DateFrom !== rule.DateFrom
       );
       calendarData.Items.push(__spreadProps(__spreadValues({}, rule), { ResourceId: id }));
-      const rules = calendarData.Items.filter((i) => String(i.ResourceId) === id);
-      this._resourceCalendars.set(id, this._buildResourceCalendar(rules, this._core.calendar));
+      this.applyData(calendarData);
     }
     destroy() {
-      this._resourceCalendars.clear();
       this._core = null;
-    }
-    // ── Internals ────────────────────────────────────────────────────────────
-    _buildCalendar(calendarData) {
-      var _a, _b;
-      const cal = new SchedulaCalendar();
-      const r = cal.newItem();
-      r.capacity = (_a = calendarData == null ? void 0 : calendarData.Reference) != null ? _a : cal.reference;
-      r.day = -1;
-      r.from = 0;
-      r.duration = 999999999;
-      r.type = "rule";
-      (_b = calendarData == null ? void 0 : calendarData.Items) == null ? void 0 : _b.filter((item) => item.ResourceId == null).forEach((item) => this._addRuleItem(cal, item));
-      return cal;
-    }
-    /**
-     * Builds a per-resource SchedulaCalendar inheriting the global base capacity
-     * and applying the given resource-specific rules on top.
-     */
-    _buildResourceCalendar(rules, globalCal) {
-      const cal = new SchedulaCalendar();
-      const base = cal.newItem();
-      base.capacity = globalCal.reference;
-      base.day = -1;
-      base.from = 0;
-      base.duration = 999999999;
-      base.type = "rule";
-      rules.forEach((rule) => this._addRuleItem(cal, rule));
-      return cal;
     }
     _addRuleItem(cal, item) {
       var _a;
@@ -4441,6 +4376,7 @@
       i.day = (_a = item.Day) != null ? _a : -1;
       i.from = item.DateFrom ? new Date(item.DateFrom).getTime() : 0;
       i.duration = item.DateFrom && item.DateTo ? (new Date(item.DateTo).getTime() - new Date(item.DateFrom).getTime()) / 6e4 : 999999999;
+      i.resourceId = item.ResourceId != null ? String(item.ResourceId) : null;
       i.type = "rule";
     }
   };

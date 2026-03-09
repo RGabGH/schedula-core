@@ -9,126 +9,76 @@ export class SchedulaCalendarItem {
     private _type: string = '';
     private _day: number = -1;
     private _orderIndex: number = 1000;
+    public resourceId: string | null = null;
 
     constructor() {
-
         var now = new Date();
         var date = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         this._from = Math.trunc(date.getTime() / this._denominator);
         this.type = 'event';
     }
 
+    get capacity() { return this._capacity; }
+    set capacity(val: number) { this._capacity = val; }
 
-    get capacity() {
-        return this._capacity;
-    }
-    set capacity(val: number) {
-        this._capacity = val;
-    }
-    get day() {
-        return this._day;
-    }
-    set day(val: number) {
-        if ((val >= -1) && (val <= 6)) this._day = val;
+    get day() { return this._day; }
+    set day(val: number) { if ((val >= -1) && (val <= 6)) this._day = val; }
 
-    }
-    get dateFrom() {
-        return new Date(this._from * this._denominator).toString();
+    get dateFrom() { return new Date(this._from * this._denominator).toString(); }
+    get dateTo() { return new Date((this._from + this._duration) * this._denominator); }
+
+    get duration() { return this._duration; }
+    set duration(value: number) {
+        var duration = this.getModulo(value);
+        if (duration > 0) this._duration = duration;
     }
 
-    get dateTo() {
-        return new Date((this._from + this._duration) * this._denominator);
-    }
-
-    get duration() {
-        return this._duration;
-    }
-
-    set denominator(value) {
+    set denominator(value: number) {
         this.from *= this._denominator;
         this.from /= value;
         this._capacity *= this._denominator;
         this._capacity /= value;
         this._denominator = value;
-
     }
 
-    set duration(value: number) {
-        var duration = value;
-        duration = this.getModulo(duration);
-        if (duration > 0) {
-
-            this._duration = duration;
-        }
-    }
     set from(value: number) {
         let f = Math.trunc(value / this._denominator);
         f = this.getModulo(f);
         this._from = f;
+    }
+    get from() { return this._from; }
 
-    }
-    get from() {
-        return this._from;
-    }
-    get to() {
-        return this._from + this._duration;
-    }
-    set type(value) {
-        this._type = value;
-        if (value == 'rule') {
-            this._orderIndex = 0;
-        }
-        else if (value == 'calendar') {
-            this._orderIndex = 1;
-        }
-        else if (value == 'event') {
-            this._orderIndex = 2;
-        }
-        else {
-            this._orderIndex = 1000;
-            this._type = 'event';
-        }
-
-
-    }
-    get type() {
-        return this._type;
-    }
-    get orderIndex() {
-        return this._orderIndex;
-    }
+    get to() { return this._from + this._duration; }
     set to(value: number) {
-
         let v = Math.trunc(value / this._denominator);
-
         v = this.getModulo(v);
-
-        if (v > 0 && v > this._from) {
-            this._duration = v - this._from;
-
-        }
-
+        if (v > 0 && v > this._from) this._duration = v - this._from;
     }
+
+    set type(value: string) {
+        this._type = value;
+        if (value == 'rule') { this._orderIndex = 0; }
+        else if (value == 'calendar' || value == 'exception') { this._orderIndex = 1; this._type = 'calendar'; }
+        else if (value == 'event') { this._orderIndex = 2; }
+        else { this._orderIndex = 1000; this._type = 'event'; }
+    }
+    get type() { return this._type; }
+    get orderIndex() { return this._orderIndex; }
+
     set dateFrom(value: string) {
         let dt = value;
-        if (!value.includes('T'))
-            dt += 'T00:00:00';
+        if (!value.includes('T')) dt += 'T00:00:00';
         let date = new Date(dt);
-
-
-        if (date.toString() != 'Invalid Date') {
-            this.from = date.getTime();
-        }
-        else
-            console.log(value + ' - Invalid Date')
+        if (date.toString() != 'Invalid Date') this.from = date.getTime();
+        else console.log(value + ' - Invalid Date');
     }
+
     private getModulo(value: number) {
         let v = value;
         let r = value % this._step;
-        if ((r) > (this._step / 2)) v = v - r + this._step; else v -= r;
+        if (r > this._step / 2) v = v - r + this._step; else v -= r;
         return v;
     }
-
 }
 
 export class SchedulaCalendar {
@@ -138,177 +88,127 @@ export class SchedulaCalendar {
     private _reference: number = 1440;
     private _step: number = 15;
 
-    newItem() {
-
+    newItem(): SchedulaCalendarItem {
         let item = new SchedulaCalendarItem();
         this._items.push(item);
-        return item
+        return item;
     }
-    addItem(item) {
 
-        if (item instanceof SchedulaCalendarItem) {
-            this._items.push(item);
-            return item;
+    addItem(item: SchedulaCalendarItem): SchedulaCalendarItem | null {
+        if (item instanceof SchedulaCalendarItem) { this._items.push(item); return item; }
+        return null;
+    }
+
+    get items() { return this._items; }
+    get itemCount() { return this._items.length; }
+    get reference() { return this._reference; }
+
+    /**
+     * Returns capacity in minutes for the given instant and day-of-week.
+     * If resourceId is provided, per-resource rules take precedence over global rules.
+     * Filter: item.resourceId == resourceId || item.resourceId == null
+     */
+    public getCapacity(instant: number, day: number, resourceId?: string): number {
+        const filterByResource = (item: SchedulaCalendarItem) =>
+            (item.resourceId == resourceId) || (item.resourceId == null);
+        const last = (arr: SchedulaCalendarItem[]) => arr.length ? arr[arr.length - 1] : undefined;
+
+        let capacity = this._capacity;
+
+        // Day-specific rule
+        const dayRule = last(this._items.filter(item =>
+            item.type == 'rule' && item.day == day &&
+            item.from <= instant && item.to > instant &&
+            filterByResource(item)
+        ));
+        capacity = dayRule ? dayRule.capacity : capacity;
+
+        // General rule (day == -1) if no day-specific rule found
+        if (!dayRule) {
+            const baseRule = last(this._items.filter(item =>
+                item.type == 'rule' && item.day == -1 &&
+                item.from <= instant && item.to > instant &&
+                filterByResource(item)
+            ));
+            capacity = baseRule ? baseRule.capacity : capacity;
         }
-        else return null;
 
+        // Calendar exception (overrides rules)
+        let calItem = last(this._items.filter(item =>
+            item.type == 'calendar' && item.day == day &&
+            item.from <= instant && item.to > instant &&
+            filterByResource(item)
+        ));
+        if (!calItem) {
+            calItem = last(this._items.filter(item =>
+                item.type == 'calendar' && item.day == -1 &&
+                item.from <= instant && item.to > instant &&
+                filterByResource(item)
+            ));
+        }
+        if (calItem) capacity = calItem.capacity;
+
+        return capacity;
     }
-    get items() {
-        return this._items;
-    }
 
-    get itemCount() {
-        return this.items.length
-    }
-
-    public calcDuration(item: any) {
-
-        let duration = 0;
-        let effort = 0;
-        let sum = 0;
-
-        let denom = this._denominator;
-        let reference = this._reference;
-        let step = this._step;
-        let minutes = 0;
-        let hours = 0;
-        let dayMinTot = 0;
+    public calcDuration(item: any): number {
+        const resourceId: string | undefined = item.ResourceId ?? item._scheduler?.data?.Resources?.[item.Resource]?.Id;
+        let duration = 0, effort = 0, sum = 0;
+        const denom = this._denominator, step = this._step;
 
         while (effort < item.Effort) {
-            let cursor = item.From + sum;
+            const cursor = item.From + sum;
+            const dt = new Date(cursor * denom);
+            const capacity = this.getCapacity(cursor, dt.getUTCDay(), resourceId);
+            const dayMinTot = dt.getUTCHours() * 60 + dt.getUTCMinutes();
             let e = 0;
-            let dt = new Date(cursor * denom);
-            //check rules
-            let capacity = this.getCapacity(cursor, dt.getUTCDay());
-            minutes = dt.getUTCMinutes();
-            hours = dt.getUTCHours();
-            dayMinTot = (hours * 60) + minutes;
-
-            if (capacity > 0) {
-                //  e=(capacity/reference)*step;  
-                if (dayMinTot >= capacity) e = 0;
-                else e = step;
-            }
+            if (capacity > 0 && dayMinTot < capacity) e = step;
             effort += e;
             effort = Math.round(effort * 1000) / 1000;
             sum += step;
-
         }
 
         duration = sum;
         if (duration < step) duration = step;
-
         return duration;
     }
 
-    public calcEffort(item: any) {
-
-
-        let duration = item.Width;
-
-        let d = 0;
-        let effort = 0;
-
-        let denom = this._denominator;
-        let reference = this._reference;
-        let step = this._step;
-        let minutes = 0;
-        let hours = 0;
-        let dayMinTot = 0;
+    public calcEffort(item: any): number {
+        const resourceId: string | undefined = item.ResourceId ?? item._scheduler?.data?.Resources?.[item.Resource]?.Id;
+        let d = 0, effort = 0;
+        const duration = item.Width;
+        const denom = this._denominator, step = this._step;
 
         while (d < duration) {
-            let cursor = item.From + d;
+            const cursor = item.From + d;
+            const dt = new Date(cursor * denom);
+            const capacity = this.getCapacity(cursor, dt.getUTCDay(), resourceId);
+            const dayMinTot = dt.getUTCHours() * 60 + dt.getUTCMinutes();
             let e = 0;
-
-            let dt = new Date(cursor * denom);
-            minutes = dt.getUTCMinutes();
-            hours = dt.getUTCHours();
-            dayMinTot = (hours * 60) + minutes;
-            //check rules
-            let capacity = this.getCapacity(cursor, dt.getUTCDay());
-
-            if (capacity > 0) {
-                if (dayMinTot >= capacity) e = 0;
-                else e = step;
-                //e=(capacity/reference)*step;  
-
-
-            }
+            if (capacity > 0 && dayMinTot < capacity) e = step;
             effort += e;
             effort = Math.ceil(effort * 100) / 100;
             d += step;
-
-
         }
-
-
-
 
         return effort;
     }
 
-    public optimazeStart(item: any) {
-
+    public optimazeStart(item: any): number {
+        const resourceId: string | undefined = item.ResourceId ?? item._scheduler?.data?.Resources?.[item.Resource]?.Id;
         let sum = 0;
-        let denom = this._denominator;
-        let reference = this._reference;
-        let step = this._step;
-        let capacity = 0;
-        let go = true;
-        console.log('optimization start');
-        while (go && sum < (reference * 20)) {
-            let cursor = item.From + sum;
-            let dt = new Date(cursor * denom);
-            let minutes = dt.getUTCMinutes();
-            let hours = dt.getUTCHours();
-            let dayMinTot = (hours * 60) + minutes;
-            // console.log(dayMinTot);
-            // console.log(cursor+ ' '+denom);
-            capacity = this.getCapacity(cursor, dt.getUTCDay());
+        const denom = this._denominator, step = this._step, reference = this._reference;
 
-            if ((capacity == 0) || (dayMinTot >= capacity)) {
-                sum += step;
-                go = true;
-            } else go = false;
-
-            //e=(capacity/reference)*step;  
-
-
-
-
+        while (sum < reference * 20) {
+            const cursor = item.From + sum;
+            const dt = new Date(cursor * denom);
+            const capacity = this.getCapacity(cursor, dt.getUTCDay(), resourceId);
+            const dayMinTot = dt.getUTCHours() * 60 + dt.getUTCMinutes();
+            if (capacity == 0 || dayMinTot >= capacity) sum += step;
+            else break;
         }
-
-
 
         return item.From + sum;
-    }
-    public getCapacity(instant, day) {
-
-        let capacity = this._capacity;
-
-        let dayRuleItem = this.items.filter(item =>
-            (item.type == 'rule' && item.day == day) && (item.from <= instant) && (item.to > instant)
-        )[0];
-
-        capacity = dayRuleItem ? dayRuleItem.capacity : capacity;
-
-        if (dayRuleItem == undefined) {
-
-            let capacityRuleItem = this.items.filter(item =>
-                (item.type == 'rule' && item.day == -1) && (item.from <= instant) && (item.to > instant)
-            )[0];
-            capacity = capacityRuleItem ? capacityRuleItem.capacity : capacity;
-        }
-        let calendarItem = this.items.filter(item =>
-            (item.type == 'calendar' && item.day == -1) && (item.from <= instant) && (item.to > instant)
-        )[0];
-
-        capacity = calendarItem ? calendarItem.capacity : capacity;
-
-        return capacity;
-    }
-    get reference() {
-        return this._reference;
     }
 }
 

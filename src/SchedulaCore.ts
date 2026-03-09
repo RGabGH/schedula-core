@@ -134,12 +134,7 @@ export class SchedulaCore implements ISchedulaCore {
         if (calPlugin) calPlugin.applyData(this.data?.Calendar);
     }
 
-    public getCalendarForResource(resourceId: string): SchedulaCalendar | null {
-        const calPlugin = this.getPlugin<any>('calendar');
-        if (calPlugin) {
-            const resCal = calPlugin.getResourceCalendar(String(resourceId));
-            if (resCal) return resCal;
-        }
+    public getCalendarForResource(_resourceId: string): SchedulaCalendar | null {
         return this.calendar;
     }
 
@@ -793,7 +788,16 @@ export class SchedulaCore implements ISchedulaCore {
                             ry = this.headerHeight + (rr * this.settings.resourceHeight);
                             rx = (c * this.settings.timeWidth);
 
-                            rw = this.settings.timeWidth * ratio;
+                            let resRatio = ratio;
+                            if (this.calendar && this.calendar.reference > 0) {
+                                const resId: string = this.data.Resources[rr]?.Id;
+                                resRatio = this.calendar.getCapacity((cdate.getTime() / 60000) + 10, cdate.getUTCDay(), resId) / this.calendar.reference;
+                                if (isNaN(resRatio)) resRatio = ratio;
+                                if (resRatio > 1) resRatio = 1;
+                                if (resRatio < 0) resRatio = 0;
+                            }
+
+                            rw = this.settings.timeWidth * resRatio;
                             if (isNaN(rw)) rw = 0;
                             const rect = document.createElementNS('http://www.w3.org/2000/svg', "rect");
 
@@ -802,8 +806,8 @@ export class SchedulaCore implements ISchedulaCore {
                             rect.setAttribute('width', rw.toString());
                             rect.setAttribute('height', this.settings.resourceHeight.toString());
                             rect.setAttribute('data-date', cdate.toUTCString());
-                            rect.setAttribute('data-res', this.data.Resources[rr].id);
-                            rect.setAttribute('class', 'box-element');
+                            rect.setAttribute('data-res', this.data.Resources[rr].Id);
+                            rect.setAttribute('class', resRatio === 0 ? 'box-element no-capacity' : 'box-element');
                             rect.addEventListener('click', function (ev: MouseEvent) {
                                 if (typeof gridMouseClick == 'function') {
                                     gridMouseClick(ev, cdate);
