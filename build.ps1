@@ -1,4 +1,4 @@
-# Build script for SmartScheduler
+build# Build script for SmartScheduler
 # Generates two bundles:
 #   schedula-core.min.js  — Public MIT bundle (Core only, readable)
 #   smartscheduler.min.js — PRO bundle (Core + all plugins, obfuscated)

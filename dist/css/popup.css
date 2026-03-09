@@ -3,7 +3,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 460px;
+    width: 520px;
     background-color: #fff;
     border: none;
     z-index: 9999;
@@ -145,8 +145,21 @@
     padding: 1px 2px;
     margin: 3px 1px;
   }
+  .scheduler-popup .tabcontent .formgroup-inline
+  {
+    gap: 6px;
+  }
+  .formgroup-inline > label {
+    width: auto;
+    flex-shrink: 0;
+  }
+  .formgroup-inline > .taskinput {
+    width: 0;
+    flex: 1;
+    min-width: 0;
+  }
   .formgroup>label{
-    width: 28%;
+    width: 18%;
     text-align: right;
     margin-right: 6px;
     color: #797979;
@@ -156,7 +169,7 @@
   .taskinput{
     margin: 0;
     padding: 4px 6px;
-    width: 72%;
+    width: 82%;
     font-size: 13px;
     border: 1px solid #ddd;
     border-radius: 3px;

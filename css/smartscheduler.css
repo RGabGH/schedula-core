@@ -150,6 +150,11 @@ text {
     fill: #efefef;
     stroke: lightgray;
     stroke-width: 1;
+    transition: fill 0.2s;
+}
+
+.monthbox:hover {
+    fill: #818cf8;
 }
 
 .header-text {
@@ -236,30 +241,18 @@ text {
 /******************************************* scheduler elements */
 
 .box-element {
-    fill: white;
-    transition: 0.3s;
-    opacity: 1;
-    /* stroke:#5c38fc;
-    stroke-width: 0.06;
-    ry:1.5; */
+    fill: transparent;
+    transition: fill 0.25s;
+    color: rgba(0, 0, 0, 0.15);
 }
 
-.box-element.sunday {
-    fill: lightgray;
-}
-
-
-
-.box-element.today {
-    fill: rgb(196, 78, 176);
+.box-element.no-capacity {
+    fill: url(#obliqueLines);
+    transition: none;
 }
 
 .box-element:hover {
-    opacity: 0.5;
-
-    fill: rgb(219, 236, 248);
-    stroke-width: 1;
-    stroke: lightskyblue;
+    fill: rgba(0, 0, 0, 0.06);
 }
 
 .daybox-element {
@@ -272,11 +265,11 @@ text {
 }
 
 .daybox-element.saturday {
-    fill: #c0b4b4;
+    fill: #d4d8f0;
 }
 
 .daybox-element.sunday {
-    fill: #a39595;
+    fill: #c8cde8;
 }
 
 /********************************************* sidebar */

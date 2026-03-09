@@ -51,6 +51,14 @@ export class SchedulaItem {
         this._from = this.calcFrom();
         this._data.From = this._from;
         this._data.To = this._from + this._width;
+
+        // Override with per-resource calendar if available
+        const resIdx = this.Resource;
+        if (resIdx >= 0) {
+            const resCal = (scheduler as any).getCalendarForResource?.(scheduler.data.Resources[resIdx].Id);
+            if (resCal) this._calendar = resCal;
+        }
+
         if (this._calendar != null) {
             this._effort = this._calendar.calcEffort(this);
             this._data.Effort = this._effort;
@@ -86,6 +94,14 @@ export class SchedulaItem {
                 this._scheduler.data.Resources[resourceIndex].Items?.push(this._data);
                 this._resource = resourceIndex;
                 this._data.Resource = this._resource;
+
+                // Update calendar for new resource and recalculate position + width
+                const newCal = (this._scheduler as any).getCalendarForResource?.(this._scheduler.data.Resources[resourceIndex].Id);
+                if (newCal && newCal !== this._calendar) {
+                    this._calendar = newCal;
+                    this.Offset = this._offset;
+                    x = parseFloat(this._element?.getAttribute('x') || '0');
+                }
 
                 this.moveTo(x, y);
             }

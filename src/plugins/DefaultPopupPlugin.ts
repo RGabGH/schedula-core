@@ -62,11 +62,14 @@ export class DefaultPopupPlugin implements ISchedulaPlugin, ITaskPopup {
             year: 'numeric', month: 'numeric', day: 'numeric',
             hour: '2-digit', minute: '2-digit'
         }) : '';
+        const fmtMins = (mins: number) => mins != null ? `${Math.floor(mins / 60)}h ${String(Math.trunc(mins) % 60).padStart(2, '0')}m` : '';
         (popup.querySelector('#scheduler-default-popup-title') as HTMLElement).textContent = item.Text || 'Task';
         (popup.querySelector('#default-popup-field-text') as HTMLInputElement).value = item.Text || '';
         (popup.querySelector('#default-popup-field-desc') as HTMLInputElement).value = item.Description || '';
         (popup.querySelector('#default-popup-field-from') as HTMLInputElement).value = fmt(item.From);
         (popup.querySelector('#default-popup-field-to') as HTMLInputElement).value = fmt(item.To);
+        (popup.querySelector('#default-popup-field-duration') as HTMLInputElement).value = fmtMins(item.Width);
+        (popup.querySelector('#default-popup-field-effort') as HTMLInputElement).value = fmtMins(item.Effort);
         this._applyColor(popup, item.Color1);
         (popup.querySelector('#default-popup-field-completion') as HTMLInputElement).value = item.Completion ?? '';
         (popup.querySelector('#default-popup-field-ref') as HTMLInputElement).value = item.Reference || '';
@@ -98,8 +101,8 @@ export class DefaultPopupPlugin implements ISchedulaPlugin, ITaskPopup {
                         <div class="tabcontent active" id="scheduler-default-popup-tab-general">
                             <div class="formgroup"><label>Text</label><input class="taskinput" id="default-popup-field-text" type="text"></div>
                             <div class="formgroup"><label>Description</label><input class="taskinput" id="default-popup-field-desc" type="text"></div>
-                            <div class="formgroup"><label>From</label><input class="taskinput" id="default-popup-field-from" type="text" readonly></div>
-                            <div class="formgroup"><label>To</label><input class="taskinput" id="default-popup-field-to" type="text" readonly></div>
+                            <div class="formgroup formgroup-inline"><label>From</label><input class="taskinput" id="default-popup-field-from" type="text" readonly><label>To</label><input class="taskinput" id="default-popup-field-to" type="text" readonly></div>
+                            <div class="formgroup formgroup-inline"><label>Duration</label><input class="taskinput" id="default-popup-field-duration" type="text" readonly title="Tempo totale (inclusi non lavorativi)"><label>Effort</label><input class="taskinput" id="default-popup-field-effort" type="text" readonly title="Tempo lavorativo effettivo"></div>
                             <div class="formgroup"><label>Color</label><div class="color-field-wrapper"><div class="color-swatch" id="default-popup-color-swatch"></div><span class="color-field-label" id="default-popup-color-label">Non assegnato</span><input type="color" id="default-popup-field-color" tabindex="-1" style="position:absolute;opacity:0;width:0;height:0;pointer-events:none"><button type="button" class="color-clear-btn" id="default-popup-color-clear">&#x2715;</button></div></div>
                             <div class="formgroup"><label>Completion %</label><input class="taskinput" id="default-popup-field-completion" type="number" min="0" max="100"></div>
                             <div class="formgroup"><label>Reference</label><input class="taskinput" id="default-popup-field-ref" type="text"></div>
@@ -154,12 +157,15 @@ export class DefaultPopupPlugin implements ISchedulaPlugin, ITaskPopup {
             year: 'numeric', month: 'numeric', day: 'numeric',
             hour: '2-digit', minute: '2-digit'
         }) : '';
+        const fmtMins = (mins: number) => mins != null ? `${Math.floor(mins / 60)}h ${String(Math.trunc(mins) % 60).padStart(2, '0')}m` : '';
 
         (popup.querySelector('#scheduler-default-popup-title') as HTMLElement).textContent = item.Text || 'Task';
         (popup.querySelector('#default-popup-field-text') as HTMLInputElement).value = item.Text || '';
         (popup.querySelector('#default-popup-field-desc') as HTMLInputElement).value = item.Description || '';
         (popup.querySelector('#default-popup-field-from') as HTMLInputElement).value = fmt(item.From);
         (popup.querySelector('#default-popup-field-to') as HTMLInputElement).value = fmt(item.To);
+        (popup.querySelector('#default-popup-field-duration') as HTMLInputElement).value = fmtMins(item.Width);
+        (popup.querySelector('#default-popup-field-effort') as HTMLInputElement).value = fmtMins(item.Effort);
         this._applyColor(popup, item.Color1);
         (popup.querySelector('#default-popup-field-completion') as HTMLInputElement).value = item.Completion ?? '';
         (popup.querySelector('#default-popup-field-ref') as HTMLInputElement).value = item.Reference || '';

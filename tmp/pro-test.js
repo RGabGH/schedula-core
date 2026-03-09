@@ -1,5 +1,7 @@
 (() => {
   var __defProp = Object.defineProperty;
+  var __defProps = Object.defineProperties;
+  var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
   var __getOwnPropSymbols = Object.getOwnPropertySymbols;
   var __hasOwnProp = Object.prototype.hasOwnProperty;
   var __propIsEnum = Object.prototype.propertyIsEnumerable;
@@ -15,6 +17,7 @@
       }
     return a;
   };
+  var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 
   // src/models/SchedulaSettings.js
   var SchedulaSettings = class {
@@ -895,11 +898,14 @@
         hour: "2-digit",
         minute: "2-digit"
       }) : "";
+      const fmtMins = (mins) => mins != null ? `${Math.floor(mins / 60)}h ${String(Math.trunc(mins) % 60).padStart(2, "0")}m` : "";
       popup.querySelector("#scheduler-default-popup-title").textContent = item.Text || "Task";
       popup.querySelector("#default-popup-field-text").value = item.Text || "";
       popup.querySelector("#default-popup-field-desc").value = item.Description || "";
       popup.querySelector("#default-popup-field-from").value = fmt(item.From);
       popup.querySelector("#default-popup-field-to").value = fmt(item.To);
+      popup.querySelector("#default-popup-field-duration").value = fmtMins(item.Width);
+      popup.querySelector("#default-popup-field-effort").value = fmtMins(item.Effort);
       this._applyColor(popup, item.Color1);
       popup.querySelector("#default-popup-field-completion").value = (_a = item.Completion) != null ? _a : "";
       popup.querySelector("#default-popup-field-ref").value = item.Reference || "";
@@ -929,8 +935,8 @@
                         <div class="tabcontent active" id="scheduler-default-popup-tab-general">
                             <div class="formgroup"><label>Text</label><input class="taskinput" id="default-popup-field-text" type="text"></div>
                             <div class="formgroup"><label>Description</label><input class="taskinput" id="default-popup-field-desc" type="text"></div>
-                            <div class="formgroup"><label>From</label><input class="taskinput" id="default-popup-field-from" type="text" readonly></div>
-                            <div class="formgroup"><label>To</label><input class="taskinput" id="default-popup-field-to" type="text" readonly></div>
+                            <div class="formgroup formgroup-inline"><label>From</label><input class="taskinput" id="default-popup-field-from" type="text" readonly><label>To</label><input class="taskinput" id="default-popup-field-to" type="text" readonly></div>
+                            <div class="formgroup formgroup-inline"><label>Duration</label><input class="taskinput" id="default-popup-field-duration" type="text" readonly title="Tempo totale (inclusi non lavorativi)"><label>Effort</label><input class="taskinput" id="default-popup-field-effort" type="text" readonly title="Tempo lavorativo effettivo"></div>
                             <div class="formgroup"><label>Color</label><div class="color-field-wrapper"><div class="color-swatch" id="default-popup-color-swatch"></div><span class="color-field-label" id="default-popup-color-label">Non assegnato</span><input type="color" id="default-popup-field-color" tabindex="-1" style="position:absolute;opacity:0;width:0;height:0;pointer-events:none"><button type="button" class="color-clear-btn" id="default-popup-color-clear">&#x2715;</button></div></div>
                             <div class="formgroup"><label>Completion %</label><input class="taskinput" id="default-popup-field-completion" type="number" min="0" max="100"></div>
                             <div class="formgroup"><label>Reference</label><input class="taskinput" id="default-popup-field-ref" type="text"></div>
@@ -989,11 +995,14 @@
         hour: "2-digit",
         minute: "2-digit"
       }) : "";
+      const fmtMins = (mins) => mins != null ? `${Math.floor(mins / 60)}h ${String(Math.trunc(mins) % 60).padStart(2, "0")}m` : "";
       popup.querySelector("#scheduler-default-popup-title").textContent = item.Text || "Task";
       popup.querySelector("#default-popup-field-text").value = item.Text || "";
       popup.querySelector("#default-popup-field-desc").value = item.Description || "";
       popup.querySelector("#default-popup-field-from").value = fmt(item.From);
       popup.querySelector("#default-popup-field-to").value = fmt(item.To);
+      popup.querySelector("#default-popup-field-duration").value = fmtMins(item.Width);
+      popup.querySelector("#default-popup-field-effort").value = fmtMins(item.Effort);
       this._applyColor(popup, item.Color1);
       popup.querySelector("#default-popup-field-completion").value = (_a = item.Completion) != null ? _a : "";
       popup.querySelector("#default-popup-field-ref").value = item.Reference || "";
@@ -1223,27 +1232,23 @@
     }
     initCalendar() {
       var _a;
-      this.calendar = null;
-      if (this.data.Calendar) {
-        this.calendar = new SchedulaCalendar();
-        let r = this.calendar.newItem();
-        r.capacity = this.data.Calendar.Reference;
-        r.day = -1;
-        r.from = 0;
-        r.duration = 999999999;
-        r.type = "rule";
-        (_a = this.data.Calendar.Items) == null ? void 0 : _a.forEach((item) => {
-          let i = this.calendar.newItem();
-          i.capacity = item.Capacity;
-          i.day = item.Day;
-          let dtfrom = new Date(item.DateFrom);
-          let dtto = new Date(item.DateTo);
-          let f = Math.trunc(dtfrom.getTime() / 6e4) * 6e4;
-          i.from = f;
-          i.duration = Math.round((dtto.getTime() - dtfrom.getTime()) / 6e4);
-          i.type = "rule";
-        });
+      this.calendar = new SchedulaCalendar();
+      let r = this.calendar.newItem();
+      r.capacity = this.calendar.reference;
+      r.day = -1;
+      r.from = 0;
+      r.duration = 999999999;
+      r.type = "rule";
+      const calPlugin = this.getPlugin("calendar");
+      if (calPlugin) calPlugin.applyData((_a = this.data) == null ? void 0 : _a.Calendar);
+    }
+    getCalendarForResource(resourceId) {
+      const calPlugin = this.getPlugin("calendar");
+      if (calPlugin) {
+        const resCal = calPlugin.getResourceCalendar(String(resourceId));
+        if (resCal) return resCal;
       }
+      return this.calendar;
     }
     setData(data) {
       this.data = data;
@@ -1298,6 +1303,7 @@
           }
         }
         this.draw();
+        this.storeData();
       }
     }
     init() {
@@ -1435,6 +1441,7 @@
           dropped.Effort = dropped.Width;
           let scitem = new SchedulaItem(this, dropped, this.calendar);
           scitem.Effort = dropped.Width;
+          if (this.settings.optimizeStart) scitem.Offset = scitem.Offset;
           if (typeof modified === "function") modified();
           if (data.elementId) (_b = document.getElementById(data.elementId)) == null ? void 0 : _b.remove();
         }
@@ -1732,6 +1739,7 @@
           });
           let rcount = this.data.Resources.length;
           var today = /* @__PURE__ */ new Date();
+          console.log(this.calendar);
           for (let c = 0; c < this.settings.timeUnitsCount; c++) {
             let hilight = false;
             let dt = this.settings.date;
@@ -3677,7 +3685,7 @@
     }
     // ── External drop ──────────────────────────────────────────────────────
     onDrop(event) {
-      var _a, _b, _c, _d, _e;
+      var _a, _b, _c, _d, _e, _f, _g;
       event.stopImmediatePropagation();
       const core = this._core;
       const settings = core.settings;
@@ -3697,6 +3705,13 @@
           timespan = item.Offset + item.Width;
         }
       });
+      if (settings.optimizeStart) {
+        const cal = (_f = (_e = core.getCalendarForResource) == null ? void 0 : _e.call(core, resource.Id)) != null ? _f : core.calendar;
+        if (cal) {
+          const newFrom = cal.optimazeStart({ From: sd.getTime() / 1e3 / 60 + timespan });
+          timespan = newFrom - sd.getTime() / 1e3 / 60;
+        }
+      }
       const ra = Math.floor(Math.random() * 1e7);
       const dropped = {
         Id: "_temp_id_" + ra,
@@ -3718,7 +3733,7 @@
       if (!resource.Items) resource.Items = [];
       resource.Items.push(dropped);
       if (typeof window.modified === "function") window.modified();
-      if (data.elementId) (_e = document.getElementById(data.elementId)) == null ? void 0 : _e.remove();
+      if (data.elementId) (_g = document.getElementById(data.elementId)) == null ? void 0 : _g.remove();
       core.init();
     }
     // ── Hover ──────────────────────────────────────────────────────────────
@@ -4195,22 +4210,20 @@
       if (cell == null ? void 0 : cell.dataset.date) {
         return { type: "cell", date: cell.dataset.date, resourceId: cell.dataset.res };
       }
+      const dayCell = target.closest("rect.daybox-element");
+      if (dayCell == null ? void 0 : dayCell.dataset.date) {
+        const core = this._core;
+        const resIndex = Math.floor((e.offsetY - core.headerHeight) / core.settings.resourceHeight);
+        const resourceId = resIndex >= 0 && resIndex < core.data.Resources.length ? String(resIndex) : void 0;
+        return { type: "cell", date: dayCell.dataset.date, resourceId };
+      }
       return null;
     }
     // ── Action dispatch ──────────────────────────────────────────────────────
     _dispatch(ctx, actionName, description, capacity, classes) {
       var _a;
       const isDelete = actionName === "Elimina";
-      const detail = ctx.type === "task" ? { action: actionName, TaskId: ctx.taskId, TaskRef: ctx.taskRef, TaskKey: ctx.taskKey } : {
-        DateFrom: ctx.date,
-        DateTo: ctx.date,
-        Name: isDelete ? "" : actionName,
-        Description: description,
-        Capacity: capacity,
-        Classes: classes,
-        ResourceId: ctx.resourceId ? parseInt(ctx.resourceId, 10) : null,
-        isDelete
-      };
+      const detail = ctx.type === "task" ? { action: actionName, TaskId: ctx.taskId, TaskRef: ctx.taskRef, TaskKey: ctx.taskKey } : { DateFrom: ctx.date, DateTo: ctx.date, Name: isDelete ? "" : actionName, Description: description, Capacity: capacity, Classes: classes, ResourceId: ctx.resourceId ? parseInt(ctx.resourceId, 10) : null, isDelete };
       const eventName = ctx.type === "task" ? "schedulatask:action" : "schedulacalendar:action";
       const svg = (_a = this._core) == null ? void 0 : _a.schedulerSVGElement;
       svg == null ? void 0 : svg.dispatchEvent(new CustomEvent(eventName, { bubbles: true, detail }));
@@ -4330,6 +4343,108 @@
     }
   };
 
+  // src/plugins/CalendarPlugin.ts
+  var CalendarPlugin = class {
+    constructor() {
+      this.name = "calendar";
+      this._resourceCalendars = /* @__PURE__ */ new Map();
+    }
+    init(core) {
+      this._core = core;
+      core.initCalendar();
+    }
+    /**
+     * Builds the global SchedulaCalendar from Items without ResourceId,
+     * then builds per-resource calendars from Items with ResourceId.
+     * Called by core.initCalendar() whenever data changes.
+     */
+    applyData(calendarData) {
+      var _a;
+      const cal = this._buildCalendar(calendarData);
+      this._core.calendar = cal;
+      this._resourceCalendars.clear();
+      const items = (_a = calendarData == null ? void 0 : calendarData.Items) != null ? _a : [];
+      const resourceIds = [...new Set(
+        items.filter((i) => i.ResourceId != null).map((i) => String(i.ResourceId))
+      )];
+      resourceIds.forEach((id) => {
+        const rules = items.filter((i) => String(i.ResourceId) === id);
+        this._resourceCalendars.set(id, this._buildResourceCalendar(rules, cal));
+      });
+    }
+    /**
+     * Returns the per-resource SchedulaCalendar for the given resource Id,
+     * or null if no resource-specific rules are defined.
+     */
+    getResourceCalendar(resourceId) {
+      var _a;
+      return (_a = this._resourceCalendars.get(String(resourceId))) != null ? _a : null;
+    }
+    /**
+     * Adds or replaces a calendar exception for a specific resource.
+     * Writes to data.Calendar.Items with ResourceId — the single source of truth.
+     * Call scheduler.refresh() afterwards.
+     *
+     * @param resourceId  The resource Id (string or number)
+     * @param rule        { Day: 0-6, Capacity: minutes } for a weekly rule
+     *                    or { Day, Capacity, DateFrom, DateTo } for a date range
+     */
+    addResourceException(resourceId, rule) {
+      var _a;
+      const id = String(resourceId);
+      const calendarData = (_a = this._core.data) == null ? void 0 : _a.Calendar;
+      if (!calendarData) return;
+      if (!calendarData.Items) calendarData.Items = [];
+      calendarData.Items = calendarData.Items.filter(
+        (i) => String(i.ResourceId) !== id || i.Day !== rule.Day || i.DateFrom !== rule.DateFrom
+      );
+      calendarData.Items.push(__spreadProps(__spreadValues({}, rule), { ResourceId: id }));
+      const rules = calendarData.Items.filter((i) => String(i.ResourceId) === id);
+      this._resourceCalendars.set(id, this._buildResourceCalendar(rules, this._core.calendar));
+    }
+    destroy() {
+      this._resourceCalendars.clear();
+      this._core = null;
+    }
+    // ── Internals ────────────────────────────────────────────────────────────
+    _buildCalendar(calendarData) {
+      var _a, _b;
+      const cal = new SchedulaCalendar();
+      const r = cal.newItem();
+      r.capacity = (_a = calendarData == null ? void 0 : calendarData.Reference) != null ? _a : cal.reference;
+      r.day = -1;
+      r.from = 0;
+      r.duration = 999999999;
+      r.type = "rule";
+      (_b = calendarData == null ? void 0 : calendarData.Items) == null ? void 0 : _b.filter((item) => item.ResourceId == null).forEach((item) => this._addRuleItem(cal, item));
+      return cal;
+    }
+    /**
+     * Builds a per-resource SchedulaCalendar inheriting the global base capacity
+     * and applying the given resource-specific rules on top.
+     */
+    _buildResourceCalendar(rules, globalCal) {
+      const cal = new SchedulaCalendar();
+      const base = cal.newItem();
+      base.capacity = globalCal.reference;
+      base.day = -1;
+      base.from = 0;
+      base.duration = 999999999;
+      base.type = "rule";
+      rules.forEach((rule) => this._addRuleItem(cal, rule));
+      return cal;
+    }
+    _addRuleItem(cal, item) {
+      var _a;
+      const i = cal.newItem();
+      i.capacity = item.Capacity;
+      i.day = (_a = item.Day) != null ? _a : -1;
+      i.from = item.DateFrom ? new Date(item.DateFrom).getTime() : 0;
+      i.duration = item.DateFrom && item.DateTo ? (new Date(item.DateTo).getTime() - new Date(item.DateFrom).getTime()) / 6e4 : 999999999;
+      i.type = "rule";
+    }
+  };
+
   // src/index-pro.ts
   window.SchedulaCore = SchedulaCore;
   window.SchedulaSettings = SchedulaSettings2;
@@ -4339,6 +4454,7 @@
   window.EventsPlugin = EventsPlugin;
   window.DefaultPopupPlugin = DefaultPopupPlugin;
   window.ContextMenuPlugin = ContextMenuPlugin;
+  window.CalendarPlugin = CalendarPlugin;
   window.validateLicense = validateLicense;
   window.isPro = isPro;
 })();

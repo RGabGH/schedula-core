@@ -45,28 +45,25 @@ export class SchedulaCore {
         this.initCalendar();
     }
     initCalendar() {
-        var _a;
-        this.calendar = null;
-        if (this.data.Calendar) {
-            this.calendar = new SchedulaCalendar();
-            let r = this.calendar.newItem();
-            r.capacity = this.data.Calendar.Reference;
-            r.day = -1;
-            r.from = 0;
-            r.duration = 999999999;
-            r.type = 'rule';
-            (_a = this.data.Calendar.Items) === null || _a === void 0 ? void 0 : _a.forEach((item) => {
-                let i = this.calendar.newItem();
-                i.capacity = item.Capacity;
-                i.day = item.Day;
-                let dtfrom = new Date(item.DateFrom);
-                let dtto = new Date(item.DateTo);
-                let f = dtfrom.getTime();
-                i.from = f;
-                i.duration = (new Date(item.DateTo).getTime() / 60000) - (new Date(item.DateFrom).getTime() / 60000);
-                i.type = 'rule';
-            });
+        // Core always creates a default full-capacity calendar.
+        // CalendarPlugin (PRO) overrides it with data.Calendar rules.
+        this.calendar = new SchedulaCalendar();
+        let r = this.calendar.newItem();
+        r.capacity = this.calendar.reference; // 1440 — full capacity default
+        r.day = -1;
+        r.from = 0;
+        r.duration = 999999999;
+        r.type = 'rule';
+        const calPlugin = this.getPlugin('calendar');
+        if (calPlugin) calPlugin.applyData(this.data.Calendar);
+    }
+    getCalendarForResource(resourceId) {
+        const calPlugin = this.getPlugin('calendar');
+        if (calPlugin) {
+            const resCal = calPlugin.getResourceCalendar(String(resourceId));
+            if (resCal) return resCal;
         }
+        return this.calendar;
     }
     setData(data) {
         this.data = data;
@@ -552,6 +549,8 @@ export class SchedulaCore {
                         if (this.calendar != null) {
                             if (this.calendar.reference > 0) {
                                 ratio = this.calendar.getCapacity((cdate.getTime() / 60000) + 10, cdate.getUTCDay()) / this.calendar.reference;
+                                if (isNaN(ratio))
+                                    ratio = 1;
                                 if (ratio > 1)
                                     ratio = 1;
                                 if (ratio < 0)
@@ -582,20 +581,31 @@ export class SchedulaCore {
                             box.classList.add('saturday');
                         parent.append(line);
                         parent.append(box);
+                        const calPlugin = this.getPlugin('calendar');
                         for (let rr = 0; rr < rcount; rr++) {
                             ry = this.headerHeight + (rr * this.settings.resourceHeight);
                             rx = (c * this.settings.timeWidth);
-                            rw = this.settings.timeWidth * ratio;
+                            let resRatio = ratio;
+                            if (calPlugin) {
+                                const resCal = calPlugin.getResourceCalendar(this.data.Resources[rr].Id);
+                                if (resCal) {
+                                    resRatio = resCal.getCapacity((cdate.getTime() / 60000) + 10, cdate.getUTCDay()) / resCal.reference;
+                                    if (isNaN(resRatio)) resRatio = ratio;
+                                    if (resRatio > 1) resRatio = 1;
+                                    if (resRatio < 0) resRatio = 0;
+                                }
+                            }
+                            rw = this.settings.timeWidth * resRatio;
                             if (isNaN(rw))
                                 rw = 0;
                             const rect = document.createElementNS('http://www.w3.org/2000/svg', "rect");
                             rect.setAttribute('x', rx.toString());
                             rect.setAttribute('y', ry.toString());
-                            rect.setAttribute('width', rw.toString());
+                            rect.setAttribute('width', resRatio === 0 ? this.settings.timeWidth.toString() : rw.toString());
                             rect.setAttribute('height', this.settings.resourceHeight.toString());
                             rect.setAttribute('data-date', cdate.toUTCString());
                             rect.setAttribute('data-res', this.data.Resources[rr].id);
-                            rect.setAttribute('class', 'box-element');
+                            rect.setAttribute('class', resRatio === 0 ? 'box-element no-capacity' : 'box-element');
                             rect.addEventListener('click', function (ev) {
                                 if (typeof gridMouseClick == 'function') {
                                     gridMouseClick(ev, cdate);

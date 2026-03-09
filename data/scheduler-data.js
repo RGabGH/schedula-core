@@ -214,15 +214,10 @@ var schedulerData = {
     ],
 
     Calendar: {
-        Exceptions: [{
-            Date: "2023-03-25",
-            Name: "Christmas",
-            Recurrent: true
-        }, {
-            Date: "2024-01-01",
-            Name: "New Year",
-            Recurrent: true
-        }],
+        Items: [
+            { Day: 1, Capacity: 0 },
+            { Day: 6, Capacity: 0 }
+        ]
     },
     Events: [{
         Id: "EVENT 1",
@@ -379,6 +374,8 @@ var schedulerData2 = {
     ],
 
     Calendar: {
+        Denominator: 60000,
+        Reference:1440,
         Exceptions: [{
             Date: "2023-03-25",
             Name: "Christmas",

@@ -123,27 +123,24 @@ export class SchedulaCore implements ISchedulaCore {
     }
 
     private initCalendar() {
-        this.calendar = null;
-        if (this.data.Calendar) {
-            this.calendar = new SchedulaCalendar();
-            let r = this.calendar.newItem();
-            r.capacity = this.data.Calendar.Reference;
-            r.day = -1;
-            r.from = 0;
-            r.duration = 999999999;
-            r.type = 'rule';
-            this.data.Calendar.Items?.forEach((item: any) => {
-                let i = this.calendar!.newItem();
-                i.capacity = item.Capacity;
-                i.day = item.Day;
-                let dtfrom = new Date(item.DateFrom);
-                let dtto = new Date(item.DateTo);
-                let f = Math.trunc(dtfrom.getTime() / 60000) * 60000; // Round to whole minutes in ms
-                i.from = f;
-                i.duration = Math.round((dtto.getTime() - dtfrom.getTime()) / 60000);
-                i.type = 'rule';
-            });
+        this.calendar = new SchedulaCalendar();
+        let r = this.calendar.newItem();
+        r.capacity = this.calendar.reference;
+        r.day = -1;
+        r.from = 0;
+        r.duration = 999999999;
+        r.type = 'rule';
+        const calPlugin = this.getPlugin<any>('calendar');
+        if (calPlugin) calPlugin.applyData(this.data?.Calendar);
+    }
+
+    public getCalendarForResource(resourceId: string): SchedulaCalendar | null {
+        const calPlugin = this.getPlugin<any>('calendar');
+        if (calPlugin) {
+            const resCal = calPlugin.getResourceCalendar(String(resourceId));
+            if (resCal) return resCal;
         }
+        return this.calendar;
     }
 
     public setData(data: any) {
@@ -204,6 +201,7 @@ export class SchedulaCore implements ISchedulaCore {
             }
 
             this.draw();
+            this.storeData();
         }
     }
 
@@ -378,6 +376,7 @@ export class SchedulaCore implements ISchedulaCore {
                 let scitem = new SchedulaItem(this, dropped, this.calendar!);
 
                 scitem.Effort = dropped.Width;
+                if (this.settings.optimizeStart) scitem.Offset = scitem.Offset;
 
                 if (typeof modified === 'function') modified();
                 if (data.elementId) document.getElementById(data.elementId)?.remove();
@@ -746,6 +745,7 @@ export class SchedulaCore implements ISchedulaCore {
 
                 let rcount = this.data.Resources.length;
                 var today = new Date();
+                console.log(this.calendar);
                 for (let c = 0; c < this.settings.timeUnitsCount; c++) {
                     let hilight = false;
                     let dt = this.settings.date;

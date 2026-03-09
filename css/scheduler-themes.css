@@ -29,9 +29,6 @@
     fill: #ccc;
 }
 
-.theme-dark .box-element {
-    fill: #3a3a45;
-}
 
 .theme-dark .week-element {
     fill: #252526;
@@ -51,9 +48,12 @@
     fill: #2d2d2d;
 }
 
-.theme-dark .daybox-element.saturday,
-.theme-dark .daybox-element.sunday {
+.theme-dark .daybox-element.saturday {
     fill: #3a3a45;
+}
+
+.theme-dark .daybox-element.sunday {
+    fill: #32323e;
 }
 
 .theme-dark .monthbox {
@@ -61,8 +61,17 @@
     stroke: #444;
 }
 
-.theme-dark .monthbox:hover {
+.theme-dark .monthbox:hover,
+.theme-dark .week-element:hover {
     fill: #677ee4;
+}
+
+.theme-dark .box-element:hover {
+    fill: rgba(103, 126, 228, 0.12);
+}
+
+.theme-dark .box-element.no-capacity {
+    color: rgba(103, 126, 228, 0.25);
 }
 
 .theme-dark .item:not(.custom-color) {
@@ -105,9 +114,6 @@
     fill: #cbd5e1;
 }
 
-.theme-blue .box-element {
-    fill: #1e293b;
-}
 
 .theme-blue .week-element {
     fill: #0f172a;
@@ -127,9 +133,12 @@
     fill: #1e293b;
 }
 
-.theme-blue .daybox-element.saturday,
-.theme-blue .daybox-element.sunday {
+.theme-blue .daybox-element.saturday {
     fill: #334155;
+}
+
+.theme-blue .daybox-element.sunday {
+    fill: #293548;
 }
 
 .theme-blue .monthbox {
@@ -137,8 +146,17 @@
     stroke: #334155;
 }
 
-.theme-blue .monthbox:hover {
+.theme-blue .monthbox:hover,
+.theme-blue .week-element:hover {
     fill: #3b82f6;
+}
+
+.theme-blue .box-element:hover {
+    fill: rgba(59, 130, 246, 0.12);
+}
+
+.theme-blue .box-element.no-capacity {
+    color: rgba(59, 130, 246, 0.3);
 }
 
 .theme-blue .item:not(.custom-color) {
@@ -158,9 +176,12 @@
     fill: url(#vertical-gradient5);
 }
 
-.theme-soft .daybox-element.saturday,
-.theme-soft .daybox-element.sunday {
+.theme-soft .daybox-element.saturday {
     fill: #e0e0e0;
+}
+
+.theme-soft .daybox-element.sunday {
+    fill: #d4d4d4;
 }
 
 .theme-soft .header-bg {
@@ -187,6 +208,19 @@
 
 .theme-soft .time-element-text {
     fill: #666;
+}
+
+.theme-soft .monthbox:hover,
+.theme-soft .week-element:hover {
+    fill: #818cf8;
+}
+
+.theme-soft .box-element:hover {
+    fill: rgba(129, 140, 248, 0.10);
+}
+
+.theme-soft .box-element.no-capacity {
+    color: rgba(129, 140, 248, 0.35);
 }
 
 .theme-soft .item:not(.custom-color) {

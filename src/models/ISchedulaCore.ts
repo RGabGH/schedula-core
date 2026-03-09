@@ -12,4 +12,5 @@ export interface ISchedulaCore {
     setStyle(style: string): void;
     registerPlugin(plugin: ISchedulaPlugin): void;
     getPlugin<T extends ISchedulaPlugin>(name: string): T | null;
+    getCalendarForResource(resourceId: string): SchedulaCalendar | null;
 }

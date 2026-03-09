@@ -283,6 +283,14 @@ export class DragDropPlugin implements IDragDropPlugin {
             }
         });
 
+        if (settings.optimizeStart) {
+            const cal = (core as any).getCalendarForResource?.(resource.Id) ?? core.calendar;
+            if (cal) {
+                const newFrom = cal.optimazeStart({ From: (sd.getTime() / 1000 / 60) + timespan });
+                timespan = newFrom - (sd.getTime() / 1000 / 60);
+            }
+        }
+
         const ra = Math.floor(Math.random() * 10000000);
         const dropped: any = {
             Id: '_temp_id_' + ra,
