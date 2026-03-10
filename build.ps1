@@ -1,14 +1,12 @@
-# Build script for SchedulaCore
-# Generates two bundles:
-#   schedula-core.min.js     — Public MIT bundle (Core only, readable)
-#   schedula-core-pro.min.js — PRO bundle (Core + all plugins, obfuscated)
+# Build script for SchedulaCore (MIT Free)
+# Generates: schedula-core.min.js
 
 $distFolder = "dist"
 
 # Read version from package.json
 $pkg = Get-Content "package.json" -Raw | ConvertFrom-Json
 $version = $pkg.version
-Write-Host "Building SchedulaCore v$version..." -ForegroundColor White
+Write-Host "Building SchedulaCore v$version (MIT)..." -ForegroundColor White
 
 # 1. Clean dist folder
 if (Test-Path $distFolder) {
@@ -20,7 +18,6 @@ if (Test-Path $distFolder) {
 Write-Host "Creating dist structure..." -ForegroundColor Cyan
 New-Item -ItemType Directory -Path "$distFolder/js" -Force | Out-Null
 New-Item -ItemType Directory -Path "$distFolder/css" -Force | Out-Null
-New-Item -ItemType Directory -Path "$distFolder/images" -Force | Out-Null
 New-Item -ItemType Directory -Path "$distFolder/bootstrap" -Force | Out-Null
 New-Item -ItemType Directory -Path "$distFolder/data" -Force | Out-Null
 
@@ -32,11 +29,10 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-$banner = "/* schedula-core v$version | MIT License | https://github.com/tuonome/schedula-core */"
-$bannerPro = "/* schedula-core-pro v$version | Commercial License */"
+$banner = "/* schedula-core v$version | MIT License | https://github.com/RGabGH/schedula-core */"
 
-# 4a. Bundle — Core PUBLIC (MIT, not obfuscated)
-Write-Host "Bundling PUBLIC Core (MIT)..." -ForegroundColor Cyan
+# 4. Bundle — Core (MIT)
+Write-Host "Bundling Core (MIT)..." -ForegroundColor Cyan
 npx -y esbuild src/index.ts `
     --bundle `
     --outfile="$distFolder/js/schedula-core.js" `
@@ -44,28 +40,15 @@ npx -y esbuild src/index.ts `
     --target=es2015 `
     --banner:js="$banner"
 
-# 4b. Bundle — PRO (Core + plugins, will be obfuscated)
-Write-Host "Bundling PRO bundle (Core + Plugins)..." -ForegroundColor Cyan
-npx -y esbuild src/index-pro.ts `
-    --bundle `
-    --outfile="$distFolder/js/schedula-core-pro.js" `
-    --format=iife `
-    --target=es2015 `
-    --banner:js="$bannerPro"
-
-# 5. Rename bundles to .min.js
-Write-Host "Renaming to .min.js..." -ForegroundColor Cyan
-Get-ChildItem -Path "$distFolder/js" -Include "*.js" -Recurse | ForEach-Object {
-    $newName = $_.FullName -replace '\.js$', '.min.js'
-    Rename-Item -Path $_.FullName -NewName $newName -Force
-}
+# 5. Rename to .min.js
+Rename-Item -Path "$distFolder/js/schedula-core.js" -NewName "schedula-core.min.js" -Force
 
 # Copy icons.js if present
 if (Test-Path "icons.js") {
     Copy-Item -Path "icons.js" -Destination "$distFolder/js/icons.min.js"
 }
 
-# 6. Copy assets (only files needed by the component, no dev-only CSS)
+# 6. Copy assets
 Write-Host "Copying assets..." -ForegroundColor Cyan
 
 $cssFiles = @("schedula-core.css", "scheduler-themes.css", "popup.css", "style.css", "planner-test.css")
@@ -75,9 +58,6 @@ foreach ($f in $cssFiles) {
     }
 }
 
-if (Test-Path "images") {
-    Copy-Item -Path "images/*" -Destination "$distFolder/images" -Recurse -Force
-}
 if (Test-Path "bootstrap") {
     Copy-Item -Path "bootstrap/*" -Destination "$distFolder/bootstrap" -Recurse -Force
 }
@@ -90,28 +70,6 @@ if (Test-Path "data") {
     }
 }
 
-# Copy HTML files (excluding test files) — update to use PRO bundle
-Get-ChildItem -Filter "*.html" | Where-Object { $_.Name -notmatch "tests.html" } | ForEach-Object {
-    $content = Get-Content $_.FullName -Raw
-    $content = $content -replace 'src="icons.js"', 'src="js/icons.min.js"'
-    $content = $content -replace '(?m)^\s*import .* from .*;\r?\n?', ''
-    $content = $content -replace '<script type="module">', "<script src=`"js/schedula-core-pro.min.js`"></script>`r`n    <script>"
-    Set-Content "$distFolder/$($_.Name)" $content
-}
-
-# 7. Obfuscate ONLY the PRO bundle
-Write-Host "Obfuscating PRO bundle..." -ForegroundColor Yellow
-npx -y javascript-obfuscator "$distFolder/js/schedula-core-pro.min.js" `
-    --output "$distFolder/js/schedula-core-pro.min.js" `
-    --compact true `
-    --control-flow-flattening true `
-    --dead-code-injection true `
-    --string-array true `
-    --string-array-rotate true `
-    --string-array-shuffle true `
-    --string-array-threshold 0.75
-
 Write-Host "" -ForegroundColor White
 Write-Host "Build complete! v$version" -ForegroundColor Green
-Write-Host "  PUBLIC Core: $distFolder/js/schedula-core.min.js     (MIT, GitHub-publishable)" -ForegroundColor Cyan
-Write-Host "  PRO bundle:  $distFolder/js/schedula-core-pro.min.js (Commercial, obfuscated)" -ForegroundColor Yellow
+Write-Host "  MIT bundle: $distFolder/js/schedula-core.min.js" -ForegroundColor Cyan
