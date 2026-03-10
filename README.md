@@ -2,6 +2,10 @@
 
 A fast, lightweight Gantt/scheduler component for the web. No framework dependencies — works with vanilla JavaScript or any frontend stack.
 
+![SchedulaCore Blue Theme](docs/images/theme-blue.png)
+
+**[Live demo (Free)](https://rgabgh.github.io/schedula-core/)**
+
 ## Features
 
 - **Resource-based Gantt view** — rows are resources, columns are time
@@ -15,6 +19,8 @@ A fast, lightweight Gantt/scheduler component for the web. No framework dependen
 - **IIFE bundle** — drop a single `<script>` tag, no build step needed
 
 ### PRO features (commercial license)
+
+![SchedulaCore PRO](docs/images/schedula3d.png)
 
 | Feature | Free | PRO |
 |---------|------|-----|

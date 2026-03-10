@@ -110,179 +110,17 @@
     }
   };
 
-  // src/ui/SchedulaTemplate.js
+  // src/ui/SchedulaTemplate.ts
+  var _sc_salt = "schedula-core";
+  var _sc_dec = (encoded) => {
+    var _a;
+    const s = _sc_salt.split("").map((c) => c.charCodeAt(0));
+    const pairs = (_a = encoded.match(/.{1,2}/g)) != null ? _a : [];
+    return pairs.map((h, i) => String.fromCharCode(parseInt(h, 16) ^ s[i % s.length])).join("");
+  };
   var SchedulaTemplate = class {
     constructor() {
-      this.svgString = ` 
-    
-    <svg 
-    
-            xmlns='http://www.w3.org/2000/svg' 
-            id="main-svg" viewBox="0 0 1000 1000"
-            version="1.1" 
-           
-          
-            
-         
-            > 
-            <pattern id="pattern-chevron" x="0" y="0" patternUnits="objectBoundingBox" width="100" height="180" viewBox="0 0 10 18"> 
-         
-           
-            <g id="chevron">
-            
-              <path class="left" d="M0 0l5 3v5l-5 -3z"></path>
-              <path class="right" d="M10 0l-5 3v5l5 -3"></path>
-            </g>
-           
-           
-            <use x="0" y="9" xlink:href="#chevron"></use>
-          
-          </pattern>
-          <pattern id="progress-pattern" x="0" y="0" width="50" height="140" patternUnits="userSpaceOnUse" >    
-          <rect x="0" y="0" width="25" height="140" fill="black" opacity="0.4"/>
-          <rect x="25" y="0" width="25" height="140" fill="white" opacity="0.4"/>
-          <animateTransform attributeName="patternTransform" type="rotate" from="30" to="30" dur="4s" repeatCount="indefinite"/> 
-          <animateTransform attributeName="patternTransform" type="translate" from="0" to="100" dur="4s" repeatCount="indefinite"  additive="sum"/>  
-        </pattern>
-          <pattern
-        id="p_circles"
-        x=".125"
-        y=".125"
-        width=".25"
-        height=".25"
-        patternUnits="userSpaceOnUse">
-        <circle cx="10" cy="10" r="10" />
-      </pattern>
-      <pattern id="obliqueLines"
-      x="0" y="0" width="2" height="2"
-      patternUnits="userSpaceOnUse" 
-      patternTransform="rotate(45)">
-    <rect x="0" y="0" width="1" height="0.2" style="stroke: 2; fill: #0000ff" />
-    
-    </pattern>
-            <animate id="vanim" attributeName="viewBox" 
-                to="" 
-                from="" 
-                dur="0.3s" 
-                fill="freeze" 
-                repeatCount="1" 
-                begin="indefinite"/> 
-    
-            <defs id="defs" > 
-                <marker id="circle-marker-end" markerWidth="8" markerHeight="8" refX="5" class="marker-end" refY="5" orient="auto">
-                    <circle class="link-wire-marker-end" cx="5" cy="5" r="2"></circle>
-                </marker>
-    
-                <linearGradient id="gradV1" x1="0%" y1="0%" x2="0%" y2="100%"> 
-                    <stop class="grad-color1" offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:0.8" /> 
-                    <stop class="grad-color2" offset="100%" style="stop-color:rgb(123, 175, 196);stop-opacity:0.8" /> 
-                
-                </linearGradient> 
-               <linearGradient id="gradH1" x1="0%" y1="0%" x2="100%" y2="0%">
-                   <stop  class="grad-color1" offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:0.8" />
-                   <stop  class="grad-color2" offset="100%" style="stop-color:rgb(123, 175, 196);stop-opacity:0.8" />
-    
-                </linearGradient>
-    
-                
-                <g id="stars" transform="scale(0.7)">
-                    <path
-                       transform="rotate(16.166027,247.23984,-34.317252)"
-                        d="m 27.606898,72.838594 -2.767323,-1.003493 -1.799362,2.329673 0.09923,-2.941977 -2.771683,-0.991386 2.82865,-0.81475 0.08637,-2.942383 1.648974,2.438435 2.825061,-0.827107 -1.809528,2.321785 z"
-                        id="path817"
-                        style="opacity:0.678;fill:#d9be20;fill-opacity:1;stroke:none;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.59999999, 0.3;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
-                        <path
-                        transform="rotate(16.166027,251.21746,-4.9164116)"
-                        d="m 27.606898,72.838594 -2.767323,-1.003493 -1.799362,2.329673 0.09923,-2.941977 -2.771683,-0.991386 2.82865,-0.81475 0.08637,-2.942383 1.648974,2.438435 2.825061,-0.827107 -1.809528,2.321785 z"
-                        id="path817-4"
-                        style="opacity:0.678;fill:#d9be20;fill-opacity:1;stroke:none;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.59999999, 0.3;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
-                        <path
-                        transform="rotate(16.166027,255.36117,24.260777)"
-                        d="m 27.606898,72.838594 -2.767323,-1.003493 -1.799362,2.329673 0.09923,-2.941977 -2.771683,-0.991386 2.82865,-0.81475 0.08637,-2.942383 1.648974,2.438435 2.825061,-0.827107 -1.809528,2.321785 z"
-                        id="path817-2"
-                       style="opacity:0.678;fill:#d9be20;fill-opacity:1;stroke:none;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.59999999, 0.3;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
-                        <path
-                        transform="rotate(16.166027,259.48588,53.211077)"
-                        d="m 27.606898,72.838594 -2.767323,-1.003493 -1.799362,2.329673 0.09923,-2.941977 -2.771683,-0.991386 2.82865,-0.81475 0.08637,-2.942383 1.648974,2.438435 2.825061,-0.827107 -1.809528,2.321785 z"
-                        id="path817-9"
-                        style="opacity:0.678;fill:#d9be20;fill-opacity:1;stroke:none;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.59999999, 0.3;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
-                        <path
-                        transform="rotate(16.166027,263.61059,82.161379)"
-                        d="m 27.606898,72.838594 -2.767323,-1.003493 -1.799362,2.329673 0.09923,-2.941977 -2.771683,-0.991386 2.82865,-0.81475 0.08637,-2.942383 1.648974,2.438435 2.825061,-0.827107 -1.809528,2.321785 z"
-                        id="path817-5"
-                        style="opacity:0.678;fill:#d9be20;fill-opacity:1;stroke:none;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.59999999, 0.3;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
-                </g>
-                <pattern id="diagonalHatch" patternUnits="userSpaceOnUse" width="4" height="4">
-                            <path d="M-1,1 l2,-2
-                                    M0,4 l4,-4
-                                    M3,5 l2,-2" 
-                                    style="stroke:#00ff00; stroke-width:0.7" fill="orange"/>
-                </pattern>
-            </defs>'
-    
-    
-        <g id="wrapper" transform="translate(0,0)">
-            <g  id="scheduler-items" left="0px" transform="translate(0,0)">
-    
-                <animateTransform  
-                    xlink:href="#scheduler-items"
-                    attributeName="transform" 
-                    attributeType="XML"
-                    type="translate"
-                    from="0"
-                    to="50"
-                    dur="0.4s"
-    
-                    calcMode="spline"
-                    keyTimes="0;1" 
-                    keySplines=" .4 0 .6 1  " 
-                    repeatCount="1"
-                    begin="indefinite"
-                    fill="freeze" />
-    
-    
-                <g id="scheduler-header">
-                
-                </g>
-                <g id="scheduler-background" transform="translate(0,0)">
-                
-                </g>
-    
-    
-    
-            </g>
-            
-        
-        </g>
-        <svg id="scheduler-sidebar" x="0" y="0" width="6000" height="100%" >
-            <svg id="scheduler-resources" x="0" y="0" height="100%" width="calc(100% - 40px)">
-            </svg>
-            <svg id="scheduler-splitter" x="calc(100% - 80px)" y="0" width="80" height="100%" >
-             
-                <rect x="calc(100% - 45px)" y="0" width="10" height="100%" class="splitter" fill="white" style="cursor:ew-resize;"/>
-               
-          
-            </svg>
-        </svg>
-      
-    </svg>
-    
-    <svg id="shifter-dx" class="shifter svg-overlay right" style="visibility:hidden">
-        <g transform="scale(4)">
-            <circle  cx="8" cy="8" r="8" fill="white" ></circle>
-            <path  d='M 3, 2 L 5,4 L 3, 6' stroke="#6699cc" fill="none" transform="scale(2)"/>
-        </g>
-    </svg>
-    
-    <svg id="shifter-sx" class="shifter svg-overlay left" style="visibility:hidden">
-            
-        <g transform="scale(4) rotate(180 8 8)">
-            <circle  cx="8" cy="8" r="8" fill="white" ></circle>
-            <path  d='M 3, 2 L 5,4 L 3, 6' stroke="#6699cc" fill="none" transform="scale(2)"/>
-        </g>
-    </svg>
-    
-    `;
+      this.svgString = _sc_dec("536e624544554c6c27434f52454f101e02447866410d434f7f6f5343484544554c410d434f521d1e0f0616595204155913555d4a04141f4b1346420e5f044040554353471612124b4120694f52455343484544554c410d0a0b4f471e02010b49061a060f43191b000421071d59575c411d435e42554343595554454e6c27434f52455343484544554c415b061d010c1c0d5547555b5d430d6e6552455343484544554c410d6e6552455343484544554c4120694f52455343484544554c410d6e6552455343484544554c6c27434f52455343484544554c4113436278455343484544554c410d434f4e1512171c00161b4c08495e4d020407170d170a580f0948151d1d0b5143105846454e41545e4d42475313091110101e0f780d0606164e4107070e100f156f0c1a1c011a0d0f270b0d4e415a0a0b060d4e41595554574c09480a081a114e41595d54574c17440618300a0b5e4a5544454c501d435e4a474d43656f44554c410d434f52457e69484544554c410d434f52457e69484544554c410d434f5245535f0f450d1151434e0b0a04171c0d4a5b697f4c410d434f524553434845447866410d434f52455343484544554c4111130e060d530004041706514341060906475307554729454c5141564f4113460f455044585f1b0f5d535d151217005b697f4c410d434f52455343484544554c5d5d021b1a45100f091617484e1344040706475307554729445c411d0f42474540155d09515541520f5d535d151217005b697f4c410d434f52455343484544494306136e6552455343484544554c410d6e6552455343484544554c410d6e6552455343484544554c410d435307161643105846454e41545e4d4b47531b040c0a1e56095f06094f47500000001207030f0f5d535d10000656686e554c410d434f52455343656f44554c410d434f5245535f4715050118045f0d517f6f5343484544554c410d4353020407170d170a55050510411f000a14110d1617581c0059170a000b5143105846454e41545e4d424753140101101d514318534d520d160a0f0d10484e5019534d521512171c00161b390f44171c4f4706100d1737050d02482c0127161641485b44554c4120694f52455343484544554c5d5f060c06450b5e4a554655155c0f534d52121a071c0d59575e540f4307170c140b1c58464458510f43091b091f5e4a0708140f0a0f43000204100a1c1c59575c4f1941404c687943484544554c410d434f4e1716001c451c484e5318414f0b5851534a45131c0815455e4d4050514300000d12041510415e465551430e0c081951435a0b0606005143071505160515545e4d424b4741475b697f4c410d434f524553434859051b050c4c170a2617120d1b030b0701414c171b000c11161c002a14010410411f131107061a0b30070d0f5e0500000851431c1c141051435f0c1b131116414803161a015c0f505f5045070c554757454e4149161d4f4747104a4516101c044c172c1d101d1755470d1b08044b0a011b111641475b447866410d434f5245534348455814020840021b173101020616021a1e0c0d021b06171a011d11013b0d0c485e4d020407170d170a211e004310091d171e4148111d05095c0f171d130b000f091101574c075f0c024f47434148110b484e501d534d52010611554750064e415f061f1704072007100a015143440d0b17031a0d011101574c414c070b1b111a150d584606190c0f4c5152457e69484544554c410d43535d1512171c00161b526c27434f524553434845445550114c171b17171d6e624544554c410d434f1b014e41183a071c1e0241061c50687943484544554c410d1b52504b42515d47697f4c410d434f5245531a55474a445e540f6e6552455343484544551b084917074f475d515d47697f4c410d434f5245530b0d0c031d185c0f4d5d47477e69484544554c410d431f131107061a0b311b05155e5e4d071616113b150516092e43361c17474d6e624544554c410d434f4e061a110b0901550f1910415e42475300115846445c430d115250544341484a5a7866410d434f52454f4c180410010913435d6278455343484544491c0059170a000b530a0c58461a0e0d44121a17291a0d0d16467866410d434f52450b5e4a554655155c0f534d52121a071c0d59575a430d0b0a1b021b1755475257616b0d434f52455313091110101e0f780d0606164e411d1601073f114c000a3d0b26100d47697f4c410d434f521512171c00161b38134c0d1c140a010e5547161a180059064746505a4156686e554c410d5f1d17060743105846454e41545e4d424753140101101d51431b414f1a001a04001159575e4f18414f01110a0f0d584606181342080a4845435848030d19005b0d001a0017160d1c260b1903130f43404c68796e624544554c5d02130e06111611065b697f4c410d434f52455343484544490d0f440e0e0600530a0c5846030d0f440e4d520407171a0c06001804630202175851150100133703190f436278455343484544554c410d434f524553431c0a59574e4120694f52455343484544554c410d434f52451511070859574e4120694f52455343484544554c410d434f524517161a58464542525e414f7f6f5343484544554c410d434f5245534348030d19005c0f051d170009064a45697f4c410d434f52455343484544554c410d110a020012172b0a111b185c0f524d52687943484544554c410d434f52455343484506100b08435e4d1b0b17060e0c0a1c18040f4c51526879434845447866410d434f5245534348454455500548051c520c175e4a0101131f430d5d4f7f6f5343484544554c410d434f52455343485909141e0a48114f1b014e410b0c16160004000e0e000e161145000a114e4140021d190001340101101d514315414f1f0401080d172c100506451752505d51431a00022d514318414f110912101b5846180d1346061d5f001d074a4516100a3810415a50451c1101000a0151434c161b1d474d6e624544554c410d434f52455343484544554c410d4353110c01000400441600005e105250091a0d0348131c1e04000e0e000e161145000a114e414e1b52505051430b1c595759430d11525057515d544a071c1e024106517f6f5343484544554c410d434f5245534348594b180d1346061d4c6879434845447866410d434f52455343484544554c410d43531e0c1d06091723070d0544060106451a07554703070d057b524d521d425e4a5541574c181c5e4d42405143105759575c440f43164058515258554157524120694f52455343484544554c410d434f5245534348455806180e5d430c1e040010554703070d050000001e0a01524a450b130a12481752505556414816100c000410411c060a034e0b0a081a1e5b5f040d5a5746564457514040531856464916070c18480b050d0244171648555d5b4a454b4b4c6c27434f52455343484544554c410d434f524553434859170103110d00031316005e4a021614084c4e0c031d174141480a02131f04595e4d435543464a451701150d485e4d01111c1345060b190313171108104d42515b4944445b5401435e4b535a581b110b05410e5d020c1b110a59584b5c574c4e13436278455343484544554c410d434f52455343656f44554c410d434f52455343484544554c5d020f061c0012112f170511050443175152687943484544554c410d434f524553434859081c02044c11280004170a0d0b105505051041080004172b5947440d5d5c0f534a50450a52554754504e41555152505443534d47440c5e5c0f534a505b7e69484544554c410d434f52455343484544554c4111101b1d1553430b0905061f5c0f041d13015e0007090b075d430d0c0914161617554754504e415e17161e004e411b110b054102420f00005f01040a4d5640594d1f565a5e574656415e17010311000c1f13061a17115f545b54430d4c517f6f5343484544554c410d434f52455343484544555012590c1f5245100f091617484e065f020b5f061c0f071756574c0e4b051c17114e41595554504e415e17161e004e411b110b054102420f00005f01040a4d55475f4d0d52584749535251534d4e1f154213421d15120001111d4f5c4f15414f5d5b7e6948454455616b0d434f52455343484544554c410d434f4e4a1f0a060005072b134c0706170b075d656f44554c4120694f52455343484544554c410d434f52457e69484544554c410d434f52455343484544490b41440752501607021a16465518134c0d1c140a010e554717160d0d484b5f5c525a4156686e554c410d434f52455343484544554c410d434f525903021c0d697f4c410d434f52455343484544554c410d434f524553434811161402124b0c1d1f5851110711050109491c5541435345535a524847585603515c4b5d474f4556505b5f501a515a404c516e624544554c410d434f52455343484544554c410d434f52455307554709555e5603555f445d4a5b4452565b545215565646455e51465252425f531e4f42434b43535b515d464c4c1c4d584b5c40555a49565b5f531455584145434d585c5d475f4d0051414b51425a5f5244585e4f1a545e445d404f45554a4c55501e5b5952575d5b5a5d5240404c1d4d574351445648554a4554571e54435f575d5a5c57574d5f411c4d59465d4a545c49565b585215575c4745414d505751455a50014e5f5c5d4154595553554150035b5f4b50415b44574a465e501a5b5a521f516e624544554c410d434f52455343484544554c410d434f5245530a0c5846050d15455b5e45477e69484544554c410d434f52455343484544554c410d434f52450017110901484e0e5d020c1b110a59584b5242545a4b0a031e5f5007510701475c5a4b0a031e481c1309060d01155b1c581c06171c080d5f0a1a020416101b000a180645120d1118091753414155435358555444571259110019005e0f010b01160d1117101e0704010653161007030a484e031b0b1609070c0a4f010859061d49160711070e0158010859061d1e0c1e0a1c5f504e1f155f0c04174817021b0d05071e0054595f5c504a5a515c5d4c554d0d5341415e00171a0a0f1041054c10071d0315100d115e45571259110019005e0c1804071c181817525402041a0d1c480b0708045f5902131718061a164406181342080a52031a0f0447445a526c27434f52455343484544554c410d434f52455343484544554c5d5d021b1a687943484544554c410d434f52455343484544554c410d434f521101020616021a1e0c10411d1d1112170d4d554342501b555f40525f515d544a475d561955435f515d5a595350445d5704416278455343484544554c410d434f52455343484544554c410d430b4f471e435a524a435c57155a575e52414d50565c4055550d4e5d5c5245545b575759415003535f41514a504848555b5b581450594049414d5b575d435b520d5341425c4a515b49494742581952564552534e5a4b53425d571550435f555d5a5154574d5a411f4d57405d45564448545b545019545a52555d5350535742404c1f4d564657405b5b45555b5a55155a584649414d5c565c415f540d51414a5746535e5448585c4f1551584355444345544a4d5c581851575e575d505a54534d594157416278455343484544554c410d434f52455343484544554c410d43061658511309110c4d5d5600574d7f6f5343484544554c410d434f52455343484544554c410d434f01110a0f0d58461a1c004e0a1b0b5f434d5e525c4e0a08410f5551014a010d57544e0a08410f421d15120001111d4f5d5a5e171d1d0e1659060a0a10571259110019005e140101101d565103505f4255435358545f06181342080a5f091a0d0d06050556125c160e000048101c170b1e094c410a01170f1c0a065f091c18045f581c06171c080d48091c18045f0f061f0c07595c5e17011e0e4606421604000b09171614155b1d4d5a4b5c4a5a515c5d594c510350540111010c030049110d12450c091416161752555f06181342080a5f0a03020b0c100c565016130e1b0b074e071700101e5b40021d1900011048161007030a4843091b091f41484a5a7866410d434f52455343484544554c410d434f52455343484544491c00590b6278455343484544554c410d434f52455343484544554c410d431b00041d100e0a161851435f0c1b1311164b59534a445a571d51585e574656465652445d5601515b5c5745535f52535c4e6c27434f52455343484544554c410d434f52455343484544554c051041025257444d5e55524d555901545d5c5d405b5d5c50554153035459455641504448555b5c511e575641455e5246525d4c5f571f4f5d5c56415a5e5257555c4f1d5a5640565f4e5a4b5d415d581a544f5f575d545f54524d5f4d0053414b5c42505053444742591f5b5947495e53465d55415b540d5341425d45505f494947425819515c4a5653524653504d5556194f5d5c51405b5c5651555e4f15515a4253424f45554a4d5e561c53585248424d50555d405e59015141415742545050440f4e6c27434f52455343484544554c410d434f52455343484544554c08495e4d0204070b505453585e4320694f52455343484544554c410d434f52455343484544554c12591a031758510c1804071c181817534144524b580e0c08195642495a0d175743580e0c0819410e5d020c1b110a59595e17011e0e4606551c0a1d0653161007030a484e181b01070b52554a465c511d535f425448101c170b1e094c410a0117061213521615000d1348581c06171c080d48081c0204470c061c5f1e0a1c00164e1f155f0c0417481e0a1c001619050c441755465e00171a0a0f1041054c100713170102115f545b5958145a564b5c4a4f48554a46571259110019005e0709160c1a0a075e061b485548101c170b1e094c42130e110c071a52545f050d084317421d1717061a5f09141e0a48111c52160711070e01550a08410f4d524a4d6e624544554c410d434f52455343484544554c410d434f5245535f1804101d616b0d434f52455343484544554c410d434f524553434845445518134c0d1c140a010e5547161a180059064743535d525e5354475b4d1f56565c514b56505d48405f4f1f525e4252444a4a686e554c410d434f52455343484544554c410d434f524553434801595701411f54414455455b515d48425e4f155057475c474345574a425a561e515c5e48424d5855574155520d4e5e5c524a5a5b5356595e4f1e515644524043584b544c55531e4f42404b4a57595c53424c4c1f4d584554455b5b494945425814525c4a535351465d564d5a54014e5f5c5d42575f504445425115555c45495e51465c50475f591e435e5c53475b515250595e4f195057465646435a4b5c4759511b52435f555d5b5a5255455b410052414a554a565a5d484742521f52584a5053194a686e554c410d434f52455343484544554c410d434f52455343480c00484e114c17074a54444e5147697f4c410d434f52455343484544554c410d434f5245534348451701150d485e4d1d15120001111d4f5c4f1b545749031a0f045f4711550348515f49031a0f04480b050d02441716485448101c170b1e095b430c01175e00171a0a0f10411644071b1a5f434d5b5554455c511d52540111010c03004919050f48000e025f00121d041610571259110019005e0f010b011f03084359021b11161153161007030a484e021b111611040c091c185b19581c06171c080d4800141f094c111d131c495346505d4c5558145a565e45434d5b5e17011e0e4606421604000b0703020609151753540111010c0300491a1c004e0a1b0b5f425818040d1b184c42110b1717490e09170f101e120d101b000a180648030d1900430d4c517f6f5343484544554c410d434f52455343484544554c410d434f4e15121700686e554c410d434f52455343484544554c410d434f524553434811161402124b0c1d1f5851110711050109491c5541435345535a5248475a5203555e42504a4f50574a445a501e54565b477e69484544554c410d434f52455343484544554c410d434f5245175e4a0844475b4f1b53594a5c4b4f5f574a4d5f59185a5b5248414d5f5353465e52014e5e5c5543505c5c575541500354564b56455144574a465e581b545c52555d53515c5646404c1f4d5646544a545f45494742561a52594a565f4e584b5d4c5d5215554f404b4b51505351594151035b5e46524643584b544d5a521a4f42404b4a575a565c464c5003555b4a5c445744574a415f5919505a52575d5b5a5054435d4d0053414a574452585244585d4f15535647574b4f5a4b57475d5615564f08477e69484544554c410d434f52455343484544554c410d434f52451a075547141418091552585f50516e624544554c410d434f52455343484544554c410d434f524553101c1c0810514342130e110c071a52554a435b591605061e0949400c5c06105e511605061e095e0c1804071c18181752540111010c03005e1b030f48581c06171c080d48131c081545595f5c564353585554455d5a5e171d1d0e164e040c0a100f005d591c031012110d5e17011e0e4606421e0c1d06020a0d1b560c44170a005e00171a0a0f10410c44170a00091a0e01115e41571259110019005e0709160c141e134c1a55424b465a515c5d4c555801435f5c5648101c170b1e094c49021c1a0a15051b00104f5c5a5e171d1d0e164e07150516051554595e4915120a0611491a1e054811551f0401080d1717551f155f0c041745150a04094655435f20694f52455343484544554c410d434f52454f4c0f5b697f4c410d434f52455343484544554c410d5f1f131107061a0b441c085c0f070613021c0d09092c14180245414f020407170d170a200208591052501000061a3614140f04620d3a010051431f0c0001045c0f574d520d160a0f0d10484e550f5d6278455343484544554c410d434f52455343484544554c410d434f5245535f1804101d4c051041225f545f5248095659415320694f52455343484544554c410d434f52455343484544554c410d434f52455343484544554c2c1d4f5b5209474f4551697f4c410d434f52455343484544554c410d434f52455343484544554c410d434f524553434828575959414151435f575143656f44554c410d434f52455343484544554c410d434f52455343484544554c410d434f524553101c1c081051435e171d1d0e16594b5554130a511d584f0111010c030049020505590b55424b444148030d19005c0f0c1d130b14064a4a5a7866410d434f52455343484544554c410d43535d1512171c00161b526c27434f52455343484544554c41114c0b1703005d4f686e554c410d6e6552455343656f44554c410d434f52591443010159571b134c131f171751431c17051b1f074211024f470711090b17190d15484b5f5e555a4156686e554c410d434f52455343484558124c414407525016100b0d0111190913000a1b1708004148090113185c0f531f0a4753171a040a060a0e5f0e5250110102061608141804055343424c515d656f44554c4120694f52455343484544554c410d434f52454f02060c0914180479110e1c16150c1a084455616b0d434f52455343484544554c410d434f5245534310090d1b075b45110a145851401b060c10081441061d5f0c07060516467866410d434f52455343484544554c410d434f524553021c11161c0e145906211308165e4a11161402124b0c1d1f47536e624544554c410d434f52455343484544554c410d430e0611010a0a10101038185d0652503d3e2f4a686e554c410d434f52455343484544554c410d434f52110a130d5846011e0043100313111641656f44554c410d434f52455343484544554c410d434f14171c0e55475457616b0d434f52455343484544554c410d434f524553431c0a595759510f6e6552455343484544554c410d434f5245534348454411191310415f5c510041656f44554c4120694f52455343484544554c410d434f52455343484507140002600c0b1758511018090d1b094320694f52455343484544554c410d434f5245534348450f101535440e0a0158515353544655616b0d434f52455343484544554c410d434f5245534303001d261c0d440d0a01585143465144454c4f1b435e52455143656f44554c410d434f52455343484544554c410d434f000003060911271a190f595e4d43477e69484544554c410d434f52455343484544554c410d010a150c1d5e4a0c0a110907440d060600516e624544554c410d434f52455343484544554c410d43091b091f5e4a031610091b48414f5d5b7e6948454455616b0d434f52687943484544554c410d434f52455343484558124c08495e4d01061b060c1008101e4c45060e1600014156686e554c410d434f52455343484544554c4120694f52455343484544554c410d434f52454f4c0f5b697f4c410d434f52455343484544554c410d5f08520c175e4a16071d0905580f0a004811020b0e0307031443074d521101020616021a1e0c10411b00041d10040410104451015346505b7e69484544554c410d434f524553434845447866410d434f52455343484544554c410d43535d024d6e624544554c6c27434f52457e6948454455616b0d434f52455343484544554c5d0204517f6f5343484544554c410d434f52687943484544554c410d6e655245534348454455504e4a5d6278455343484544554c5d5e1508520c175e4a16071d0905580f0a0048000a0c0006141e430d1b5250555143115846454e415a0a0b060d4e415e5554454e41450606150d075e4a54544549430d5d6278455343484544554c410d434f4e160504480c00484e124e0b0a16101f061a4816101f0e58110c17165143105846454e41545e4d4247530b0d0c031d185c0f525f424051431f0c0001045c0f000e1e065b5258554155414119531f0a4c515d656f44554c410d434f5245534348594b061a06136e6552455343484544554c410d435301131443010159571f0245060b0709161145161419051559061d50450b5e4a0605190f491c535f57455e435055140d45430d1a52505551431f0c0001045c0f5b5f50451b0601020c0151431c535f5747535d656f44554c410d434f524553434845697f4c410d434f52455343484544554c410d5f1d17060743105846160d0d4e4b5e42555643454550401c1904414f0b5851534a45131c0815455e4d4355514300000d12041510415e42555641480608141f1210411c02091a171c0016574c07440f034f47040b011101574c12591a03175851001d17171a1e5b4814420000000a12005f57435f20694f52455343484544554c410d434f52687943484544554c410d434f7f6f5343484544554c410d434f52595c101e025a7866410d434f52455343544a17030b5f20694f5245534348686e554c410d5f400113145d656f44554c4120694f5245535f1b130355050510411c1a0c15170d17491114430d00031316005e4a160c1c0a1548114f0113144e07130107000054431d1b021b174a451701150d485e4d040c000a0a0c081c1818170b061601160d4a5b697f4c410d434f5245535f0f4510070d0f5e050000084e411b0605190949194a4d4c687943484544554c410d434f52454f000117071909410d00174f474b4148061d484e590f431d4f474b4148030d19005c0f14071b111641485b585a0f085f0003175b7e69484544554c410d434f5245535f1804101d4c41495e483f45404f485744394c5401574f3e45404f485343551f155f0c04175851405e535d4c0f020f43091b091f5e4a0b0b1b09430d171d130b0005071709484e124e0203174d414a4a4a5a7866410d434f52455343544a034b616b0d434f52595c101e025a7866410d434f7f6f5343484558061a060d0a0b4f47000b010310101e4c5e1b4d52061f021b1659571f0944051b171753101e02491a1a045f0f0e0b451f060e1146551f15540f0a4f47050a1b0c061c0008591a551a0c17070d0b464b616b0d434f52455343484544554c6c27434f52455343484558124c155f020101031c11055846060f00410647464c53110711050109491c5b5f525d535b41475a7866410d434f5245534348454455500244110c1e0053430b1d595754430d00164f474b414817595754430d05061e094e411f0d0d0109430d5d535d061a110b09014b616b0d434f52455343484544554c5d5d021b1a455307554229555f4d0d514f3e45464f5c4528555f4d0d554852160711070e01484e421b55564b06104148030d19005c0f0d001c0051431c17051b1f074211024f4700000909015d5e480f4c517f6f5343484544554c41114c084c6879434845444943125b04517f6f53434845697f4c410d43");
     }
   };
 
@@ -1419,7 +1257,7 @@
       }
     }
     dropEventManagement(evt) {
-      var _a, _b;
+      var _a, _b, _c;
       evt.stopImmediatePropagation();
       if (this.settings.dropEnable && evt.target.classList.contains("box-element")) {
         let y = parseFloat(evt.target.getAttribute("y"));
@@ -1481,6 +1319,8 @@
           if (this.settings.optimizeStart) scitem.Offset = scitem.Offset;
           if (typeof modified === "function") modified();
           if (data.elementId) (_b = document.getElementById(data.elementId)) == null ? void 0 : _b.remove();
+          const notifPlugin = (_c = this.getPlugin) == null ? void 0 : _c.call(this, "notification");
+          if (notifPlugin) notifPlugin.notifyAdded(dropped);
         }
       }
     }
@@ -3345,182 +3185,6 @@
     }
   };
 
-  // src/ui/SchedulaTemplate.ts
-  var SchedulaTemplate2 = class {
-    constructor() {
-      this.svgString = ` 
-    
-    <svg 
-    
-            xmlns='http://www.w3.org/2000/svg' 
-            id="main-svg" viewBox="0 0 1000 1000"
-            version="1.1" 
-           
-          
-            
-         
-            > 
-            <pattern id="pattern-chevron" x="0" y="0" patternUnits="objectBoundingBox" width="100" height="180" viewBox="0 0 10 18"> 
-         
-           
-            <g id="chevron">
-            
-              <path class="left" d="M0 0l5 3v5l-5 -3z"></path>
-              <path class="right" d="M10 0l-5 3v5l5 -3"></path>
-            </g>
-           
-           
-            <use x="0" y="9" xlink:href="#chevron"></use>
-          
-          </pattern>
-          <pattern id="progress-pattern" x="0" y="0" width="50" height="140" patternUnits="userSpaceOnUse" >    
-          <rect x="0" y="0" width="25" height="140" fill="black" opacity="0.4"/>
-          <rect x="25" y="0" width="25" height="140" fill="white" opacity="0.4"/>
-          <animateTransform attributeName="patternTransform" type="rotate" from="30" to="30" dur="4s" repeatCount="indefinite"/> 
-          <animateTransform attributeName="patternTransform" type="translate" from="0" to="100" dur="4s" repeatCount="indefinite"  additive="sum"/>  
-        </pattern>
-          <pattern
-        id="p_circles"
-        x=".125"
-        y=".125"
-        width=".25"
-        height=".25"
-        patternUnits="userSpaceOnUse">
-        <circle cx="10" cy="10" r="10" />
-      </pattern>
-      <pattern id="obliqueLines"
-      x="0" y="0" width="6" height="6"
-      patternUnits="userSpaceOnUse"
-      patternTransform="rotate(45)">
-    <rect x="0" y="0" width="6" height="2.5" style="stroke: 0; fill: currentColor" />
-
-    </pattern>
-            <animate id="vanim" attributeName="viewBox" 
-                to="" 
-                from="" 
-                dur="0.3s" 
-                fill="freeze" 
-                repeatCount="1" 
-                begin="indefinite"/> 
-    
-            <defs id="defs" > 
-                <marker id="circle-marker-end" markerWidth="8" markerHeight="8" refX="5" class="marker-end" refY="5" orient="auto">
-                    <circle class="link-wire-marker-end" cx="5" cy="5" r="2"></circle>
-                </marker>
-    
-                <linearGradient id="gradV1" x1="0%" y1="0%" x2="0%" y2="100%"> 
-                    <stop class="grad-color1" offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:0.8" /> 
-                    <stop class="grad-color2" offset="100%" style="stop-color:rgb(123, 175, 196);stop-opacity:0.8" /> 
-                
-                </linearGradient> 
-               <linearGradient id="gradH1" x1="0%" y1="0%" x2="100%" y2="0%">
-                   <stop  class="grad-color1" offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:0.8" />
-                   <stop  class="grad-color2" offset="100%" style="stop-color:rgb(123, 175, 196);stop-opacity:0.8" />
-    
-                </linearGradient>
-    
-                
-                <g id="stars" transform="scale(0.7)">
-                    <path
-                       transform="rotate(16.166027,247.23984,-34.317252)"
-                        d="m 27.606898,72.838594 -2.767323,-1.003493 -1.799362,2.329673 0.09923,-2.941977 -2.771683,-0.991386 2.82865,-0.81475 0.08637,-2.942383 1.648974,2.438435 2.825061,-0.827107 -1.809528,2.321785 z"
-                        id="path817"
-                        style="opacity:0.678;fill:#d9be20;fill-opacity:1;stroke:none;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.59999999, 0.3;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
-                        <path
-                        transform="rotate(16.166027,251.21746,-4.9164116)"
-                        d="m 27.606898,72.838594 -2.767323,-1.003493 -1.799362,2.329673 0.09923,-2.941977 -2.771683,-0.991386 2.82865,-0.81475 0.08637,-2.942383 1.648974,2.438435 2.825061,-0.827107 -1.809528,2.321785 z"
-                        id="path817-4"
-                        style="opacity:0.678;fill:#d9be20;fill-opacity:1;stroke:none;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.59999999, 0.3;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
-                        <path
-                        transform="rotate(16.166027,255.36117,24.260777)"
-                        d="m 27.606898,72.838594 -2.767323,-1.003493 -1.799362,2.329673 0.09923,-2.941977 -2.771683,-0.991386 2.82865,-0.81475 0.08637,-2.942383 1.648974,2.438435 2.825061,-0.827107 -1.809528,2.321785 z"
-                        id="path817-2"
-                       style="opacity:0.678;fill:#d9be20;fill-opacity:1;stroke:none;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.59999999, 0.3;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
-                        <path
-                        transform="rotate(16.166027,259.48588,53.211077)"
-                        d="m 27.606898,72.838594 -2.767323,-1.003493 -1.799362,2.329673 0.09923,-2.941977 -2.771683,-0.991386 2.82865,-0.81475 0.08637,-2.942383 1.648974,2.438435 2.825061,-0.827107 -1.809528,2.321785 z"
-                        id="path817-9"
-                        style="opacity:0.678;fill:#d9be20;fill-opacity:1;stroke:none;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.59999999, 0.3;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
-                        <path
-                        transform="rotate(16.166027,263.61059,82.161379)"
-                        d="m 27.606898,72.838594 -2.767323,-1.003493 -1.799362,2.329673 0.09923,-2.941977 -2.771683,-0.991386 2.82865,-0.81475 0.08637,-2.942383 1.648974,2.438435 2.825061,-0.827107 -1.809528,2.321785 z"
-                        id="path817-5"
-                        style="opacity:0.678;fill:#d9be20;fill-opacity:1;stroke:none;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.59999999, 0.3;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
-                </g>
-                <pattern id="diagonalHatch" patternUnits="userSpaceOnUse" width="4" height="4">
-                            <path d="M-1,1 l2,-2
-                                    M0,4 l4,-4
-                                    M3,5 l2,-2" 
-                                    style="stroke:#00ff00; stroke-width:0.7" fill="orange"/>
-                </pattern>
-            </defs>'
-    
-    
-        <g id="wrapper" transform="translate(0,0)">
-            <g  id="scheduler-items" left="0px" transform="translate(0,0)">
-    
-                <animateTransform  
-                    xlink:href="#scheduler-items"
-                    attributeName="transform" 
-                    attributeType="XML"
-                    type="translate"
-                    from="0"
-                    to="50"
-                    dur="0.4s"
-    
-                    calcMode="spline"
-                    keyTimes="0;1" 
-                    keySplines=" .4 0 .6 1  " 
-                    repeatCount="1"
-                    begin="indefinite"
-                    fill="freeze" />
-    
-    
-                <g id="scheduler-header">
-                
-                </g>
-                <g id="scheduler-background" transform="translate(0,0)">
-                
-                </g>
-    
-    
-    
-            </g>
-            
-        
-        </g>
-        <svg id="scheduler-sidebar" x="0" y="0" width="6000" height="100%" >
-            <svg id="scheduler-resources" x="0" y="0" height="100%" width="calc(100% - 40px)">
-            </svg>
-            <svg id="scheduler-splitter" x="calc(100% - 80px)" y="0" width="80" height="100%" >
-             
-                <rect x="calc(100% - 45px)" y="0" width="10" height="100%" class="splitter" fill="white" style="cursor:ew-resize;"/>
-               
-          
-            </svg>
-        </svg>
-      
-    </svg>
-    
-    <svg id="shifter-dx" class="shifter svg-overlay right" style="visibility:hidden">
-        <g transform="scale(4)">
-            <circle  cx="8" cy="8" r="8" fill="white" ></circle>
-            <path  d='M 3, 2 L 5,4 L 3, 6' stroke="#6699cc" fill="none" transform="scale(2)"/>
-        </g>
-    </svg>
-    
-    <svg id="shifter-sx" class="shifter svg-overlay left" style="visibility:hidden">
-            
-        <g transform="scale(4) rotate(180 8 8)">
-            <circle  cx="8" cy="8" r="8" fill="white" ></circle>
-            <path  d='M 3, 2 L 5,4 L 3, 6' stroke="#6699cc" fill="none" transform="scale(2)"/>
-        </g>
-    </svg>
-    
-    `;
-    }
-  };
-
   // src/plugins/DragDropPlugin.ts
   var DragDropPlugin = class {
     constructor() {
@@ -3583,7 +3247,7 @@
     }
     // ── Mouse up (finalize action) ─────────────────────────────────────────
     onMouseUp(event) {
-      var _a, _b;
+      var _a, _b, _c;
       const core = this._core;
       const action = core.currentAction;
       if (action === "moving" || action === "sizing") {
@@ -3605,12 +3269,14 @@
                 popupProvider.refreshItem(itemData);
               }
             }
+            const notifPlugin = (_b = core.getPlugin) == null ? void 0 : _b.call(core, "notification");
+            if (notifPlugin && itemData) notifPlugin.notifyChanged(itemData);
           }
           this._dragItem = null;
         }
       }
       if (action) {
-        (_b = core.schedulerItemsElement) == null ? void 0 : _b.querySelectorAll("rect.item").forEach(
+        (_c = core.schedulerItemsElement) == null ? void 0 : _c.querySelectorAll("rect.item").forEach(
           (el) => {
             el.classList.remove(action);
           }
@@ -3731,7 +3397,7 @@
     }
     // ── External drop ──────────────────────────────────────────────────────
     onDrop(event) {
-      var _a, _b, _c, _d, _e, _f, _g, _h;
+      var _a, _b, _c, _d, _e, _f, _g, _h, _i;
       event.stopImmediatePropagation();
       const core = this._core;
       const settings = core.settings;
@@ -3800,6 +3466,8 @@
       resource.Items.push(dropped);
       if (typeof window.modified === "function") window.modified();
       if (data.elementId) (_h = document.getElementById(data.elementId)) == null ? void 0 : _h.remove();
+      const notifPlugin = (_i = core.getPlugin) == null ? void 0 : _i.call(core, "notification");
+      if (notifPlugin) notifPlugin.notifyAdded(dropped);
       core.refresh();
     }
     // ── Hover ──────────────────────────────────────────────────────────────
@@ -4105,6 +3773,35 @@
     }
   };
 
+  // src/plugins/ContextMenuConfig.ts
+  var defaultTaskMenuItems = [
+    { id: "open", label: "Edit" },
+    { id: "_sep1", label: "", separator: true },
+    { id: "delete-task", label: "Delete", confirm: "Confirm task deletion?" }
+  ];
+  var defaultDayMenuItems = [
+    { id: "holiday", label: "Holiday", capacity: 0, description: "Holiday", classes: "timeoff", confirm: "Set as Holiday?" },
+    { id: "closed", label: "Closed", capacity: 0, description: "Closed", classes: "closed", confirm: "Set as Closed?" },
+    { id: "unavailable", label: "Unavailable", capacity: 0, description: "Unavailable", classes: "unavailable", confirm: "Set as Unavailable?" },
+    { id: "_sep1", label: "", separator: true },
+    { id: "cap8h", label: "8 hours", capacity: 480, description: "8h capacity", classes: "cap8h", confirm: "Set capacity to 8 hours?" },
+    { id: "cap16h", label: "16 hours", capacity: 960, description: "16h capacity", classes: "cap16h", confirm: "Set capacity to 16 hours?" },
+    { id: "custom-hours", label: "Custom time..." },
+    { id: "_sep2", label: "", separator: true },
+    { id: "delete-rule", label: "Delete", confirm: "Reset this day to default?" }
+  ];
+  var defaultCellMenuItems = [
+    { id: "holiday", label: "Holiday", capacity: 0, description: "Holiday", classes: "timeoff", confirm: "Set as Holiday?" },
+    { id: "closed", label: "Closed", capacity: 0, description: "Closed", classes: "closed", confirm: "Set as Closed?" },
+    { id: "unavailable", label: "Unavailable", capacity: 0, description: "Unavailable", classes: "unavailable", confirm: "Set as Unavailable?" },
+    { id: "_sep1", label: "", separator: true },
+    { id: "cap8h", label: "8 hours", capacity: 480, description: "8h capacity", classes: "cap8h", confirm: "Set capacity to 8 hours?" },
+    { id: "cap16h", label: "16 hours", capacity: 960, description: "16h capacity", classes: "cap16h", confirm: "Set capacity to 16 hours?" },
+    { id: "custom-hours", label: "Custom time..." },
+    { id: "_sep2", label: "", separator: true },
+    { id: "delete-rule", label: "Delete", confirm: "Reset this resource for this day?" }
+  ];
+
   // src/plugins/ContextMenuPlugin.ts
   var ContextMenuPlugin = class {
     constructor() {
@@ -4117,6 +3814,13 @@
       this._onKeydown = (e) => {
         if (e.key === "Escape") this._hideMenu();
       };
+      // ── Public menu definitions — override before registerPlugin() ────────────
+      /** Menu items shown when right-clicking a task. */
+      this.taskMenuItems = defaultTaskMenuItems.slice();
+      /** Menu items shown when right-clicking a day column header. */
+      this.dayMenuItems = defaultDayMenuItems.slice();
+      /** Menu items shown when right-clicking a resource row cell. */
+      this.cellMenuItems = defaultCellMenuItems.slice();
     }
     // ── Lifecycle ────────────────────────────────────────────────────────────
     init(core) {
@@ -4216,31 +3920,20 @@
       if (cell == null ? void 0 : cell.dataset.date) {
         return { type: "cell", date: cell.dataset.date, resourceId: cell.dataset.res };
       }
+      const dayCell = target.closest("rect.daybox-element");
+      if (dayCell == null ? void 0 : dayCell.dataset.date) {
+        const core = this._core;
+        const resIndex = Math.floor((e.offsetY - core.headerHeight) / core.settings.resourceHeight);
+        const resourceId = resIndex >= 0 && resIndex < core.data.Resources.length ? String(resIndex) : void 0;
+        return { type: "cell", date: dayCell.dataset.date, resourceId };
+      }
       return null;
-    }
-    // ── Action dispatch ──────────────────────────────────────────────────────
-    _dispatch(ctx, actionName, description, capacity, classes) {
-      var _a;
-      const isDelete = actionName === "Elimina";
-      const detail = ctx.type === "task" ? { action: actionName, TaskId: ctx.taskId, TaskRef: ctx.taskRef, TaskKey: ctx.taskKey } : {
-        DateFrom: ctx.date,
-        DateTo: ctx.date,
-        Name: isDelete ? "" : actionName,
-        Description: description,
-        Capacity: capacity,
-        Classes: classes,
-        ResourceId: ctx.resourceId ? parseInt(ctx.resourceId, 10) : null,
-        isDelete
-      };
-      const eventName = ctx.type === "task" ? "schedulatask:action" : "schedulacalendar:action";
-      const svg = (_a = this._core) == null ? void 0 : _a.schedulerSVGElement;
-      svg == null ? void 0 : svg.dispatchEvent(new CustomEvent(eventName, { bubbles: true, detail }));
     }
     // ── Context menu event handler ───────────────────────────────────────────
     _handleContextMenu(e) {
-      e.preventDefault();
       const ctx = this._getContext(e);
       if (!ctx) return;
+      e.preventDefault();
       this._currentCtx = ctx;
       this._buildMenu(ctx);
       if (this._menu.children.length > 0) {
@@ -4250,6 +3943,123 @@
       }
     }
     // ── Menu building ────────────────────────────────────────────────────────
+    _buildMenu(ctx) {
+      var _a;
+      this._menu.innerHTML = "";
+      const ro = ((_a = this._core) == null ? void 0 : _a.settings.canMoveItems) === false;
+      const defs = ctx.type === "task" ? this.taskMenuItems : ctx.type === "day" ? this.dayMenuItems : ctx.type === "cell" ? this.cellMenuItems : [];
+      for (const def of defs) {
+        if (def.separator) {
+          this._addDivider();
+          continue;
+        }
+        this._addItem(def.label, () => {
+          if (def.confirm && !confirm(def.confirm)) return;
+          this._executeItem(def, ctx);
+        }, ro);
+      }
+    }
+    // ── Action execution ─────────────────────────────────────────────────────
+    _executeItem(def, ctx) {
+      var _a, _b, _c;
+      switch (def.id) {
+        case "open": {
+          this._openPopup(ctx);
+          return;
+        }
+        case "delete-task": {
+          const item = this._findItem(ctx.taskId);
+          if (item) {
+            item.Deleted = true;
+            item.Modified = true;
+          }
+          (_a = document.querySelector(`svg[data-id="${ctx.taskId}"]`)) == null ? void 0 : _a.remove();
+          if (typeof window.modified === "function") window.modified();
+          const notifDel = (_c = (_b = this._core) == null ? void 0 : _b.getPlugin) == null ? void 0 : _c.call(_b, "notification");
+          if (notifDel && item) notifDel.notifyDeleted(item);
+          return;
+        }
+        case "delete-rule": {
+          this._applyCalendarDelete(ctx);
+          return;
+        }
+        case "custom-hours": {
+          this._promptCustomHours(ctx);
+          return;
+        }
+        default: {
+          this._applyCalendarRule(def, ctx);
+          return;
+        }
+      }
+    }
+    // ── Calendar helpers ─────────────────────────────────────────────────────
+    /**
+     * Applies a calendar rule (capacity change) for a date + optional resource.
+     * Writes via CalendarPlugin if registered, always dispatches DOM event.
+     */
+    _applyCalendarRule(def, ctx) {
+      var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
+      const capacity = (_a = def.capacity) != null ? _a : 0;
+      const description = (_b = def.description) != null ? _b : def.label;
+      const classes = (_c = def.classes) != null ? _c : "";
+      const date = ctx.date;
+      const resourceId = (_d = ctx.resourceId) != null ? _d : null;
+      const calPlugin = (_f = (_e = this._core) == null ? void 0 : _e.getPlugin) == null ? void 0 : _f.call(_e, "calendar");
+      if (calPlugin && typeof calPlugin.addException === "function") {
+        calPlugin.addException(
+          { Capacity: capacity, DateFrom: date, DateTo: date, description, classes },
+          resourceId
+        );
+        (_h = (_g = this._core).refresh) == null ? void 0 : _h.call(_g);
+      }
+      this._dispatchCalendar(ctx, def.label, description, capacity, classes);
+      const notif = (_j = (_i = this._core) == null ? void 0 : _i.getPlugin) == null ? void 0 : _j.call(_i, "notification");
+      if (notif) notif.notifyMenuAction(def.id, null, ctx);
+    }
+    /** Removes the calendar rule for a date + optional resource. */
+    _applyCalendarDelete(ctx) {
+      var _a, _b, _c, _d, _e, _f, _g;
+      const date = ctx.date;
+      const resourceId = (_a = ctx.resourceId) != null ? _a : null;
+      const calPlugin = (_c = (_b = this._core) == null ? void 0 : _b.getPlugin) == null ? void 0 : _c.call(_b, "calendar");
+      if (calPlugin && typeof calPlugin.removeException === "function") {
+        calPlugin.removeException(date, resourceId);
+        (_e = (_d = this._core).refresh) == null ? void 0 : _e.call(_d);
+      }
+      this._dispatchCalendar(ctx, "Delete", "", 0, "");
+      const notif = (_g = (_f = this._core) == null ? void 0 : _f.getPlugin) == null ? void 0 : _g.call(_f, "notification");
+      if (notif) notif.notifyMenuAction("delete-rule", null, ctx);
+    }
+    /** Dispatches the backward-compat 'schedulacalendar:action' DOM event. */
+    _dispatchCalendar(ctx, actionName, description, capacity, classes) {
+      var _a;
+      const isDelete = actionName === "Delete";
+      const detail = { DateFrom: ctx.date, DateTo: ctx.date, Name: isDelete ? "" : actionName, Description: description, Capacity: capacity, Classes: classes, ResourceId: ctx.resourceId ? parseInt(ctx.resourceId, 10) : null, isDelete };
+      const svg = (_a = this._core) == null ? void 0 : _a.schedulerSVGElement;
+      svg == null ? void 0 : svg.dispatchEvent(new CustomEvent("schedulacalendar:action", { bubbles: true, detail }));
+    }
+    /** Prompts for custom hours, then applies the calendar rule. */
+    _promptCustomHours(ctx) {
+      const raw = prompt("Capacity in hours (e.g. 5 or 5.5):", "");
+      if (raw === null) return;
+      const hours = parseFloat(raw.replace(",", "."));
+      if (isNaN(hours) || hours < 0 || hours > 24) {
+        alert("Invalid value. Enter a number between 0 and 24.");
+        return;
+      }
+      const label = `${hours}h`;
+      if (!confirm(`Set capacity to ${label}?`)) return;
+      const def = {
+        id: "custom-hours",
+        label,
+        capacity: Math.round(hours * 60),
+        description: `${label} capacity`,
+        classes: "cap-custom"
+      };
+      this._applyCalendarRule(def, ctx);
+    }
+    // ── Task helpers ─────────────────────────────────────────────────────────
     _findItem(taskId) {
       var _a, _b, _c, _d;
       for (const res of (_c = (_b = (_a = this._core) == null ? void 0 : _a.data) == null ? void 0 : _b.Resources) != null ? _c : []) {
@@ -4258,6 +4068,24 @@
       }
       return null;
     }
+    _openPopup(ctx) {
+      var _a, _b;
+      const item = this._findItem(ctx.taskId);
+      if (!item) return;
+      const provider = this._getPopupProvider();
+      if (!provider) return;
+      const existingPopup = document.querySelector(".scheduler-popup");
+      const isVisible = existingPopup && existingPopup.style.display !== "none";
+      if (isVisible && typeof provider.refreshItem === "function") {
+        provider.refreshItem(item);
+      } else {
+        const rect = this._menu.getBoundingClientRect();
+        const fakeEvent = new MouseEvent("click", { clientX: rect.left, clientY: rect.top, bubbles: true });
+        provider.show(item, fakeEvent, this._core);
+      }
+      const notif = (_b = (_a = this._core) == null ? void 0 : _a.getPlugin) == null ? void 0 : _b.call(_a, "notification");
+      if (notif) notif.notifyMenuAction("open", item, ctx);
+    }
     _getPopupProvider() {
       var _a, _b, _c, _d, _e;
       if ((_b = (_a = this._core) == null ? void 0 : _a.settings) == null ? void 0 : _b.popupProvider) return this._core.settings.popupProvider;
@@ -4265,89 +4093,6 @@
         if (typeof p.show === "function") return p;
       }
       return null;
-    }
-    _buildMenu(ctx) {
-      var _a;
-      this._menu.innerHTML = "";
-      const ro = ((_a = this._core) == null ? void 0 : _a.settings.canMoveItems) === false;
-      if (ctx.type === "task") {
-        this._addItem("Modifica", () => {
-          const item = this._findItem(ctx.taskId);
-          const provider = this._getPopupProvider();
-          if (!item || !provider) return;
-          const existingPopup = document.querySelector(".scheduler-popup");
-          const isVisible = existingPopup && existingPopup.style.display !== "none";
-          if (isVisible && typeof provider.refreshItem === "function") {
-            provider.refreshItem(item);
-          } else {
-            const rect = this._menu.getBoundingClientRect();
-            const fakeEvent = new MouseEvent("click", { clientX: rect.left, clientY: rect.top, bubbles: true });
-            provider.show(item, fakeEvent, this._core);
-          }
-        }, ro);
-        this._addDivider();
-        this._addItem("Elimina", () => {
-          var _a2;
-          if (!confirm("Confermi di voler eliminare questo task?")) return;
-          const item = this._findItem(ctx.taskId);
-          if (item) {
-            item.Deleted = true;
-            item.Modified = true;
-          }
-          (_a2 = document.querySelector(`svg[data-id="${ctx.taskId}"]`)) == null ? void 0 : _a2.remove();
-          if (typeof window.modified === "function") window.modified();
-        }, ro);
-        return;
-      }
-      if (ctx.type === "day") {
-        this._addItem("Festivo", () => this._withConfirm("Festivo", () => this._dispatch(ctx, "Festivo", "Chiusura festiva", 0, "timeoff")), ro);
-        this._addItem("Chiuso", () => this._withConfirm("Chiuso", () => this._dispatch(ctx, "Chiuso", "Chiusura", 0, "closed")), ro);
-        this._addItem("Manutenzione", () => this._withConfirm("Manutenzione", () => this._dispatch(ctx, "Manutenzione", "Manutenzione", 0, "maintenance")), ro);
-        this._addDivider();
-        this._addItem("8 ore", () => this._withConfirm("8 ore", () => this._dispatch(ctx, "8 ore", "Capacit\xE0 8 ore", 480, "cap8h")), ro);
-        this._addItem("16 ore", () => this._withConfirm("16 ore", () => this._dispatch(ctx, "16 ore", "Capacit\xE0 16 ore", 960, "cap16h")), ro);
-        this._addItem("24 ore", () => this._withConfirm("24 ore", () => this._dispatch(ctx, "24 ore", "Capacit\xE0 24 ore", 1440, "cap24h")), ro);
-        this._addItem("Ore custom...", () => this._promptCustomHours(ctx), ro);
-        this._addDivider();
-        this._addItem("Elimina regola", () => {
-          if (confirm("Confermi di voler ripristinare questo giorno?"))
-            this._dispatch(ctx, "Elimina", "", 0, "");
-        }, ro);
-        return;
-      }
-      if (ctx.type === "cell") {
-        this._addItem("Non disponibile", () => this._withConfirm("Non disponibile", () => this._dispatch(ctx, "Non disponibile", "Risorsa non disponibile", 0, "closed")), ro);
-        this._addItem("Assenza", () => this._withConfirm("Assenza", () => this._dispatch(ctx, "Assenza", "Assenza risorsa", 0, "closed")), ro);
-        this._addItem("Ferie", () => this._withConfirm("Ferie", () => this._dispatch(ctx, "Ferie", "Ferie risorsa", 0, "absent")), ro);
-        this._addItem("Manutenzione", () => this._withConfirm("Manutenzione", () => this._dispatch(ctx, "Manutenzione", "Manutenzione", 0, "maintenance")), ro);
-        this._addDivider();
-        this._addItem("8 ore", () => this._withConfirm("8 ore", () => this._dispatch(ctx, "8 ore", "Capacit\xE0 8 ore", 480, "cap8h")), ro);
-        this._addItem("16 ore", () => this._withConfirm("16 ore", () => this._dispatch(ctx, "16 ore", "Capacit\xE0 16 ore", 960, "cap16h")), ro);
-        this._addItem("24 ore", () => this._withConfirm("24 ore", () => this._dispatch(ctx, "24 ore", "Capacit\xE0 24 ore", 1440, "cap24h")), ro);
-        this._addItem("Ore custom...", () => this._promptCustomHours(ctx), ro);
-        this._addDivider();
-        this._addItem("Elimina regola", () => {
-          if (confirm("Confermi di voler ripristinare questa risorsa per il giorno selezionato?"))
-            this._dispatch(ctx, "Elimina", "", 0, "");
-        }, ro);
-      }
-    }
-    // ── Small UX helpers ─────────────────────────────────────────────────────
-    _withConfirm(name, action) {
-      if (confirm(`Confermi di voler impostare "${name}"?`)) action();
-    }
-    _promptCustomHours(ctx) {
-      const raw = prompt("Ore di capacit\xE0 (es. 5 o 5.5):", "");
-      if (raw === null) return;
-      const hours = parseFloat(raw.replace(",", "."));
-      if (isNaN(hours) || hours < 0 || hours > 24) {
-        alert("Valore non valido. Inserisci un numero tra 0 e 24.");
-        return;
-      }
-      const name = `${hours} ore`;
-      if (confirm(`Confermi di voler impostare "${name}"?`)) {
-        this._dispatch(ctx, name, "Capacit\xE0 custom", Math.round(hours * 60), "cap-custom");
-      }
     }
   };
 
@@ -4394,8 +4139,101 @@
       calendarData.Items.push(__spreadProps(__spreadValues({}, rule), { ResourceId: id }));
       this.applyData(calendarData);
     }
+    /**
+     * Adds (or replaces) a date-based calendar exception.
+     * Pass resourceId = null for a global rule, or a resource id/index for per-resource.
+     */
+    addException(rule, resourceId) {
+      var _a, _b, _c, _d;
+      const calendarData = (_a = this._core.data) == null ? void 0 : _a.Calendar;
+      if (!calendarData) return;
+      if (!calendarData.Items) calendarData.Items = [];
+      const idStr = resourceId != null ? String(resourceId) : null;
+      calendarData.Items = calendarData.Items.filter((i) => {
+        const sameRes = idStr != null ? String(i.ResourceId) === idStr : i.ResourceId == null;
+        return !(sameRes && i.DateFrom === rule.DateFrom);
+      });
+      const newItem = { Capacity: rule.Capacity, DateFrom: rule.DateFrom, DateTo: rule.DateTo };
+      if (rule.Day != null) newItem.Day = rule.Day;
+      if (idStr != null) newItem.ResourceId = idStr;
+      calendarData.Items.push(newItem);
+      this.applyData(calendarData);
+      (_d = (_c = (_b = this._core) == null ? void 0 : _b.getPlugin) == null ? void 0 : _c.call(_b, "notification")) == null ? void 0 : _d.notifyCalendarChanged(newItem, "add");
+      this._recalculateTasks(idStr);
+    }
+    /**
+     * Removes all calendar exceptions for a specific date (and optional resource).
+     */
+    removeException(date, resourceId) {
+      var _a, _b, _c, _d;
+      const calendarData = (_a = this._core.data) == null ? void 0 : _a.Calendar;
+      if (!(calendarData == null ? void 0 : calendarData.Items)) return;
+      const idStr = resourceId != null ? String(resourceId) : null;
+      calendarData.Items = calendarData.Items.filter((i) => {
+        const sameRes = idStr != null ? String(i.ResourceId) === idStr : i.ResourceId == null;
+        return !(sameRes && i.DateFrom === date);
+      });
+      this.applyData(calendarData);
+      (_d = (_c = (_b = this._core) == null ? void 0 : _b.getPlugin) == null ? void 0 : _c.call(_b, "notification")) == null ? void 0 : _d.notifyCalendarChanged(
+        { DateFrom: date, ResourceId: idStr },
+        "remove"
+      );
+      this._recalculateTasks(idStr);
+    }
     destroy() {
       this._core = null;
+    }
+    /**
+     * After a calendar change, recalculate Width from Effort for all affected tasks.
+     * If affectedResourceId is null, all resources are recalculated (global rule).
+     * Effort is the ground truth — Width is derived via calcDuration with the new calendar.
+     */
+    _recalculateTasks(affectedResourceId) {
+      var _a, _b, _c, _d;
+      const resources = (_b = (_a = this._core) == null ? void 0 : _a.data) == null ? void 0 : _b.Resources;
+      if (!resources) return;
+      const notif = (_d = (_c = this._core) == null ? void 0 : _c.getPlugin) == null ? void 0 : _d.call(_c, "notification");
+      resources.forEach((resource, ri) => {
+        var _a2;
+        if (affectedResourceId != null && String(ri) !== affectedResourceId) return;
+        (_a2 = resource.Items) == null ? void 0 : _a2.forEach((itemData) => {
+          if (itemData.Deleted) return;
+          const savedEffort = itemData.Effort;
+          if (!savedEffort) return;
+          const scitem = new SchedulaItem(this._core, itemData);
+          scitem.Effort = savedEffort;
+          notif == null ? void 0 : notif.notifyChanged(itemData);
+        });
+      });
+      this._resolveInterferences(affectedResourceId, notif);
+    }
+    /**
+     * After widths are recalculated, push downstream tasks to avoid overlaps.
+     * Processes tasks in chronological order per resource: if a task starts before
+     * the previous one ends, it is moved to start right after it (cascade effect).
+     * Moving a task changes its From, so its Width is also recalculated from Effort.
+     */
+    _resolveInterferences(affectedResourceId, notif) {
+      var _a, _b;
+      const resources = (_b = (_a = this._core) == null ? void 0 : _a.data) == null ? void 0 : _b.Resources;
+      if (!resources) return;
+      resources.forEach((resource, ri) => {
+        var _a2;
+        if (affectedResourceId != null && String(ri) !== affectedResourceId) return;
+        const items = ((_a2 = resource.Items) != null ? _a2 : []).filter((i) => !i.Deleted).sort((a, b) => a.Offset - b.Offset);
+        for (let idx = 1; idx < items.length; idx++) {
+          const prev = items[idx - 1];
+          const curr = items[idx];
+          const prevEnd = prev.Offset + prev.Width;
+          if (curr.Offset < prevEnd) {
+            const savedEffort = curr.Effort;
+            const scitem = new SchedulaItem(this._core, curr);
+            scitem.Offset = prevEnd;
+            if (savedEffort) scitem.Effort = savedEffort;
+            notif == null ? void 0 : notif.notifyChanged(curr);
+          }
+        }
+      });
     }
     _parseDate(value) {
       const iso = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -4414,16 +4252,120 @@
     }
   };
 
+  // src/plugins/NotificationPlugin.ts
+  var NotificationPlugin = class {
+    constructor() {
+      this.name = "notification";
+      this._core = null;
+      this._enabled = false;
+    }
+    // ── Lifecycle ────────────────────────────────────────────────────────────
+    init(core) {
+      this._core = core;
+      if (!isPro(core.settings.licenseKey)) {
+        console.warn("[NotificationPlugin] A valid PRO licenseKey is required \u2014 plugin disabled.");
+        return;
+      }
+      this._enabled = true;
+    }
+    destroy() {
+      this._core = null;
+      this._enabled = false;
+    }
+    // ── Public callbacks — override these ────────────────────────────────────
+    /**
+     * Called after a task is moved or resized by the user.
+     * @param item  The raw data object of the modified task.
+     */
+    onItemChanged(item) {
+    }
+    /**
+     * Called after a new task is added via drag-and-drop from an external source.
+     * @param item  The raw data object of the newly added task.
+     */
+    onItemAdded(item) {
+    }
+    /**
+     * Called after a task is deleted (e.g. via context menu).
+     * @param item  The raw data object of the deleted task (Deleted flag is already true).
+     */
+    onItemDeleted(item) {
+    }
+    /**
+     * Called after a context menu action is executed.
+     * @param actionId  The id from IMenuItemDef (e.g. 'holiday', 'closed', 'open', 'delete-rule').
+     * @param item      The raw task data object for task actions; null for calendar actions.
+     * @param ctx       The context object: { type, date, resourceId?, taskId?, taskRef?, taskKey? }
+     */
+    onMenuAction(actionId, item, ctx) {
+    }
+    /**
+     * Called after a calendar exception is added or removed.
+     * @param rule    The exception rule object: { Capacity, DateFrom, DateTo, ResourceId? }
+     *                For removals, only { DateFrom, ResourceId? } is guaranteed to be present.
+     * @param action  'add' when an exception is added, 'remove' when it is deleted.
+     */
+    onCalendarChanged(rule, action) {
+    }
+    // ── Internal dispatch — called by core and plugins ───────────────────────
+    /** @internal */
+    notifyChanged(item) {
+      if (!this._enabled) return;
+      try {
+        this.onItemChanged(item);
+      } catch (e) {
+        console.error("[NotificationPlugin] onItemChanged error:", e);
+      }
+    }
+    /** @internal */
+    notifyAdded(item) {
+      if (!this._enabled) return;
+      try {
+        this.onItemAdded(item);
+      } catch (e) {
+        console.error("[NotificationPlugin] onItemAdded error:", e);
+      }
+    }
+    /** @internal */
+    notifyDeleted(item) {
+      if (!this._enabled) return;
+      try {
+        this.onItemDeleted(item);
+      } catch (e) {
+        console.error("[NotificationPlugin] onItemDeleted error:", e);
+      }
+    }
+    /** @internal */
+    notifyMenuAction(actionId, item, ctx) {
+      if (!this._enabled) return;
+      try {
+        this.onMenuAction(actionId, item, ctx);
+      } catch (e) {
+        console.error("[NotificationPlugin] onMenuAction error:", e);
+      }
+    }
+    /** @internal */
+    notifyCalendarChanged(rule, action) {
+      if (!this._enabled) return;
+      try {
+        this.onCalendarChanged(rule, action);
+      } catch (e) {
+        console.error("[NotificationPlugin] onCalendarChanged error:", e);
+      }
+    }
+  };
+
   // src/index-pro.ts
   window.SchedulaCore = SchedulaCore;
   window.SchedulaSettings = SchedulaSettings2;
-  window.SchedulaTemplate = SchedulaTemplate2;
+  window.SchedulaTemplate = SchedulaTemplate;
   window.DragDropPlugin = DragDropPlugin;
   window.LinksPlugin = LinksPlugin;
   window.EventsPlugin = EventsPlugin;
   window.DefaultPopupPlugin = DefaultPopupPlugin;
   window.ContextMenuPlugin = ContextMenuPlugin;
   window.CalendarPlugin = CalendarPlugin;
+  window.NotificationPlugin = NotificationPlugin;
   window.validateLicense = validateLicense;
   window.isPro = isPro;
 })();

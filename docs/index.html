@@ -11,10 +11,65 @@
     <link rel="stylesheet" href="bootstrap/bootstrap.css">
     <link rel="stylesheet" href="css/popup.css">
     <link rel="stylesheet" href="css/planner-test.css">
-    <title>SchedulaCore Free — Test</title>
+    <title>SchedulaCore Free — Live Demo</title>
+    <style>
+        #pro-banner {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+            color: #fff;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-family: Arial, sans-serif;
+        }
+        #pro-banner .pro-left { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+        #pro-banner .pro-logo { font-size: 1.1rem; font-weight: 700; margin-right: 6px; }
+        #pro-banner .pro-tag {
+            background: #f59e0b; color: #000; font-size: 0.7rem; font-weight: 700;
+            padding: 2px 7px; border-radius: 4px; letter-spacing: 1px;
+        }
+        #pro-banner .pro-sep { color: #475569; margin: 0 4px; }
+        #pro-banner .pro-feature { color: #94a3b8; font-size: 0.82rem; white-space: nowrap; }
+        #pro-banner .pro-feature span { color: #38bdf8; margin-right: 4px; }
+        #pro-banner .pro-cta {
+            background: #f59e0b; color: #000; font-weight: 700; font-size: 0.85rem;
+            padding: 7px 18px; border-radius: 6px; text-decoration: none; white-space: nowrap;
+        }
+        #pro-banner .pro-cta:hover { background: #fbbf24; }
+        #pro-video-section {
+            background: #0f172a; padding: 32px 20px; text-align: center; font-family: Arial, sans-serif;
+        }
+        #pro-video-section h2 { color: #f8fafc; font-size: 1.3rem; margin-bottom: 6px; }
+        #pro-video-section p { color: #94a3b8; margin-bottom: 20px; font-size: 0.9rem; }
+        .pro-video-grid { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+        .pro-video-grid video {
+            border-radius: 10px; border: 2px solid #1e3a5f;
+            max-width: 480px; width: 100%; background: #000;
+        }
+        .pro-video-label { color: #38bdf8; font-size: 0.8rem; margin-top: 6px; font-weight: 600; }
+    </style>
 </head>
 
 <body>
+
+    <!-- PRO Banner -->
+    <div id="pro-banner">
+        <div class="pro-left">
+            <span class="pro-logo">SchedulaCore</span>
+            <span class="pro-tag">PRO</span>
+            <span class="pro-sep">|</span>
+            <span class="pro-feature"><span>&#10003;</span>Drag &amp; Drop</span>
+            <span class="pro-feature"><span>&#10003;</span>Resize</span>
+            <span class="pro-feature"><span>&#10003;</span>Calendar &amp; Exceptions</span>
+            <span class="pro-feature"><span>&#10003;</span>Dependency Links</span>
+            <span class="pro-feature"><span>&#10003;</span>Events &amp; Milestones</span>
+            <span class="pro-feature"><span>&#10003;</span>Context Menus</span>
+            <span class="pro-feature"><span>&#10003;</span>Notifications</span>
+        </div>
+        <a class="pro-cta" href="mailto:info@schedulacore.com">Get PRO license &rarr;</a>
+    </div>
 
     <div id="themesdiv" class="row m-1 align-items-center">
         <span class="me-2 fw-bold">Themes:</span>
@@ -172,6 +227,22 @@
         buildGroupButtons();
 
     </script>
+
+    <!-- PRO Video showcase -->
+    <div id="pro-video-section">
+        <h2>See SchedulaCore PRO in action</h2>
+        <p>Drag &amp; drop, calendar exceptions, dependency links and more — available in the PRO license.</p>
+        <div class="pro-video-grid">
+            <div>
+                <video src="images/move-tasks.mp4" autoplay loop muted playsinline></video>
+                <div class="pro-video-label">Drag &amp; Drop tasks across resources</div>
+            </div>
+            <div>
+                <video src="images/schedula-tasks.mp4" autoplay loop muted playsinline></video>
+                <div class="pro-video-label">Calendar-aware scheduling &amp; links</div>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
