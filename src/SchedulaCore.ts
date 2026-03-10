@@ -10,6 +10,7 @@ import { IDragDropPlugin } from './models/IDragDropPlugin.js';
 import { ILinksPlugin } from './models/ILinksPlugin.js';
 import { IEventsPlugin } from './models/IEventsPlugin.js';
 import { DefaultPopupPlugin } from './plugins/DefaultPopupPlugin.js';
+import { isPro } from './license/LicenseValidator.js';
 
 declare function resourceClick(event: any, resource: any): void;
 declare function itemMouseEnter(event: any, item: any): void;
@@ -153,6 +154,13 @@ export class SchedulaCore implements ISchedulaCore {
     public setStyle(style: string) {
         this.settings.gStyle = style;
         this.refresh();
+    }
+
+    public toggleCalendarView(): boolean {
+        if (!this.getPlugin('calendar')) return false;
+        if (!isPro(this.settings.licenseKey)) return false;
+        this.schedulerContainer!.classList.toggle('calendar-view');
+        return this.schedulerContainer!.classList.contains('calendar-view');
     }
 
     private clearGroupSafe(groupId: string) {
@@ -747,12 +755,12 @@ export class SchedulaCore implements ISchedulaCore {
                     if (dt) {
 
                         let cdate = new Date(dt.getTime() + (c * this.settings.timeUnitVal * 60 * 1000));
-                        hilight = (cdate.getUTCDay() == 0) && this.settings.hilightSunday;
-                        let saturday = (cdate.getUTCDay() == 6);
+                        hilight = (cdate.getDay() == 0) && this.settings.hilightSunday;
+                        let saturday = (cdate.getDay() == 6);
                         let ratio = 1;
                         if (this.calendar != null) {
                             if (this.calendar.reference > 0) {
-                                ratio = this.calendar.getCapacity((cdate.getTime() / 60000) + 10, cdate.getUTCDay()) / this.calendar.reference;
+                                ratio = this.calendar.getCapacity((cdate.getTime() / 60000) + 10, cdate.getDay()) / this.calendar.reference;
 
                                 if (ratio > 1) ratio = 1;
                                 if (ratio < 0) ratio = 0;
@@ -791,13 +799,13 @@ export class SchedulaCore implements ISchedulaCore {
                             let resRatio = ratio;
                             if (this.calendar && this.calendar.reference > 0) {
                                 const resId: string = this.data.Resources[rr]?.Id;
-                                resRatio = this.calendar.getCapacity((cdate.getTime() / 60000) + 10, cdate.getUTCDay(), resId) / this.calendar.reference;
+                                resRatio = this.calendar.getCapacity((cdate.getTime() / 60000) + 10, cdate.getDay(), resId) / this.calendar.reference;
                                 if (isNaN(resRatio)) resRatio = ratio;
                                 if (resRatio > 1) resRatio = 1;
                                 if (resRatio < 0) resRatio = 0;
                             }
 
-                            rw = this.settings.timeWidth * resRatio;
+                            rw = resRatio === 0 ? this.settings.timeWidth : this.settings.timeWidth * resRatio;
                             if (isNaN(rw)) rw = 0;
                             const rect = document.createElementNS('http://www.w3.org/2000/svg', "rect");
 
@@ -2312,7 +2320,7 @@ export class SchedulaCore implements ISchedulaCore {
                 let daymonth = cdate.toLocaleDateString('it-it', { day: "numeric", month: 'short' });
 
                 let istoday = (today.getDate() == cdate.getDate()) && (today.getMonth() == cdate.getMonth()) && (today.getFullYear() == cdate.getFullYear());
-                let hilight = (cdate.getUTCDay() == 0) && this.settings.hilightSunday;
+                let hilight = (cdate.getDay() == 0) && this.settings.hilightSunday;
 
                 let h = this.settings.timeElementHeight;
                 let w = this.settings.timeWidth;

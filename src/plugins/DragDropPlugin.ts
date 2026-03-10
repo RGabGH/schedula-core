@@ -277,11 +277,36 @@ export class DragDropPlugin implements IDragDropPlugin {
         const sd = settings.date;
         let timespan = Math.trunc((dd.getTime() - sd.getTime()) / 1000 / 60);
 
-        resource.Items?.forEach((item: any) => {
-            if (timespan < item.Offset + item.Width && timespan >= item.Offset) {
-                timespan = item.Offset + item.Width;
+        const newWidth = parseInt(data.width);
+        const ctrl = event.ctrlKey;
+
+        if (ctrl && settings.shiftItems) {
+            // Push all downstream items forward to make room
+            const following = (resource.Items ?? [])
+                .filter((item: any) => item.Offset >= timespan)
+                .sort((a: any, b: any) => a.Offset - b.Offset);
+            let cursor = timespan + newWidth;
+            for (const item of following) {
+                if (item.Offset < cursor) item.Offset = cursor;
+                cursor = item.Offset + item.Width;
             }
-        });
+        } else {
+            // Find first free slot considering full width
+            let changed = true;
+            while (changed) {
+                changed = false;
+                resource.Items?.forEach((item: any) => {
+                    const x1 = timespan;
+                    const x2 = timespan + newWidth;
+                    const cx1 = item.Offset;
+                    const cx2 = item.Offset + item.Width;
+                    if (!(x2 <= cx1 || x1 >= cx2)) {
+                        timespan = cx2;
+                        changed = true;
+                    }
+                });
+            }
+        }
 
         if (settings.optimizeStart) {
             const cal = (core as any).getCalendarForResource?.(resource.Id) ?? core.calendar;
@@ -297,8 +322,8 @@ export class DragDropPlugin implements IDragDropPlugin {
             Text: data.text1,
             Description: data.text2,
             Offset: timespan,
-            Width: parseInt(data.width),
-            Effort: parseInt(data.width),
+            Width: newWidth,
+            Effort: newWidth,
             IsNew: true,
             Modified: true,
             Color1: data.color1,
@@ -316,7 +341,7 @@ export class DragDropPlugin implements IDragDropPlugin {
         if (typeof (window as any).modified === 'function') (window as any).modified();
         if (data.elementId) document.getElementById(data.elementId)?.remove();
 
-        core.init();
+        core.refresh();
     }
 
     // ── Hover ──────────────────────────────────────────────────────────────

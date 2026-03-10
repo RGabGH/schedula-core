@@ -169,6 +169,13 @@ window.toggleLinks = function () {
     scheduler.refresh();
 };
 
+window.toggleCalendarView = function (btn) {
+    var active = scheduler.toggleCalendarView();
+    if (active === false) return;
+    btn.classList.toggle('btn-outline-secondary', !active);
+    btn.classList.toggle('btn-primary', active);
+};
+
 window.setData = function (dati) {
     _allResources = null;
     _activeGroups.clear();

@@ -242,12 +242,13 @@ text {
 
 .box-element {
     fill: transparent;
-    transition: fill 0.25s;
+    transition: fill 0.4s, stroke 0.4s, stroke-width 0.4s;
     color: rgba(0, 0, 0, 0.15);
 }
 
 .box-element.no-capacity {
     fill: url(#obliqueLines);
+    color: rgba(0, 0, 0, 0.35);
     transition: none;
 }
 
@@ -635,6 +636,27 @@ rect.item.sizing {
 
 svg.svg-item {
     filter: drop-shadow(1px 3px 3px rgb(0 0 0 / 0.2));
+    opacity: 1;
+    transition: opacity 0.4s;
+}
+
+/***************************************** calendar view mode */
+
+.calendar-view svg.svg-item {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.calendar-view .box-element {
+    fill: rgba(0, 0, 0, 0.2);
+    stroke: rgba(0, 0, 0, 0.2);
+    stroke-width: 0.5;
+}
+
+.theme-dark .calendar-view .box-element,
+.theme-blue .calendar-view .box-element {
+    fill: rgba(255, 255, 255, 0.2);
+    stroke: rgba(255, 255, 255, 0.2);
 }
 
 .sidepanello {

@@ -41,11 +41,11 @@ export class SchedulaTemplate {
         <circle cx="10" cy="10" r="10" />
       </pattern>
       <pattern id="obliqueLines"
-      x="0" y="0" width="2" height="2"
-      patternUnits="userSpaceOnUse" 
+      x="0" y="0" width="6" height="6"
+      patternUnits="userSpaceOnUse"
       patternTransform="rotate(45)">
-    <rect x="0" y="0" width="1" height="0.2" style="stroke: 2; fill: #0000ff" />
-    
+    <rect x="0" y="0" width="6" height="2.5" style="stroke: 0; fill: currentColor" />
+
     </pattern>
             <animate id="vanim" attributeName="viewBox" 
                 to="" 

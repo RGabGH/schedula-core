@@ -71,7 +71,7 @@
 }
 
 .theme-dark .box-element.no-capacity {
-    color: rgba(103, 126, 228, 0.25);
+    color: rgba(255, 255, 255, 0.45);
 }
 
 .theme-dark .item:not(.custom-color) {
@@ -156,7 +156,7 @@
 }
 
 .theme-blue .box-element.no-capacity {
-    color: rgba(59, 130, 246, 0.3);
+    color: rgba(255, 255, 255, 0.45);
 }
 
 .theme-blue .item:not(.custom-color) {
@@ -220,7 +220,7 @@
 }
 
 .theme-soft .box-element.no-capacity {
-    color: rgba(129, 140, 248, 0.35);
+    color: rgba(0, 0, 0, 0.3);
 }
 
 .theme-soft .item:not(.custom-color) {

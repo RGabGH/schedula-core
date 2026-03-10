@@ -66,13 +66,20 @@ export class CalendarPlugin {
         this._core = null;
     }
 
+    private _parseDate(value: string): number {
+        // ISO 8601 date-only (YYYY-MM-DD): parse as local midnight to avoid UTC offset shifting the day
+        const iso = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if (iso) return new Date(+iso[1], +iso[2] - 1, +iso[3]).getTime();
+        return new Date(value).getTime();
+    }
+
     private _addRuleItem(cal: SchedulaCalendar, item: any): void {
         const i = cal.newItem();
         i.capacity = item.Capacity;
         i.day = item.Day ?? -1;
-        i.from = item.DateFrom ? new Date(item.DateFrom).getTime() : 0;
+        i.from = item.DateFrom ? this._parseDate(item.DateFrom) : 0;
         i.duration = item.DateFrom && item.DateTo
-            ? (new Date(item.DateTo).getTime() - new Date(item.DateFrom).getTime()) / 60000
+            ? (this._parseDate(item.DateTo) - this._parseDate(item.DateFrom)) / 60000 + 1440
             : 999999999;
         i.resourceId = item.ResourceId != null ? String(item.ResourceId) : null;
         i.type = 'rule';

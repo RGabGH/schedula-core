@@ -215,8 +215,9 @@ var schedulerData = {
 
     Calendar: {
         Items: [
-            { Day: 1, Capacity: 0 },
-            { Day: 6, Capacity: 0 }
+            { Day: 0, Capacity: 0 },
+            { Day: 6, Capacity: 0 },
+            { Day:1, Capacity: 0 , ResourceId:"1", DateFrom:"2026-03-15", DateTo:"2026-03-30"}
         ]
     },
     Events: [{

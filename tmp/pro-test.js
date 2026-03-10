@@ -1075,6 +1075,66 @@
     }
   };
 
+  // src/license/LicenseValidator.ts
+  var _S = [78, 167, 44, 245];
+  var _PREFIX = "SCHED";
+  function _hash(bytes) {
+    let h = _S[0];
+    for (const b of bytes) {
+      h = (h << 4 ^ h >>> 4 ^ b ^ _S[h & 3]) & 255;
+    }
+    return h;
+  }
+  var _INVALID = {
+    valid: false,
+    customerId: 0,
+    perpetual: false,
+    expiresAt: null,
+    expired: false,
+    flags: 0
+  };
+  function validateLicense(key) {
+    if (!key || typeof key !== "string") return __spreadValues({}, _INVALID);
+    const parts = key.toUpperCase().trim().split("-");
+    if (parts.length !== 4 || parts[0] !== _PREFIX) return __spreadValues({}, _INVALID);
+    const [, g1, g2, g3] = parts;
+    if (g1.length !== 5 || g2.length !== 5 || g3.length !== 5) return __spreadValues({}, _INVALID);
+    const v1 = parseInt(g1, 36);
+    const v2 = parseInt(g2, 36);
+    const v3 = parseInt(g3, 36);
+    if (isNaN(v1) || isNaN(v2) || isNaN(v3)) return __spreadValues({}, _INVALID);
+    const r1 = v1 >> 16 & 255;
+    const idHi = v1 >> 8 & 255;
+    const idLo = v1 & 255;
+    const r2 = v2 >> 16 & 255;
+    const expiryOffset = v2 >> 8 & 255;
+    const flags = v2 & 255;
+    const r3 = v3 >> 16 & 255;
+    const salt = v3 >> 8 & 255;
+    const crc = v3 & 255;
+    if (!(r1 & 128) || !(r2 & 128) || !(r3 & 128)) return __spreadValues({}, _INVALID);
+    if (r1 !== (_hash([idHi, idLo, salt]) | 128)) return __spreadValues({}, _INVALID);
+    if (r2 !== (_hash([expiryOffset, flags, salt]) | 128)) return __spreadValues({}, _INVALID);
+    if (crc !== _hash([idHi, idLo, expiryOffset, flags, salt])) return __spreadValues({}, _INVALID);
+    if (r3 !== (_hash([r1, r2, crc]) | 128)) return __spreadValues({}, _INVALID);
+    const customerId = idHi << 8 | idLo;
+    let expiresAt = null;
+    let expired = false;
+    if (expiryOffset > 0) {
+      const expYear = 2025 + Math.floor((expiryOffset - 1) / 12);
+      const expMonth = (expiryOffset - 1) % 12;
+      expiresAt = new Date(expYear, expMonth, 1);
+      const now = /* @__PURE__ */ new Date();
+      const nowOffset = (now.getFullYear() - 2025) * 12 + now.getMonth();
+      expired = nowOffset >= expiryOffset;
+    }
+    return { valid: true, customerId, perpetual: expiryOffset === 0, expiresAt, expired, flags };
+  }
+  function isPro(key) {
+    const info = validateLicense(key);
+    return info.valid && !info.expired;
+  }
+
   // src/SchedulaCore.ts
   var SchedulaCore = class {
     constructor(scheduler, jsonData, settings) {
@@ -1234,6 +1294,12 @@
     setStyle(style) {
       this.settings.gStyle = style;
       this.refresh();
+    }
+    toggleCalendarView() {
+      if (!this.getPlugin("calendar")) return false;
+      if (!isPro(this.settings.licenseKey)) return false;
+      this.schedulerContainer.classList.toggle("calendar-view");
+      return this.schedulerContainer.classList.contains("calendar-view");
     }
     clearGroupSafe(groupId) {
       const group = document.getElementById(groupId);
@@ -1717,12 +1783,12 @@
             let dt = this.settings.date;
             if (dt) {
               let cdate = new Date(dt.getTime() + c * this.settings.timeUnitVal * 60 * 1e3);
-              hilight = cdate.getUTCDay() == 0 && this.settings.hilightSunday;
-              let saturday = cdate.getUTCDay() == 6;
+              hilight = cdate.getDay() == 0 && this.settings.hilightSunday;
+              let saturday = cdate.getDay() == 6;
               let ratio = 1;
               if (this.calendar != null) {
                 if (this.calendar.reference > 0) {
-                  ratio = this.calendar.getCapacity(cdate.getTime() / 6e4 + 10, cdate.getUTCDay()) / this.calendar.reference;
+                  ratio = this.calendar.getCapacity(cdate.getTime() / 6e4 + 10, cdate.getDay()) / this.calendar.reference;
                   if (ratio > 1) ratio = 1;
                   if (ratio < 0) ratio = 0;
                 }
@@ -1755,12 +1821,12 @@
                 let resRatio = ratio;
                 if (this.calendar && this.calendar.reference > 0) {
                   const resId = (_a = this.data.Resources[rr]) == null ? void 0 : _a.Id;
-                  resRatio = this.calendar.getCapacity(cdate.getTime() / 6e4 + 10, cdate.getUTCDay(), resId) / this.calendar.reference;
+                  resRatio = this.calendar.getCapacity(cdate.getTime() / 6e4 + 10, cdate.getDay(), resId) / this.calendar.reference;
                   if (isNaN(resRatio)) resRatio = ratio;
                   if (resRatio > 1) resRatio = 1;
                   if (resRatio < 0) resRatio = 0;
                 }
-                rw = this.settings.timeWidth * resRatio;
+                rw = resRatio === 0 ? this.settings.timeWidth : this.settings.timeWidth * resRatio;
                 if (isNaN(rw)) rw = 0;
                 const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
                 rect.setAttribute("x", rx.toString());
@@ -3072,7 +3138,7 @@
           let daynum = cdate.toLocaleDateString("it-it", { day: "numeric" });
           let daymonth = cdate.toLocaleDateString("it-it", { day: "numeric", month: "short" });
           let istoday = today.getDate() == cdate.getDate() && today.getMonth() == cdate.getMonth() && today.getFullYear() == cdate.getFullYear();
-          let hilight = cdate.getUTCDay() == 0 && this.settings.hilightSunday;
+          let hilight = cdate.getDay() == 0 && this.settings.hilightSunday;
           let h = this.settings.timeElementHeight;
           let w = this.settings.timeWidth;
           let y = this.headerHeight - this.settings.timeElementHeight;
@@ -3323,11 +3389,11 @@
         <circle cx="10" cy="10" r="10" />
       </pattern>
       <pattern id="obliqueLines"
-      x="0" y="0" width="2" height="2"
-      patternUnits="userSpaceOnUse" 
+      x="0" y="0" width="6" height="6"
+      patternUnits="userSpaceOnUse"
       patternTransform="rotate(45)">
-    <rect x="0" y="0" width="1" height="0.2" style="stroke: 2; fill: #0000ff" />
-    
+    <rect x="0" y="0" width="6" height="2.5" style="stroke: 0; fill: currentColor" />
+
     </pattern>
             <animate id="vanim" attributeName="viewBox" 
                 to="" 
@@ -3665,7 +3731,7 @@
     }
     // ── External drop ──────────────────────────────────────────────────────
     onDrop(event) {
-      var _a, _b, _c, _d, _e, _f, _g;
+      var _a, _b, _c, _d, _e, _f, _g, _h;
       event.stopImmediatePropagation();
       const core = this._core;
       const settings = core.settings;
@@ -3680,13 +3746,33 @@
       const dd = new Date((_c = event.target.getAttribute("data-date")) != null ? _c : "");
       const sd = settings.date;
       let timespan = Math.trunc((dd.getTime() - sd.getTime()) / 1e3 / 60);
-      (_d = resource.Items) == null ? void 0 : _d.forEach((item) => {
-        if (timespan < item.Offset + item.Width && timespan >= item.Offset) {
-          timespan = item.Offset + item.Width;
+      const newWidth = parseInt(data.width);
+      const ctrl = event.ctrlKey;
+      if (ctrl && settings.shiftItems) {
+        const following = ((_d = resource.Items) != null ? _d : []).filter((item) => item.Offset >= timespan).sort((a, b) => a.Offset - b.Offset);
+        let cursor = timespan + newWidth;
+        for (const item of following) {
+          if (item.Offset < cursor) item.Offset = cursor;
+          cursor = item.Offset + item.Width;
         }
-      });
+      } else {
+        let changed = true;
+        while (changed) {
+          changed = false;
+          (_e = resource.Items) == null ? void 0 : _e.forEach((item) => {
+            const x1 = timespan;
+            const x2 = timespan + newWidth;
+            const cx1 = item.Offset;
+            const cx2 = item.Offset + item.Width;
+            if (!(x2 <= cx1 || x1 >= cx2)) {
+              timespan = cx2;
+              changed = true;
+            }
+          });
+        }
+      }
       if (settings.optimizeStart) {
-        const cal = (_f = (_e = core.getCalendarForResource) == null ? void 0 : _e.call(core, resource.Id)) != null ? _f : core.calendar;
+        const cal = (_g = (_f = core.getCalendarForResource) == null ? void 0 : _f.call(core, resource.Id)) != null ? _g : core.calendar;
         if (cal) {
           const newFrom = cal.optimazeStart({ From: sd.getTime() / 1e3 / 60 + timespan });
           timespan = newFrom - sd.getTime() / 1e3 / 60;
@@ -3698,8 +3784,8 @@
         Text: data.text1,
         Description: data.text2,
         Offset: timespan,
-        Width: parseInt(data.width),
-        Effort: parseInt(data.width),
+        Width: newWidth,
+        Effort: newWidth,
         IsNew: true,
         Modified: true,
         Color1: data.color1,
@@ -3713,8 +3799,8 @@
       if (!resource.Items) resource.Items = [];
       resource.Items.push(dropped);
       if (typeof window.modified === "function") window.modified();
-      if (data.elementId) (_g = document.getElementById(data.elementId)) == null ? void 0 : _g.remove();
-      core.init();
+      if (data.elementId) (_h = document.getElementById(data.elementId)) == null ? void 0 : _h.remove();
+      core.refresh();
     }
     // ── Hover ──────────────────────────────────────────────────────────────
     onItemOver(event, item) {
@@ -4019,66 +4105,6 @@
     }
   };
 
-  // src/license/LicenseValidator.ts
-  var _S = [78, 167, 44, 245];
-  var _PREFIX = "SCHED";
-  function _hash(bytes) {
-    let h = _S[0];
-    for (const b of bytes) {
-      h = (h << 4 ^ h >>> 4 ^ b ^ _S[h & 3]) & 255;
-    }
-    return h;
-  }
-  var _INVALID = {
-    valid: false,
-    customerId: 0,
-    perpetual: false,
-    expiresAt: null,
-    expired: false,
-    flags: 0
-  };
-  function validateLicense(key) {
-    if (!key || typeof key !== "string") return __spreadValues({}, _INVALID);
-    const parts = key.toUpperCase().trim().split("-");
-    if (parts.length !== 4 || parts[0] !== _PREFIX) return __spreadValues({}, _INVALID);
-    const [, g1, g2, g3] = parts;
-    if (g1.length !== 5 || g2.length !== 5 || g3.length !== 5) return __spreadValues({}, _INVALID);
-    const v1 = parseInt(g1, 36);
-    const v2 = parseInt(g2, 36);
-    const v3 = parseInt(g3, 36);
-    if (isNaN(v1) || isNaN(v2) || isNaN(v3)) return __spreadValues({}, _INVALID);
-    const r1 = v1 >> 16 & 255;
-    const idHi = v1 >> 8 & 255;
-    const idLo = v1 & 255;
-    const r2 = v2 >> 16 & 255;
-    const expiryOffset = v2 >> 8 & 255;
-    const flags = v2 & 255;
-    const r3 = v3 >> 16 & 255;
-    const salt = v3 >> 8 & 255;
-    const crc = v3 & 255;
-    if (!(r1 & 128) || !(r2 & 128) || !(r3 & 128)) return __spreadValues({}, _INVALID);
-    if (r1 !== (_hash([idHi, idLo, salt]) | 128)) return __spreadValues({}, _INVALID);
-    if (r2 !== (_hash([expiryOffset, flags, salt]) | 128)) return __spreadValues({}, _INVALID);
-    if (crc !== _hash([idHi, idLo, expiryOffset, flags, salt])) return __spreadValues({}, _INVALID);
-    if (r3 !== (_hash([r1, r2, crc]) | 128)) return __spreadValues({}, _INVALID);
-    const customerId = idHi << 8 | idLo;
-    let expiresAt = null;
-    let expired = false;
-    if (expiryOffset > 0) {
-      const expYear = 2025 + Math.floor((expiryOffset - 1) / 12);
-      const expMonth = (expiryOffset - 1) % 12;
-      expiresAt = new Date(expYear, expMonth, 1);
-      const now = /* @__PURE__ */ new Date();
-      const nowOffset = (now.getFullYear() - 2025) * 12 + now.getMonth();
-      expired = nowOffset >= expiryOffset;
-    }
-    return { valid: true, customerId, perpetual: expiryOffset === 0, expiresAt, expired, flags };
-  }
-  function isPro(key) {
-    const info = validateLicense(key);
-    return info.valid && !info.expired;
-  }
-
   // src/plugins/ContextMenuPlugin.ts
   var ContextMenuPlugin = class {
     constructor() {
@@ -4190,29 +4216,31 @@
       if (cell == null ? void 0 : cell.dataset.date) {
         return { type: "cell", date: cell.dataset.date, resourceId: cell.dataset.res };
       }
-      const dayCell = target.closest("rect.daybox-element");
-      if (dayCell == null ? void 0 : dayCell.dataset.date) {
-        const core = this._core;
-        const resIndex = Math.floor((e.offsetY - core.headerHeight) / core.settings.resourceHeight);
-        const resourceId = resIndex >= 0 && resIndex < core.data.Resources.length ? String(resIndex) : void 0;
-        return { type: "cell", date: dayCell.dataset.date, resourceId };
-      }
       return null;
     }
     // ── Action dispatch ──────────────────────────────────────────────────────
     _dispatch(ctx, actionName, description, capacity, classes) {
       var _a;
       const isDelete = actionName === "Elimina";
-      const detail = ctx.type === "task" ? { action: actionName, TaskId: ctx.taskId, TaskRef: ctx.taskRef, TaskKey: ctx.taskKey } : { DateFrom: ctx.date, DateTo: ctx.date, Name: isDelete ? "" : actionName, Description: description, Capacity: capacity, Classes: classes, ResourceId: ctx.resourceId ? parseInt(ctx.resourceId, 10) : null, isDelete };
+      const detail = ctx.type === "task" ? { action: actionName, TaskId: ctx.taskId, TaskRef: ctx.taskRef, TaskKey: ctx.taskKey } : {
+        DateFrom: ctx.date,
+        DateTo: ctx.date,
+        Name: isDelete ? "" : actionName,
+        Description: description,
+        Capacity: capacity,
+        Classes: classes,
+        ResourceId: ctx.resourceId ? parseInt(ctx.resourceId, 10) : null,
+        isDelete
+      };
       const eventName = ctx.type === "task" ? "schedulatask:action" : "schedulacalendar:action";
       const svg = (_a = this._core) == null ? void 0 : _a.schedulerSVGElement;
       svg == null ? void 0 : svg.dispatchEvent(new CustomEvent(eventName, { bubbles: true, detail }));
     }
     // ── Context menu event handler ───────────────────────────────────────────
     _handleContextMenu(e) {
+      e.preventDefault();
       const ctx = this._getContext(e);
       if (!ctx) return;
-      e.preventDefault();
       this._currentCtx = ctx;
       this._buildMenu(ctx);
       if (this._menu.children.length > 0) {
@@ -4369,13 +4397,18 @@
     destroy() {
       this._core = null;
     }
+    _parseDate(value) {
+      const iso = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (iso) return new Date(+iso[1], +iso[2] - 1, +iso[3]).getTime();
+      return new Date(value).getTime();
+    }
     _addRuleItem(cal, item) {
       var _a;
       const i = cal.newItem();
       i.capacity = item.Capacity;
       i.day = (_a = item.Day) != null ? _a : -1;
-      i.from = item.DateFrom ? new Date(item.DateFrom).getTime() : 0;
-      i.duration = item.DateFrom && item.DateTo ? (new Date(item.DateTo).getTime() - new Date(item.DateFrom).getTime()) / 6e4 : 999999999;
+      i.from = item.DateFrom ? this._parseDate(item.DateFrom) : 0;
+      i.duration = item.DateFrom && item.DateTo ? (this._parseDate(item.DateTo) - this._parseDate(item.DateFrom)) / 6e4 + 1440 : 999999999;
       i.resourceId = item.ResourceId != null ? String(item.ResourceId) : null;
       i.type = "rule";
     }

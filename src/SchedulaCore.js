@@ -543,8 +543,8 @@ export class SchedulaCore {
                     let dt = this.settings.date;
                     if (dt) {
                         let cdate = new Date(dt.getTime() + (c * this.settings.timeUnitVal * 60 * 1000));
-                        hilight = (cdate.getUTCDay() == 0) && this.settings.hilightSunday;
-                        let saturday = (cdate.getUTCDay() == 6);
+                        hilight = (cdate.getDay() == 0) && this.settings.hilightSunday;
+                        let saturday = (cdate.getDay() == 6);
                         let ratio = 1;
                         if (this.calendar != null) {
                             if (this.calendar.reference > 0) {
@@ -2028,7 +2028,7 @@ export class SchedulaCore {
                 let daynum = cdate.toLocaleDateString('it-it', { day: "numeric" });
                 let daymonth = cdate.toLocaleDateString('it-it', { day: "numeric", month: 'short' });
                 let istoday = (today.getDate() == cdate.getDate()) && (today.getMonth() == cdate.getMonth()) && (today.getFullYear() == cdate.getFullYear());
-                let hilight = (cdate.getUTCDay() == 0) && this.settings.hilightSunday;
+                let hilight = (cdate.getDay() == 0) && this.settings.hilightSunday;
                 let h = this.settings.timeElementHeight;
                 let w = this.settings.timeWidth;
                 let y = this.headerHeight - this.settings.timeElementHeight;
