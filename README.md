@@ -201,8 +201,8 @@ SchedulaCore powers real-world scheduling applications across different industri
 
 | Product | Industry | Notes |
 |---------|----------|-------|
-| **OVERCORE** | Hotel & hospitality | Booking and room scheduling software |
-| **MECCANICA H7** | Manufacturing | Production scheduling for mechanical workshops |
+| **[OVERCORE](https://www.overcore.it/)** | Hotel & hospitality | Booking and room scheduling software |
+| **[MECCANICA H7](https://www.meccanicah7.it/)** | Manufacturing | Production scheduling for mechanical workshops |
 | **[SCHEDULA Planner](https://www.schedulaplanner.com/)** | Manufacturing / ERP | Production planning with ERP integration |
 
 ---
