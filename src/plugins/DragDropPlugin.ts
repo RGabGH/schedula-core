@@ -103,6 +103,8 @@ export class DragDropPlugin implements IDragDropPlugin {
                             popupProvider.refreshItem(itemData);
                         }
                     }
+                    const notifPlugin = core.getPlugin?.('notification');
+                    if (notifPlugin && itemData) notifPlugin.notifyChanged(itemData);
                 }
                 this._dragItem = null;
             }
@@ -340,6 +342,8 @@ export class DragDropPlugin implements IDragDropPlugin {
 
         if (typeof (window as any).modified === 'function') (window as any).modified();
         if (data.elementId) document.getElementById(data.elementId)?.remove();
+        const notifPlugin = core.getPlugin?.('notification');
+        if (notifPlugin) notifPlugin.notifyAdded(dropped);
 
         core.refresh();
     }

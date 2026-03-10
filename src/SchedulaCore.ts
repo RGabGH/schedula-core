@@ -383,6 +383,8 @@ export class SchedulaCore implements ISchedulaCore {
 
                 if (typeof modified === 'function') modified();
                 if (data.elementId) document.getElementById(data.elementId)?.remove();
+                const notifPlugin = this.getPlugin?.('notification') as any;
+                if (notifPlugin) notifPlugin.notifyAdded(dropped);
             }
 
         }

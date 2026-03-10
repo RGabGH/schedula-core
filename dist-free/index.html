@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/schedula-core.css">
+    <link rel="stylesheet" href="css/scheduler-themes.css">
+    <link rel="stylesheet" href="bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="css/popup.css">
+    <link rel="stylesheet" href="css/planner-test.css">
+    <title>SchedulaCore Free — Test</title>
+</head>
+
+<body>
+
+    <div id="themesdiv" class="row m-1 align-items-center">
+        <span class="me-2 fw-bold">Themes:</span>
+        <button type="button" class="btn btn-sm btn-outline-secondary m-1" onclick="setTheme('')">Default</button>
+        <button type="button" class="btn btn-sm btn-dark m-1" onclick="setTheme('theme-dark')">Dark</button>
+        <button type="button" class="btn btn-sm btn-primary m-1" onclick="setTheme('theme-blue')">Blue</button>
+        <button type="button" class="btn btn-sm btn-light m-1 border" onclick="setTheme('theme-soft')">Soft</button>
+        <span id="plugin-status" class="ms-3"></span>
+    </div>
+
+    <div id="datadiv" class="row m-1">
+        <button class="btn btn-outline-secondary m-1" onclick="setData(hotelSchedulerData)">hotel</button>
+        <button class="btn btn-outline-secondary m-1" onclick="setData(hrSchedulerData)">humans</button>
+        <button class="btn btn-outline-secondary m-1" onclick="setData(productionSchedulerData)">production</button>
+   
+        <input type="text" class="form-control col-1 m-1" placeholder="search..." onkeyup="filterItems(this)">
+    </div>
+
+    <div id="groupfilter" class="row m-1 align-items-center"></div>
+
+    <div id="styleselect" class="row m-1">
+        <button class="btn btn-outline-secondary m-1" onclick="setStyle('rect')">rect</button>
+        <button class="btn btn-outline-secondary m-1" onclick="setStyle('round-rect')">roundrect</button>
+        <button class="btn btn-outline-secondary m-1" onclick="setStyle('arrow')">arrow</button>
+        <button class="btn btn-outline-secondary m-1" onclick="setStyle('circle')">circle</button>
+        <button class="btn btn-outline-secondary m-1" onclick="setView(40)"><- 40 -></button>
+        <button class="btn btn-outline-secondary m-1" onclick="setView(30)"><- 30 -></button>
+        <button class="btn btn-outline-secondary m-1" onclick="setView(20)"><- 20 -></button>
+        <button class="btn btn-outline-secondary m-1" onclick="setView(10)"><- 10 -></button>
+    </div>
+
+    <div id="scheduler"></div>
+
+    <!-- Data files -->
+    <script src="data/scheduler-data.js"></script>
+    <script src="data/hr-data.js"></script>
+    <script src="data/medical-data.js"></script>
+    <script src="data/production-data.js"></script>
+    <script src="data/ss-data-hotel.js"></script>
+
+    <!-- Icons -->
+    <script src="js/icons.js"></script>
+
+    <!-- SchedulaCore FREE bundle (MIT) -->
+    <script src="js/schedula-core.min.js"></script>
+
+    <script>
+        // ── Init ───────────────────────────────────────────────────────
+        var settings = new SchedulaSettings();
+
+        // Free version: DefaultPopupPlugin incluso, nessun plugin PRO
+        settings.plugins = [
+            new DefaultPopupPlugin()
+        ];
+
+        settings.date = new Date();
+        settings.canMoveItems = true;      // DragDrop non disponibile nella versione Free
+        settings.canResizeItems = false;
+        settings.drawLinks = false;
+        settings.gridStep = 60;
+
+        if (typeof iconssvg !== 'undefined') {
+            settings.icons = iconssvg;
+        }
+
+        // Nessuna licenseKey — versione Free
+        var scheduler = new SchedulaCore("scheduler", schedulerData, settings);
+        scheduler.init();
+        scheduler.refresh();
+
+        window.scheduler = scheduler;
+
+        // Badge Free
+        var el = document.getElementById('plugin-status');
+        var b = document.createElement('span');
+        b.className = 'badge-off';
+        b.textContent = 'Free (MIT)';
+        el.appendChild(b);
+
+        // ── UI helpers ─────────────────────────────────────────────────
+        window.filterItems = function (input) {
+            scheduler.filterItems(input.value);
+        };
+
+        window.setTheme = function (theme) {
+            var el = document.getElementById("scheduler");
+            el.classList.remove('theme-dark', 'theme-blue', 'theme-soft');
+            document.body.classList.remove('theme-dark', 'theme-blue', 'theme-soft');
+            if (theme) {
+                el.classList.add(theme);
+                document.body.classList.add(theme);
+            }
+        };
+        setTheme('theme-blue');
+
+        window.setView = function (num) { scheduler.setView(num); };
+        window.setStyle = function (style) { scheduler.setStyle(style); };
+
+        window.setData = function (dati) {
+            _allResources = null;
+            _activeGroups.clear();
+            scheduler.setData(dati);
+            buildGroupButtons();
+        };
+
+        // ── Group filter ────────────────────────────────────────────────
+        var _allResources = null;
+        var _activeGroups = new Set();
+
+        function buildGroupButtons() {
+            if (!_allResources) _allResources = scheduler.data.Resources.slice();
+            var groups = [...new Set(_allResources.map(function (r) { return r.Group; }).filter(function (g) { return g != null; }))].sort(function (a, b) { return a - b; });
+            var container = document.getElementById('groupfilter');
+            container.innerHTML = '<span class="me-2 fw-bold">Groups:</span>';
+
+            var allBtn = document.createElement('button');
+            allBtn.className = 'btn btn-sm btn-secondary m-1';
+            allBtn.textContent = 'All';
+            allBtn.onclick = function () { _activeGroups.clear(); applyGroupFilter(); updateGroupButtons(); };
+            container.appendChild(allBtn);
+
+            groups.forEach(function (g) {
+                var btn = document.createElement('button');
+                btn.className = 'btn btn-sm btn-outline-primary m-1';
+                btn.dataset.group = g;
+                btn.textContent = 'Group ' + g;
+                btn.onclick = function () {
+                    if (_activeGroups.has(g)) _activeGroups.delete(g);
+                    else _activeGroups.add(g);
+                    applyGroupFilter();
+                    updateGroupButtons();
+                };
+                container.appendChild(btn);
+            });
+            updateGroupButtons();
+        }
+
+        function updateGroupButtons() {
+            document.querySelectorAll('#groupfilter [data-group]').forEach(function (btn) {
+                var g = parseInt(btn.dataset.group);
+                var active = _activeGroups.has(g);
+                btn.classList.toggle('btn-primary', active);
+                btn.classList.toggle('btn-outline-primary', !active);
+            });
+        }
+
+        function applyGroupFilter() {
+            if (!_allResources) _allResources = scheduler.data.Resources.slice();
+            scheduler.data.Resources = _activeGroups.size === 0
+                ? _allResources.slice()
+                : _allResources.filter(function (r) { return _activeGroups.has(r.Group); });
+            scheduler.init();
+        }
+
+        buildGroupButtons();
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  
+  .split-container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .left-pane, .right-pane {
+    flex: 1;
+    min-width: 100px;
+    overflow: auto;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+  }
+  
+  .split-bar {
+    width: 5px;
+    cursor: col-resize;
+    background-color: #ddd;
+  }
+  rect.item.moving {
+    stroke: #00ff00;
+    stroke-width: 40;
+ 
+}
+
+use.provacol{
+  fill:#00ff00;
+}

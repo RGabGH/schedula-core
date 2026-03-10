@@ -1,4 +1,5 @@
 import { SchedulaCalendar } from '../models/SchedulaCalendar.js';
+import { SchedulaItem } from '../ui/SchedulaItem.js';
 
 /**
  * CalendarPlugin — PRO feature.
@@ -62,8 +63,122 @@ export class CalendarPlugin {
         this.applyData(calendarData);
     }
 
+    /**
+     * Adds (or replaces) a date-based calendar exception.
+     * Pass resourceId = null for a global rule, or a resource id/index for per-resource.
+     */
+    addException(
+        rule: { Capacity: number; DateFrom: string; DateTo: string; Day?: number },
+        resourceId?: string | number | null
+    ): void {
+        const calendarData = this._core.data?.Calendar;
+        if (!calendarData) return;
+        if (!calendarData.Items) calendarData.Items = [];
+
+        const idStr = resourceId != null ? String(resourceId) : null;
+
+        // Remove any existing rule for the same date + resource to avoid duplicates
+        calendarData.Items = calendarData.Items.filter((i: any) => {
+            const sameRes = idStr != null ? String(i.ResourceId) === idStr : i.ResourceId == null;
+            return !(sameRes && i.DateFrom === rule.DateFrom);
+        });
+
+        const newItem: any = { Capacity: rule.Capacity, DateFrom: rule.DateFrom, DateTo: rule.DateTo };
+        if (rule.Day != null) newItem.Day = rule.Day;
+        if (idStr != null) newItem.ResourceId = idStr;
+
+        calendarData.Items.push(newItem);
+        this.applyData(calendarData);
+        this._core?.getPlugin?.('notification')?.notifyCalendarChanged(newItem, 'add');
+        this._recalculateTasks(idStr);
+    }
+
+    /**
+     * Removes all calendar exceptions for a specific date (and optional resource).
+     */
+    removeException(date: string, resourceId?: string | number | null): void {
+        const calendarData = this._core.data?.Calendar;
+        if (!calendarData?.Items) return;
+
+        const idStr = resourceId != null ? String(resourceId) : null;
+
+        calendarData.Items = calendarData.Items.filter((i: any) => {
+            const sameRes = idStr != null ? String(i.ResourceId) === idStr : i.ResourceId == null;
+            return !(sameRes && i.DateFrom === date);
+        });
+
+        this.applyData(calendarData);
+        this._core?.getPlugin?.('notification')?.notifyCalendarChanged(
+            { DateFrom: date, ResourceId: idStr },
+            'remove'
+        );
+        this._recalculateTasks(idStr);
+    }
+
     destroy(): void {
         this._core = null;
+    }
+
+    /**
+     * After a calendar change, recalculate Width from Effort for all affected tasks.
+     * If affectedResourceId is null, all resources are recalculated (global rule).
+     * Effort is the ground truth — Width is derived via calcDuration with the new calendar.
+     */
+    private _recalculateTasks(affectedResourceId?: string | null): void {
+        const resources = this._core?.data?.Resources;
+        if (!resources) return;
+        const notif = this._core?.getPlugin?.('notification');
+
+        resources.forEach((resource: any, ri: number) => {
+            // Skip resources not affected by a per-resource rule
+            if (affectedResourceId != null && String(ri) !== affectedResourceId) return;
+
+            resource.Items?.forEach((itemData: any) => {
+                if (itemData.Deleted) return;
+                const savedEffort = itemData.Effort;
+                if (!savedEffort) return;
+
+                const scitem = new SchedulaItem(this._core, itemData);
+                scitem.Effort = savedEffort;
+                notif?.notifyChanged(itemData);
+            });
+        });
+
+        this._resolveInterferences(affectedResourceId, notif);
+    }
+
+    /**
+     * After widths are recalculated, push downstream tasks to avoid overlaps.
+     * Processes tasks in chronological order per resource: if a task starts before
+     * the previous one ends, it is moved to start right after it (cascade effect).
+     * Moving a task changes its From, so its Width is also recalculated from Effort.
+     */
+    private _resolveInterferences(affectedResourceId?: string | null, notif?: any): void {
+        const resources = this._core?.data?.Resources;
+        if (!resources) return;
+
+        resources.forEach((resource: any, ri: number) => {
+            if (affectedResourceId != null && String(ri) !== affectedResourceId) return;
+
+            const items: any[] = (resource.Items ?? [])
+                .filter((i: any) => !i.Deleted)
+                .sort((a: any, b: any) => a.Offset - b.Offset);
+
+            for (let idx = 1; idx < items.length; idx++) {
+                const prev = items[idx - 1];
+                const curr = items[idx];
+                const prevEnd = prev.Offset + prev.Width;
+
+                if (curr.Offset < prevEnd) {
+                    const savedEffort = curr.Effort;
+                    const scitem = new SchedulaItem(this._core, curr);
+                    // Place immediately after the previous task ends, then recalculate Width
+                    scitem.Offset = prevEnd;
+                    if (savedEffort) scitem.Effort = savedEffort;
+                    notif?.notifyChanged(curr);
+                }
+            }
+        });
     }
 
     private _parseDate(value: string): number {

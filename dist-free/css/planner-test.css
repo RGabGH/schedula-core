@@ -1,0 +1,58 @@
+#plugin-status {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    padding: 4px 10px;
+    background: #1e293b;
+    color: #fff;
+    font-family: monospace;
+    font-size: 13px;
+    border-radius: 6px;
+    margin: 4px 0 4px 8px;
+    vertical-align: middle;
+}
+
+.badge-ok {
+    background: #22c55e;
+    color: #000;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.badge-off {
+    background: #ef4444;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.badge-info {
+    background: #f59e0b;
+    color: #000;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.task-drag-source {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 12px;
+    height: 28px;
+    background: #5762ca;
+    color: #fff;
+    font-family: monospace;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: grab;
+    user-select: none;
+    margin: 6px 8px;
+    box-shadow: 0 2px 6px rgba(87,98,202,0.4);
+    letter-spacing: 0.02em;
+}
+.theme-dark .task-drag-source  { background: #5762ca; box-shadow: 0 2px 6px rgba(87,98,202,0.4); }
+.theme-blue .task-drag-source  { background: #3b82f6; box-shadow: 0 2px 6px rgba(59,130,246,0.4); }
+.theme-soft .task-drag-source  { background: #818cf8; box-shadow: 0 2px 6px rgba(129,140,248,0.4); }

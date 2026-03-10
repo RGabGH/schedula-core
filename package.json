@@ -1,0 +1,14 @@
+{
+  "name": "schedula-core",
+  "version": "1.0.0",
+  "description": "A fast, flexible Gantt/scheduler component. MIT core + PRO plugins.",
+  "license": "MIT",
+  "homepage": "https://github.com/tuonome/schedula-core",
+  "main": "dist/js/schedula-core.min.js",
+  "scripts": {
+    "build": "powershell -ExecutionPolicy Bypass -File build.ps1",
+    "typecheck": "tsc --noEmit",
+    "dev:free": "npx esbuild src/index.ts --bundle --outfile=tmp/core-test.js --format=iife --target=es2015 --sourcemap",
+    "dev:pro": "npx esbuild src/index-pro.ts --bundle --outfile=tmp/pro-test.js --format=iife --target=es2015 --sourcemap"
+  }
+}
