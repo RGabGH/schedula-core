@@ -189,6 +189,26 @@ ES2015+ (Chrome, Firefox, Edge, Safari). IE not supported.
 
 ---
 
+## Used in production
+
+SchedulaCore powers real-world scheduling applications across different industries:
+
+| Product | Industry | Notes |
+|---------|----------|-------|
+| **OVERCORE** | Hotel & hospitality | Booking and room scheduling software |
+| **MECCANICA H7** | Manufacturing | Production scheduling for mechanical workshops |
+| **[SCHEDULA Planner](https://www.schedulaplanner.com/)** | Manufacturing / ERP | Production planning with ERP integration |
+
+---
+
+## Contact & PRO license
+
+For PRO license inquiries, custom integrations, or support:
+
+📧 **[gabriraf@gmail.com](mailto:gabriraf@gmail.com)**
+
+---
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
