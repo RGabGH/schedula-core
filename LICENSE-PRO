@@ -1,0 +1,88 @@
+SchedulaCore PRO — Commercial License
+Copyright (c) 2024 Raffaele Gabrielli
+Contact: gabriraf@gmail.com
+
+---
+
+DEFINITIONS
+
+"Software" refers to the SchedulaCore PRO plugins and any associated files
+distributed under this license (schedula-core-pro.min.js and related assets).
+
+"Licensor" means Raffaele Gabrielli, the author and copyright holder.
+
+"Licensee" means the individual or legal entity that has purchased a valid
+license key from the Licensor.
+
+"Application" means a single software product, web application, or service
+developed by the Licensee.
+
+---
+
+LICENSE TYPES
+
+1. SINGLE APPLICATION LICENSE
+
+Grants the Licensee the right to:
+- Use the Software in ONE (1) Application.
+- Deploy that Application to an unlimited number of end users or servers.
+- Embed the Software in a compiled or bundled form within the Application.
+
+2. OEM / REDISTRIBUTION LICENSE
+
+Grants the Licensee the right to:
+- Use the Software in ONE (1) Application that is commercially distributed,
+  resold, or sublicensed to third parties as part of the Licensee's product.
+- Deploy and distribute that Application without restriction on end users.
+
+---
+
+CONDITIONS (applicable to both license types)
+
+The Licensee MAY:
+- Use the Software in the licensed Application on any number of environments
+  (development, staging, production).
+- Modify configuration and integration code that wraps the Software.
+
+The Licensee MAY NOT:
+- Use the Software in more than one Application per license purchased.
+- Redistribute the Software as a standalone component, library, or SDK.
+- Sublicense, sell, rent, or transfer the license key to any third party.
+- Remove or alter any copyright notices contained in the Software.
+- Use the Software in any open-source project distributed under a license
+  that would require the Software itself to become open source.
+- Reverse engineer, decompile, or disassemble the obfuscated bundle except
+  to the extent permitted by applicable law.
+
+---
+
+INTELLECTUAL PROPERTY
+
+The Software remains the exclusive property of the Licensor. This license
+grants a right to use, not ownership. All rights not expressly granted
+herein are reserved by the Licensor.
+
+---
+
+WARRANTY DISCLAIMER
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. THE LICENSOR SHALL NOT BE
+LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM THE USE OF
+THE SOFTWARE.
+
+---
+
+TERMINATION
+
+This license is effective until terminated. It terminates automatically if
+the Licensee breaches any of its terms. Upon termination, the Licensee must
+cease all use of the Software and destroy all copies in their possession.
+
+---
+
+GOVERNING LAW
+
+This license shall be governed by the laws of Italy, without regard to
+conflict of law provisions.

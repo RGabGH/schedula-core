@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/schedula-core.css">
+    <link rel="stylesheet" href="css/scheduler-themes.css">
+    <link rel="stylesheet" href="bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="css/popup.css">
+    <link rel="stylesheet" href="css/planner-test.css">
+    <title>SchedulaCore Free — Live Demo</title>
+    <style>
+        #pro-banner {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+            color: #fff;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-family: Arial, sans-serif;
+        }
+
+        #pro-banner .pro-left {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        #pro-banner .pro-logo {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-right: 6px;
+        }
+
+        #pro-banner .pro-tag {
+            background: #f59e0b;
+            color: #000;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+        }
+
+        #pro-banner .pro-sep {
+            color: #475569;
+            margin: 0 4px;
+        }
+
+        #pro-banner .pro-feature {
+            color: #94a3b8;
+            font-size: 0.82rem;
+            white-space: nowrap;
+        }
+
+        #pro-banner .pro-feature span {
+            color: #38bdf8;
+            margin-right: 4px;
+        }
+
+        #pro-banner .pro-cta {
+            background: #f59e0b;
+            color: #000;
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 7px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        #pro-banner .pro-cta:hover {
+            background: #fbbf24;
+        }
+
+        #pro-video-section {
+            background: #0f172a;
+            padding: 20px 20px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            border-bottom: 1px solid #1e3a5f;
+        }
+
+        #pro-video-section h2 {
+            color: #f8fafc;
+            font-size: 1.2rem;
+            margin-bottom: 6px;
+        }
+
+        #pro-video-section p {
+            color: #94a3b8;
+            margin-bottom: 16px;
+            font-size: 0.85rem;
+        }
+
+        .pro-video-grid {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .pro-video-grid img, .pro-video-grid video {
+            border-radius: 6px;
+            border: 1px solid #1e3a5f;
+            max-height: 180px;
+            width: auto;
+            max-width: 100%;
+            background: #000;
+            object-fit: contain;
+        }
+
+        .pro-video-label {
+            color: #38bdf8;
+            font-size: 0.8rem;
+            margin-top: 6px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <!-- PRO Banner -->
+    <div id="pro-banner">
+        <div class="pro-left">
+            <span class="pro-logo">SchedulaCore</span>
+            <span class="pro-tag">PRO</span>
+            <span class="pro-sep">|</span>
+            <span class="pro-feature"><span>&#10003;</span>Drag &amp; Drop</span>
+            <span class="pro-feature"><span>&#10003;</span>Resize</span>
+            <span class="pro-feature"><span>&#10003;</span>Calendar &amp; Exceptions</span>
+            <span class="pro-feature"><span>&#10003;</span>Dependency Links</span>
+            <span class="pro-feature"><span>&#10003;</span>Events &amp; Milestones</span>
+            <span class="pro-feature"><span>&#10003;</span>Context Menus</span>
+            <span class="pro-feature"><span>&#10003;</span>Notifications</span>
+        </div>
+        <span class="pro-cta">PRO license: gabriraf@gmail.com</span>
+    </div>
+
+    <!-- PRO Image showcase -->
+    <div id="pro-video-section">
+        <h2>See SchedulaCore PRO in action</h2>
+        <p>Drag &amp; drop, calendar exceptions, dependency links and more — available in the PRO license.</p>
+        <div class="pro-video-grid">
+            <div>
+                <img src="images/prolinks.png" alt="Dependency links">
+                <div class="pro-video-label">Dependency Links between tasks</div>
+            </div>
+            <div>
+                <img src="images/dragdrop.gif" alt="Drag &amp; Drop">
+                <div class="pro-video-label">Drag &amp; Drop across resources</div>
+            </div>
+            <div>
+                <video src="images/task-gripper.mp4" autoplay loop muted playsinline></video>
+                <div class="pro-video-label">Task gripper &amp; inline resize</div>
+            </div>
+            <div>
+                <img src="images/holiday.png" alt="Holiday &amp; Calendar exceptions">
+                <div class="pro-video-label">Holiday &amp; Calendar exceptions</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sc-toolbar">
+
+        <!-- Row 1: Theme · Data · Search · Status -->
+        <div class="sc-toolbar-row">
+            <div class="sc-group">
+                <span class="sc-label">Theme</span>
+                <button class="btn btn-sm btn-outline-secondary" onclick="setTheme('')">Default</button>
+                <button class="btn btn-sm btn-dark" onclick="setTheme('theme-dark')">Dark</button>
+                <button class="btn btn-sm btn-primary" onclick="setTheme('theme-blue')">Blue</button>
+                <button class="btn btn-sm btn-light border" onclick="setTheme('theme-soft')">Soft</button>
+            </div>
+            <div class="sc-sep"></div>
+            <div class="sc-group">
+                <span class="sc-label">Data</span>
+                <button class="btn btn-sm btn-primary" onclick="setData(schedulerData)">Default</button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="setData(hotelSchedulerData)">Hotel</button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="setData(hrSchedulerData)">HR</button>
+                <button class="btn btn-sm btn-outline-secondary"
+                    onclick="setData(productionSchedulerData)">Production</button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="setData(clinicSchedulerData)">Medical</button>
+            </div>
+            <div class="sc-sep"></div>
+            <input type="text" class="form-control form-control-sm sc-search" placeholder="Search..."
+                onkeyup="filterItems(this)">
+            <div class="sc-sep"></div>
+            <span id="plugin-status"></span>
+        </div>
+
+        <!-- Row 2: Style · View -->
+        <div class="sc-toolbar-row">
+            <div class="sc-group">
+                <span class="sc-label">Style</span>
+                <button class="btn btn-sm btn-outline-secondary" onclick="setStyle('rect')">Rect</button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="setStyle('round-rect')">Round</button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="setStyle('arrow')">Arrow</button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="setStyle('circle')">Circle</button>
+            </div>
+            <div class="sc-sep"></div>
+            <div class="sc-group">
+                <span class="sc-label">View</span>
+                <button class="btn btn-sm btn-outline-secondary" onclick="setView(10)">10d</button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="setView(20)">20d</button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="setView(30)">30d</button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="setView(40)">40d</button>
+            </div>
+        </div>
+
+        <!-- Row 3: Group filter (dynamic) -->
+        <div id="groupfilter" class="sc-toolbar-row"></div>
+
+    </div>
+
+    <div id="scheduler"></div>
+
+    <!-- Data files -->
+    <script src="data/scheduler-data.js"></script>
+    <script src="data/hr-data.js"></script>
+    <script src="data/medical-data.js"></script>
+    <script src="data/production-data.js"></script>
+    <script src="data/ss-data-hotel.js"></script>
+
+
+
+    <!-- SchedulaCore FREE bundle (MIT) -->
+    <script src="js/schedula-core.min.js"></script>
+
+    <!-- NotificationPlugin (MIT) -->
+    <script src="js/notification-plugin.min.js"></script>
+
+    <!-- Handlers: edit this file to intercept scheduler events -->
+    <script src="js/notification-handlers.js"></script>
+
+    <script>
+        // ── Init ───────────────────────────────────────────────────────
+        var settings = new SchedulaSettings();
+
+        // Free version: DefaultPopupPlugin incluso, nessun plugin PRO
+        settings.plugins = [
+            new DefaultPopupPlugin(),
+            new NotificationPlugin()
+        ];
+
+        settings.date = new Date();
+        settings.canMoveItems = true;      // DragDrop non disponibile nella versione Free
+        settings.canResizeItems = false;
+        settings.drawLinks = false;
+        settings.gridStep = 60;
+
+        // Nessuna licenseKey — versione Free
+        var scheduler = new SchedulaCore("scheduler", schedulerData, settings);
+        scheduler.init();
+        scheduler.refresh();
+
+        window.scheduler = scheduler;
+
+        // Badge Free
+        var el = document.getElementById('plugin-status');
+        var b = document.createElement('span');
+        b.className = 'badge-off';
+        b.textContent = 'Free (MIT)';
+        el.appendChild(b);
+
+        // ── UI helpers ─────────────────────────────────────────────────
+        window.filterItems = function (input) {
+            scheduler.filterItems(input.value);
+        };
+
+        window.setTheme = function (theme) {
+            var el = document.getElementById("scheduler");
+            el.classList.remove('theme-dark', 'theme-blue', 'theme-soft');
+            document.body.classList.remove('theme-dark', 'theme-blue', 'theme-soft');
+            if (theme) {
+                el.classList.add(theme);
+                document.body.classList.add(theme);
+            }
+        };
+        setTheme('theme-blue');
+
+        window.setView = function (num) { scheduler.setView(num); };
+        window.setStyle = function (style) { scheduler.setStyle(style); };
+
+        window.setData = function (dati) {
+            _allResources = null;
+            _activeGroups.clear();
+            scheduler.setData(dati);
+            buildGroupButtons();
+        };
+
+        // ── Group filter ────────────────────────────────────────────────
+        var _allResources = null;
+        var _activeGroups = new Set();
+
+        function buildGroupButtons() {
+            if (!_allResources) _allResources = scheduler.data.Resources.slice();
+            var groups = [...new Set(_allResources.map(function (r) { return r.Group; }).filter(function (g) { return g != null; }))].sort(function (a, b) { return a - b; });
+            var container = document.getElementById('groupfilter');
+            container.innerHTML = '<span class="me-2 fw-bold">Groups:</span>';
+
+            var allBtn = document.createElement('button');
+            allBtn.className = 'btn btn-sm btn-secondary m-1';
+            allBtn.textContent = 'All';
+            allBtn.onclick = function () { _activeGroups.clear(); applyGroupFilter(); updateGroupButtons(); };
+            container.appendChild(allBtn);
+
+            groups.forEach(function (g) {
+                var btn = document.createElement('button');
+                btn.className = 'btn btn-sm btn-outline-primary m-1';
+                btn.dataset.group = g;
+                btn.textContent = 'Group ' + g;
+                btn.onclick = function () {
+                    if (_activeGroups.has(g)) _activeGroups.delete(g);
+                    else _activeGroups.add(g);
+                    applyGroupFilter();
+                    updateGroupButtons();
+                };
+                container.appendChild(btn);
+            });
+            updateGroupButtons();
+        }
+
+        function updateGroupButtons() {
+            document.querySelectorAll('#groupfilter [data-group]').forEach(function (btn) {
+                var g = parseInt(btn.dataset.group);
+                var active = _activeGroups.has(g);
+                btn.classList.toggle('btn-primary', active);
+                btn.classList.toggle('btn-outline-primary', !active);
+            });
+        }
+
+        function applyGroupFilter() {
+            if (!_allResources) _allResources = scheduler.data.Resources.slice();
+            scheduler.data.Resources = _activeGroups.size === 0
+                ? _allResources.slice()
+                : _allResources.filter(function (r) { return _activeGroups.has(r.Group); });
+            scheduler.init();
+        }
+
+        buildGroupButtons();
+
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,726 @@
+/*!
+ *
+ *  Scheduler 2.0.0 (TRIAL VERSION)
+ *
+ * 
+ * 
+ * 
+ *
+ */
+
+
+/* USABLE horizontal GRADIENTS */
+
+#horizontal-gradient1 stop.start-color {
+    stop-color: rgb(145, 255, 0);
+}
+
+#horizontal-gradient1 stop.end-color {
+    stop-color: blue;
+}
+
+#horizontal-gradient2 stop.start-color {
+    stop-color: rgb(145, 255, 0);
+}
+
+#horizontal-gradient2 stop.end-color {
+    stop-color: blue;
+}
+
+#horizontal-gradient3 stop.start-color {
+    stop-color: rgb(145, 255, 0);
+}
+
+#horizontal-gradient3 stop.end-color {
+    stop-color: blue;
+}
+
+#horizontal-gradient4 stop.start-color {
+    stop-color: rgb(145, 255, 0);
+}
+
+#horizontal-gradient4 stop.end-color {
+    stop-color: blue;
+}
+
+#horizontal-gradient5 stop.start-color {
+    stop-color: rgb(145, 255, 0);
+}
+
+#horizontal-gradient5 stop.end-color {
+    stop-color: blue;
+}
+
+
+/* USABLE VERTICAL GRADIENTS */
+
+#vertical-gradient1>stop.start-color {
+    stop-color: rgb(255, 255, 255);
+}
+
+#vertical-gradient1>stop.end-color {
+    stop-color: rgb(255, 255, 255);
+}
+
+#vertical-gradient2 stop.start-color {
+    stop-color: rgb(250, 238, 173);
+}
+
+#vertical-gradient2 stop.end-color {
+    stop-color: rgb(250, 238, 173);
+}
+
+#vertical-gradient3 stop.start-color {
+    stop-color: rgb(243, 246, 248);
+}
+
+#vertical-gradient3 stop.end-color {
+    stop-color: rgb(243, 246, 248);
+}
+
+#vertical-gradient4 stop.start-color {
+    stop-color: rgb(243, 246, 248);
+}
+
+#vertical-gradient4 stop.end-color {
+    stop-color: rgb(243, 246, 248);
+}
+
+#vertical-gradient5 stop.start-color {
+    stop-color: rgb(243, 246, 248);
+}
+
+#vertical-gradient5 stop.end-color {
+    stop-color: rgb(243, 246, 248);
+}
+
+
+/* USABLE RADIAL GRADIENTS */
+
+#radial-gradient1 stop.start-color {
+    stop-color: rgb(243, 246, 248);
+}
+
+#radial-gradient1 stop.end-color {
+    stop-color: rgb(127, 180, 211);
+}
+
+#radial-gradient2 stop.start-color {
+    stop-color: rgb(243, 246, 248);
+}
+
+#radial-gradient2 stop.end-color {
+    stop-color: rgb(127, 180, 211);
+}
+
+text {
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+/* background */
+
+.bg {
+    fill: url(#vertical-gradient1);
+}
+
+.bg-hl {
+    stroke: grey;
+    stroke-width: 1;
+}
+
+
+/* header */
+
+.header-bg {
+    fill: white;
+}
+
+.scheduler-footer {
+    fill: #efefef;
+    stroke: lightgray;
+    stroke-width: 1;
+}
+
+.monthbox {
+    fill: #efefef;
+    stroke: lightgray;
+    stroke-width: 1;
+    transition: fill 0.2s;
+}
+
+.monthbox:hover {
+    fill: #818cf8;
+}
+
+.header-text {
+    fill: rgb(47, 47, 122);
+    stroke: none;
+    stroke-width: 0;
+    font-family: 'Verdana';
+    font-weight: 600;
+    font-size: 20px;
+    opacity: 0.75;
+
+}
+
+.week-element {
+    transition: 0.5s;
+    fill: transparent;
+    stroke: lightgrey;
+    fill: #efefef;
+    stroke: lightgray;
+    stroke-width: 1;
+}
+
+.week-element:hover {
+    fill: #677ee4;
+}
+
+.week-element-text {
+    fill: lightgray;
+}
+
+.time-element {
+    fill: lightgray;
+    stroke: rgb(224, 224, 224);
+    stroke-width: 1;
+}
+
+.time-element.sunday {
+    fill: rgb(175, 175, 175);
+
+}
+
+.time-element.today {
+    fill: rgb(196, 78, 176);
+}
+
+.time-element-text {
+    fill: gray;
+    stroke: none;
+    stroke-width: 0;
+    font-family: 'Arial';
+    text-anchor: middle;
+    font-weight: bold;
+
+}
+
+.time-element-text.today {
+    fill: rgb(250, 248, 248);
+
+
+}
+
+.time-unit {
+    transition: 0.5s;
+    fill: transparent;
+    fill-opacity: 0;
+}
+
+.time-unit:hover {
+    fill-opacity: 0.7;
+    fill: #677ee4;
+}
+
+.info-element {
+    /* fill: url(#obliqueLines); */
+
+    fill: transparent;
+}
+
+.info-unit:hover {
+    fill-opacity: 0.2;
+    fill: #677ee4;
+}
+
+/******************************************* scheduler elements */
+
+.box-element {
+    fill: transparent;
+    transition: fill 0.4s, stroke 0.4s, stroke-width 0.4s;
+    color: rgba(0, 0, 0, 0.15);
+}
+
+.box-element.no-capacity {
+    fill: url(#obliqueLines);
+    color: rgba(90, 90, 90, 0.35);
+    transition: none;
+}
+
+.box-element.no-capacity.saturday,
+.box-element.no-capacity.sunday {
+    fill: transparent;
+}
+
+.box-element:hover {
+    fill: rgba(0, 0, 0, 0.06);
+}
+
+.daybox-element {
+    fill: white;
+    transition: 0.3s;
+    opacity: 0.8;
+    /* stroke:#5c38fc;
+    stroke-width: 0.06;
+    ry:1.5; */
+}
+
+.daybox-element.saturday {
+    fill: #d4d8f0;
+    opacity: 0.7;
+}
+
+.daybox-element.sunday {
+    fill: #c8cde8;
+    opacity: 0.7;
+}
+
+/********************************************* sidebar */
+
+.sb-rbg {
+    fill: lightgray;
+    /* resource background */
+}
+
+.sb-hbg {
+    fill: lightgray;
+    /* resource header */
+}
+
+svg.sb-hbg>text {
+    font-family: 'Arial';
+    font-size: "15px";
+    stroke: #00ff00;
+}
+
+svg.sb-hbg>image {
+    width: '30';
+    height: "30";
+}
+
+
+/*************************************  split bar */
+
+.splitter {
+    transition: 0.3s;
+    transition-property: fill, opacity;
+    fill: #9095c2;
+}
+
+.splitter-area {
+    transition: 0.5s;
+    transition-property: fill, opacity;
+    fill: #852066;
+    opacity: 0.1;
+}
+
+.splitter:hover {
+    opacity: 1;
+    fill: #00ff00;
+
+}
+
+.splitter.sizing {
+    fill: #00ff00;
+}
+
+.toggle {
+    transition: 0.3s;
+    fill: rgb(250, 247, 247);
+    stroke: rgb(123, 168, 228);
+    stroke-width: 1;
+}
+
+.toggle:hover {
+    fill: #00ff00;
+    r: 12;
+
+}
+
+
+/***************************************** RESOURCES */
+
+.resource {
+    transition: 0.5s;
+    opacity: 0.7;
+    fill: white;
+    stroke: lightblue;
+    stroke-width: 1;
+}
+
+.resource:hover {
+    opacity: 1;
+    fill: rgb(144, 203, 243);
+    stroke: lightblue;
+    stroke-width: 2;
+}
+
+.resource-text {
+    fill: rgb(38, 38, 112);
+    stroke: darkblue;
+    stroke-width: 0;
+    font-family: 'Verdana';
+    font-weight: 600;
+    opacity: 0.75;
+
+}
+
+.resource.myclass {
+    fill: rgb(83, 160, 115);
+}
+
+
+/***************************************** link lines */
+
+.link-conn {
+    opacity: 1;
+    fill: #00ff00;
+    opacity: 0.5;
+    stroke-width: 1;
+    stroke: #444444;
+
+}
+
+.link-conn:hover {
+    opacity: 1;
+}
+
+.link-wire {
+    transition: 0.5s;
+    transition-property: opacity, stroke, stroke-width;
+    opacity: 0.7;
+    stroke: #808080;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+}
+
+.link-wire.drawing {
+
+    stroke: violet;
+
+}
+
+.link-wire:hover {
+    stroke: #00ff00;
+    stroke-width: 2;
+    opacity: 1;
+}
+
+.link-wire-marker-end {
+    stroke: #181818;
+    fill: #444444;
+}
+
+.link-point {
+
+
+
+    opacity: 0.6;
+    stroke: #808080;
+    stroke-width: 1;
+    stroke-linecap: round;
+
+
+
+}
+
+.link-point:hover {
+
+    opacity: 0.8;
+    stroke: #00ff00;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+
+    r: 7;
+}
+
+.link-line {
+
+    opacity: 0.7;
+    stroke: #00ff00;
+    stroke-width: 0.3;
+    stroke-linecap: round;
+
+
+}
+
+
+.additional-info {
+    opacity: 0.5,
+}
+
+/* .link-point{
+  
+}
+.link-point:hover{
+    stroke: #00ff00;
+    stroke-width: 0.8;
+    opacity: 1;
+} */
+
+/***************************************** activity items */
+
+
+svg.item-icon>path {
+    opacity: 1;
+    fill: #fbfcfb;
+}
+
+.item-icon {
+    opacity: 1;
+    fill: #fbfcfb;
+}
+
+.item-icon:hover {
+    opacity: 1;
+    fill: #01fa01;
+}
+
+.resource-icon {
+    opacity: 0.6;
+    fill: #262364;
+}
+
+.theme-blue .resource-icon {
+    opacity: 0.75;
+    fill: #94a3b8;
+}
+
+.theme-dark .resource-icon {
+    opacity: 0.75;
+    fill: #e0e0e0;
+}
+
+.theme-soft .resource-icon {
+    opacity: 0.65;
+    fill: #6366f1;
+}
+
+.item-icon {
+    opacity: 0.75;
+    fill: #fff;
+}
+
+.theme-soft .item-icon {
+    fill: #1e293b;
+}
+
+.item:not(.custom-color) {
+    fill: #5762ca;
+}
+
+
+rect.item.moving {
+    stroke: #00ff00;
+    stroke-width: 1.5;
+}
+
+rect.item.sizing {
+    stroke: #00ff00;
+    stroke-width: 1.5;
+    stroke-dasharray: 4;
+}
+
+rect.item.active {
+    stroke: #2f2f2f;
+    stroke-width: 2;
+    stroke-dasharray: 16;
+    stroke-dashoffset: 32;
+}
+
+rect.item.active:not(.moving):not(.sizing) {
+    animation: dash 1s linear infinite;
+}
+
+@keyframes dash {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+rect.item.completed {
+    opacity: 0.6;
+}
+
+
+.item:hover {
+
+    fill-opacity: 0.75;
+
+}
+
+.item-text {
+    fill: white;
+    font-family: 'Verdana';
+    font-weight: bold;
+    /* font-size: '40%'; */
+    transform: translate(0px, 0px);
+}
+
+.item-text2 {
+    fill: white;
+    font-family: 'Verdana';
+
+    transform: translate(0px, 0px);
+}
+
+/***************************************** events */
+
+.event-header {
+    opacity: 0.4;
+    transition: 0.6s;
+    stroke-width: 0.1;
+    stroke: #535353;
+
+}
+
+.event-header:hover {
+    opacity: 0.7;
+    stroke: brightness(0.85);
+}
+
+.event-extension {
+    opacity: 0.4;
+    transition: 0.6s;
+    stroke-width: 0.1;
+    stroke: #535353;
+
+}
+
+.event-extension:hover {
+    opacity: 0.7;
+    stroke: brightness(0.85);
+}
+
+/***************************************** calendar shifters */
+
+.shifter {
+    opacity: 0.25;
+    fill: white;
+    transition: 0.6s;
+}
+
+.shifter:hover {
+    opacity: 0.9;
+}
+
+.shifter.svg-overlay.right {
+    transition: 1s;
+    z-index: 100;
+    position: fixed;
+    top: 50%;
+    float: right;
+    opacity: 0.35;
+    left: 90%;
+    width: 70px;
+    height: 70px;
+}
+
+.shifter.svg-overlay.right:hover {
+    opacity: 1;
+}
+
+.shifter.svg-overlay.left {
+    transition: 0.5s;
+    z-index: 100;
+    position: fixed;
+    top: 50%;
+    opacity: 0.35;
+    width: 70px;
+    height: 70px;
+    left: 15%;
+}
+
+.shifter.svg-overlay.left:hover {
+    opacity: 1;
+}
+
+.shifter.svg-overlay {
+    filter: drop-shadow(0px 0px 6px rgb(0 0 0 / 0.25));
+}
+
+#popupsvg {
+    transition: 0.5s;
+    transition-property: visibility, opacity;
+    transition-delay: 0.5s, 0ms;
+    display: none;
+
+
+
+}
+
+#popup-rect {
+
+    fill: white;
+    filter: drop-shadow(0px 0px 2px rgb(0 0 0 / 0.4));
+    /* display: none; */
+
+}
+
+.resize-line {
+    stroke: white;
+    stroke-width: 1;
+    visibility: hidden;
+
+}
+
+.svg-item:has(.resize:hover)>.resize-line {
+    visibility: visible;
+}
+
+.blink {
+
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    50% {
+        fill: rgb(0, 0, 255);
+        opacity: 1;
+    }
+}
+
+svg.svg-item {
+    filter: drop-shadow(1px 3px 3px rgb(0 0 0 / 0.2));
+    opacity: 1;
+    transition: opacity 0.4s;
+}
+
+/***************************************** calendar view mode */
+
+.calendar-view svg.svg-item {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.calendar-view .box-element {
+    fill: rgba(0, 0, 0, 0.2);
+    stroke: rgba(0, 0, 0, 0.2);
+    stroke-width: 0.5;
+}
+
+.theme-dark .calendar-view .box-element,
+.theme-blue .calendar-view .box-element {
+    fill: rgba(255, 255, 255, 0.2);
+    stroke: rgba(255, 255, 255, 0.2);
+}
+
+.sidepanello {
+    background-color: #5762ca;
+    position: absolute;
+    height: 3000px;
+    width: 350px;
+    right: 0;
+    top: 0;
+    transition: 1.5s;
+    display: none;
+    transition-property: display, opacity;
+    z-index: 100;
+    overflow: hidden;
+    filter: drop-shadow(1px 3px 3px rgb(0 0 0 / 0.4));
+}
