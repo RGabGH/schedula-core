@@ -3,7 +3,7 @@
  *
  * @file    public/src/models/ISchedulaPlugin.ts
  * @version 1.0.1
- * @author  SchedulaCore
+ * @author  RGab <gabriraf@gmail.com>
  */
 /**
  * Base interface for all SchedulaCore plugins.

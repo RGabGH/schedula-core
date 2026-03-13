@@ -3,7 +3,7 @@
  *
  * @file    public/src/models/ITaskPopup.ts
  * @version 1.0.1
- * @author  SchedulaCore
+ * @author  RGab <gabriraf@gmail.com>
  */
 /**
  * Interface for a custom task popup provider.

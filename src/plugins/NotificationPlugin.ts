@@ -3,7 +3,7 @@
  *
  * @file    public/src/plugins/NotificationPlugin.ts
  * @version 1.0.1
- * @author  SchedulaCore
+ * @author  RGab <gabriraf@gmail.com>
  */
 /**
  * NotificationPlugin — open source, MIT license.

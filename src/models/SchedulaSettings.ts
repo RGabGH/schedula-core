@@ -3,7 +3,7 @@
  *
  * @file    public/src/models/SchedulaSettings.ts
  * @version 1.0.1
- * @author  SchedulaCore
+ * @author  RGab <gabriraf@gmail.com>
  */
 
 import { ITaskPopup } from './ITaskPopup.js';

@@ -3,7 +3,7 @@
  *
  * @file    public/src/plugins/ContextMenuPlugin.ts
  * @version 1.0.1
- * @author  SchedulaCore
+ * @author  RGab <gabriraf@gmail.com>
  */
 import {
     IMenuItemDef,

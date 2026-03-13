@@ -3,7 +3,7 @@
  *
  * @file    public/src/plugins/ContextMenuConfig.ts
  * @version 1.0.1
- * @author  SchedulaCore
+ * @author  RGab <gabriraf@gmail.com>
  */
 /**
  * ContextMenuConfig — default menu item definitions for ContextMenuPlugin.

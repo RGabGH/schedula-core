@@ -10,15 +10,19 @@ A fast, lightweight Gantt/scheduler component for the web. No framework dependen
 
 ## Features
 
-- **Resource-based Gantt view** — rows are resources, columns are time
-- **Multiple item styles** — `rect`, `round-rect`, `arrow`, `circle`
-- **Built-in themes** — Default, Dark, Blue, Soft
-- **Calendar-aware scheduling** — effort vs duration distinction, non-working days, custom calendars
-- **Resource grouping and filtering** — multi-group toggle, text search
-- **Task popup** — click any item to view/edit text, description, color, completion %, custom data fields
-- **Draggable popup** — reposition the popup anywhere on screen
-- **Plugin architecture** — extend via `ISchedulaPlugin`
-- **IIFE bundle** — drop a single `<script>` tag, no build step needed
+Features marked ✓ Free are available in the open-source MIT build.
+
+- **Custom data from JSON** — load any resource/task structure directly from your own JSON; no server required ✓ Free
+- **Switchable views** — click any month, week or day header to zoom in/out instantly ✓ Free
+- **Smooth animations** — animated shifts, transitions and progress bars, togglable via `settings.animation` ✓ Free
+- **Customizable event notifications** — intercept every scheduler event (move, resize, save, delete…) via `window.SchedulaHandlers` ✓ Free
+- **Customizable settings** — fine-grained control over layout, grid, snap, item style and more via `SchedulaSettings` ✓ Free
+- **Built-in themes** — Default, Dark, Blue, Soft; switchable at runtime ✓ Free
+- **Resource-based Gantt view** — rows are resources, columns are time ✓ Free
+- **Multiple item styles** — `rect`, `round-rect`, `arrow`, `circle` ✓ Free
+- **Task popup** — click any item to view/edit text, description, color, completion %, custom data fields ✓ Free
+- **Resource grouping and filtering** — multi-group toggle, text search ✓ Free
+- **Plugin architecture** — extend via `ISchedulaPlugin` ✓ Free
 
 ### PRO features (commercial license)
 
@@ -26,13 +30,18 @@ A fast, lightweight Gantt/scheduler component for the web. No framework dependen
 
 | Feature | Free | PRO |
 |---------|------|-----|
+| Custom data from JSON | ✓ | ✓ |
+| Switchable views (month / week / day) | ✓ | ✓ |
+| Smooth animations | ✓ | ✓ |
+| Customizable event notifications | ✓ | ✓ |
+| Customizable settings (SchedulaSettings) | ✓ | ✓ |
+| Built-in themes (Default, Dark, Blue, Soft) | ✓ | ✓ |
 | Drag & drop items | | ✓ |
 | Resize items | | ✓ |
 | Dependency links | | ✓ |
-| Calendar exceptions | | ✓ |
+| Calendar exceptions & holidays | | ✓ |
 | Context menus (customizable) | | ✓ |
 | Events / milestones | | ✓ |
-| Notification callbacks | ✓ | ✓ |
 
 ---
 

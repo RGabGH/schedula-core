@@ -3,7 +3,7 @@
  *
  * @file    public/src/plugins/DefaultPopupPlugin.ts
  * @version 1.0.1
- * @author  SchedulaCore
+ * @author  RGab <gabriraf@gmail.com>
  */
 import { ISchedulaPlugin } from '../models/ISchedulaPlugin.js';
 import { ITaskPopup } from '../models/ITaskPopup.js';
