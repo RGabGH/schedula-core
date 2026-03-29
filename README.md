@@ -205,9 +205,14 @@ ES2015+ (Chrome, Firefox, Edge, Safari). IE not supported.
 
 ## PRO license
 
-SchedulaCore PRO adds drag & drop, resize, calendar, dependency links, context menus, icons and incremental update API. Distributed under a commercial per-project license.
+SchedulaCore PRO adds drag & drop, resize, calendar, dependency links, context menus, icons and incremental update API. Per-project licensing — your whole team uses one license, not one per developer.
 
-For PRO license inquiries, custom integrations, or support: **[gabriraf@gmail.com](mailto:gabriraf@gmail.com)**
+- **Single Application** — one application, unlimited developers, unlimited deployments
+- **OEM** — embed in a product distributed to third parties
+
+Both licenses are perpetual (one-time payment) and include 1 year of updates and support.
+
+Contact for pricing: **[gabriraf@gmail.com](mailto:gabriraf@gmail.com)**
 
 ---
 
