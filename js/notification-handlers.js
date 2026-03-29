@@ -1,4 +1,11 @@
 /**
+ * SchedulaCore PRO
+ *
+ * @file    js/notification-handlers.js
+ * @version 1.0.1
+ * @author  RGab <gabriraf@gmail.com>
+ */
+/**
  * notification-handlers.js — SchedulaCore handler file.
  *
  * Edit this file to intercept and customise scheduler events.

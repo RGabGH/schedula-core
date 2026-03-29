@@ -1,4 +1,11 @@
 /**
+ * SchedulaCore PRO
+ *
+ * @file    js/custom-popup-example.js
+ * @version 1.0.1
+ * @author  RGab <gabriraf@gmail.com>
+ */
+/**
  * custom-popup-example.js — SchedulaCore PRO custom popup template.
  *
  * Copy and adapt this file to replace the built-in DefaultPopupPlugin
