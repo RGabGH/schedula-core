@@ -166,6 +166,7 @@ window.SchedulaHandlers = {
     onItemAdded(item)            { console.log('added', item); },
     onItemDeleted(item)          { console.log('deleted', item.Id); },
     onItemSaved(item)            { console.log('saved', item); },
+    onItemResizing(item, widthMinutes, element) { /* PRO: live resize feedback */ },
     onCalendarChanged(rule, action) { console.log(action, rule); },
 };
 ```

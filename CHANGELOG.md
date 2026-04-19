@@ -5,9 +5,12 @@ Features marked **(PRO)** require a commercial license key.
 
 ---
 
-## [1.1.1] — 2026-03-29
+## [1.2.0] — 2026-04-19
 
 ### Added
+- **`onItemResizing` notification hook** **(PRO)** — fires on every mousemove during a resize operation,
+  passing item data, current width in minutes (snapped to `gridStep`), and SVG element.
+  Enables live feedback (e.g. duration tooltip) via `window.SchedulaHandlers.onItemResizing`.
 - **`enableEditMode()` / `disableEditMode()`** **(PRO)** — toggle move and resize interactivity
   at runtime without a full redraw. Adds/removes resize handles and `draggable` class on all
   rendered items. Logs a warning if called without a valid PRO license key.
