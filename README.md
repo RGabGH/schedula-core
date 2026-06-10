@@ -206,14 +206,20 @@ ES2015+ (Chrome, Firefox, Edge, Safari). IE not supported.
 
 ## PRO license
 
-SchedulaCore PRO adds drag & drop, resize, calendar, dependency links, context menus, icons and incremental update API. Per-project licensing — your whole team uses one license, not one per developer.
+SchedulaCore PRO adds drag & drop, resize, runtime edit mode, dependency links, calendar exceptions & holidays, context menus, resource/item icons, custom popups and the incremental update API.
 
-- **Single Application** — one application, unlimited developers, unlimited deployments
-- **OEM** — embed in a product distributed to third parties
+Licensing is **per project, not per developer** — one license covers your whole team. All licenses are perpetual (one-time payment) and include 1 year of updates and support. Every license lets you build your application and ship it to unlimited end users.
 
-Both licenses are perpetual (one-time payment) and include 1 year of updates and support.
+| License | Price | What it covers |
+|---------|-------|----------------|
+| **Single Project** | **€499** | Use in one application. Ship it to unlimited end users — internal or commercial. |
+| **Unlimited Projects** | **€1,990** | Use in any number of applications within your company. Unlimited end users. |
+| **+ Source Code** | **€2,900** | Unlimited Projects, plus the full TypeScript source code for customization and self-maintenance. |
+| **OEM / Redistribution** | **Contact us** | Required only if SchedulaCore PRO is redistributed as a component, or embedded in a product or SaaS that is resold or sublicensed to third parties. |
 
-Contact for pricing: **[gabriraf@gmail.com](mailto:gabriraf@gmail.com)**
+> For comparison, comparable commercial Gantt components are priced at **$700–900 per developer**. SchedulaCore PRO is licensed per project, so one license covers your entire team.
+
+To purchase or request a quote: **[gabriraf@gmail.com](mailto:gabriraf@gmail.com)**
 
 ---
 
