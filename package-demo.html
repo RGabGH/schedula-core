@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SchedulaCore — demo</title>
+  <link rel="stylesheet" href="css/schedula-core.css">
+  <link rel="stylesheet" href="css/scheduler-themes.css">
+  <link rel="stylesheet" href="css/popup.css">
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 24px; color: #1f2937; }
+    h1 { font-size: 18px; margin: 0 0 12px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; font-size: 13px; }
+    .toolbar select, .toolbar input { padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; }
+    #scheduler { border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <h1>SchedulaCore — free version demo</h1>
+
+  <div class="toolbar">
+    <label>Theme
+      <select id="theme">
+        <option value="">Default</option>
+        <option value="theme-dark">Dark</option>
+        <option value="theme-blue">Blue</option>
+        <option value="theme-soft">Soft</option>
+      </select>
+    </label>
+    <label>Shape
+      <select id="shape">
+        <option value="round-rect">Round rect</option>
+        <option value="rect">Rect</option>
+        <option value="arrow">Arrow</option>
+        <option value="circle">Circle</option>
+      </select>
+    </label>
+    <label>Days
+      <select id="days">
+        <option value="14">14</option>
+        <option value="30" selected>30</option>
+        <option value="60">60</option>
+      </select>
+    </label>
+    <label>Filter <input id="filter" type="text" placeholder="type to filter…"></label>
+  </div>
+
+  <div id="scheduler"></div>
+
+  <!-- 1) the component (free bundle) -->
+  <script src="js/schedula-core.min.js"></script>
+  <!-- 2) the data (single file) -->
+  <script src="data.js"></script>
+  <!-- 3) implementation -->
+  <script>
+    var settings = new SchedulaSettings();
+    settings.date           = new Date();
+    settings.timeUnitsView  = 30;
+    settings.timeUnitVal    = 1440;
+    settings.gridStep       = 1440;
+    settings.gStyle         = 'round-rect';
+    settings.resourceHeight = 48;
+    settings.resourceWidth  = 160;
+    settings.hilightSunday  = true;
+    settings.animation      = true;
+    settings.canResizeItems = false;  // free: no resize gripper (resize is a PRO feature)
+
+    var scheduler = new SchedulaCore("scheduler", window.SCHEDULA_DEMO_DATA, settings);
+    scheduler.init();
+
+    // demo buttons -> public API
+    // themes are CSS classes on the #scheduler container (same as the component does in init())
+    var container = document.getElementById('scheduler');
+    document.getElementById('theme').addEventListener('change', function (e) {
+      container.classList.remove('theme-dark', 'theme-blue', 'theme-soft');
+      if (e.target.value) container.classList.add(e.target.value);
+      settings.theme = e.target.value;
+    });
+    document.getElementById('shape').addEventListener('change', function (e) {
+      scheduler.setStyle(e.target.value);
+    });
+    document.getElementById('days').addEventListener('change', function (e) {
+      scheduler.setView(parseInt(e.target.value, 10));
+    });
+    document.getElementById('filter').addEventListener('input', function (e) {
+      scheduler.filterItems(e.target.value);
+    });
+  </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
   "name": "schedula-core",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Fast, lightweight Gantt chart & resource scheduler component in vanilla JavaScript. Zero dependencies, framework-agnostic, single <script> tag. MIT core with optional PRO plugins (drag & drop, resize, dependency links, calendar).",
   "keywords": [
     "gantt",
@@ -29,10 +29,14 @@
   "author": "Raffaele Gabrielli <gabriraf@gmail.com>",
   "license": "MIT",
   "main": "js/schedula-core.min.js",
+  "module": "js/schedula-core.esm.js",
+  "types": "types/index.d.ts",
   "unpkg": "js/schedula-core.min.js",
   "jsdelivr": "js/schedula-core.min.js",
   "files": [
     "js/schedula-core.min.js",
+    "types",
+    "js/schedula-core.esm.js",
     "js/notification-plugin.min.js",
     "js/notification-handlers.js",
     "css/schedula-core.css",
@@ -40,7 +44,9 @@
     "css/popup.css",
     "README.md",
     "CHANGELOG.md",
-    "LICENSE"
+    "LICENSE",
+    "package-demo.html",
+    "data.js"
   ],
   "engines": {
     "node": ">=14"

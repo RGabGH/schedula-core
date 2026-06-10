@@ -41,6 +41,32 @@ A fast, lightweight Gantt/scheduler component for the web. No framework dependen
 
 ---
 
+## Install
+
+**With npm** (bundler — Vite, webpack, esbuild, …):
+
+```bash
+npm install schedula-core
+```
+
+```js
+import { SchedulaCore, SchedulaSettings } from 'schedula-core';
+import 'schedula-core/css/schedula-core.css';
+```
+
+Bundled TypeScript types are included — no `@types` package needed.
+
+**Or via a `<script>` tag** (no build step, no npm):
+
+```html
+<link rel="stylesheet" href="https://unpkg.com/schedula-core/css/schedula-core.css">
+<script src="https://unpkg.com/schedula-core"></script>
+```
+
+Want to see it first? A standalone, offline demo is bundled in the package — open **`package-demo.html`** in a browser (no server needed).
+
+---
+
 ## Quick start
 
 ```html

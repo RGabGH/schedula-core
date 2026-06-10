@@ -5,6 +5,19 @@ Features marked **(PRO)** require a commercial license key.
 
 ---
 
+## [1.3.0] — 2026-06-10
+
+### Added
+- **Published on npm** — install with `npm install schedula-core`.
+- **ESM module build** — ships an ES module (`schedula-core.esm.js`) next to the IIFE bundle, so it can be imported in bundler-based projects: `import { SchedulaCore } from 'schedula-core'`.
+- **TypeScript type declarations** — bundled `.d.ts` files enable full type-checking and editor autocompletion.
+- **Standalone offline demo** — `package-demo.html` runs the free build with no server or build step (double-click to open).
+
+### Changed
+- Global `window` assignments are now guarded with a `typeof window` check, so the bundle is safe to import in non-browser (SSR/Node) environments.
+
+---
+
 ## [1.2.0] — 2026-04-19
 
 ### Added
