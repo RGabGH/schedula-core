@@ -5,6 +5,13 @@ Features marked **(PRO)** require a commercial license key.
 
 ---
 
+## [1.4.1] — 2026-06-11
+
+### Changed
+- **README** — intro now highlights the official React / Vue / Angular wrappers up front, with npm version badges for each package. Docs-only release (no code changes from 1.4.0).
+
+---
+
 ## [1.4.0] — 2026-06-11
 
 ### Added
@@ -20,6 +27,14 @@ Features marked **(PRO)** require a commercial license key.
 
 ### Changed
 - `INTEGRATION.md` now leads with the official wrappers for React/Vue/Angular; the manual DOM snippets are kept as a fallback. CDN examples pinned to `@1.4.0`.
+
+---
+
+## [1.3.1] — 2026-06-11
+
+### Changed
+- Pricing simplified: removed the standalone "Source Code" tier. PRO is now Single Project / Unlimited Projects / OEM.
+- Commercial license (LICENSE-PRO) aligned to the pricing tiers, with a limitation-of-liability clause.
 
 ---
 
@@ -164,50 +179,4 @@ First public release on GitHub (MIT core + PRO bundle).
 - `DefaultPopupPlugin` — click any item to open detail popup
 - Item description field (`Description`)
 - Resource grouping — `Group` field on resources
-- Group filter buttons — toggle visibility by group
-- Text search (`filterItems`) — filter resources and items by keyword
-
----
-
-## [0.4.0] — 2024-07-22
-
-### Added
-- Multiple item styles: `rect`, `round-rect`, `arrow`, `circle`
-- `setStyle()` method — switch shape at runtime
-- Themes: `theme-dark`, `theme-blue`, `theme-soft`
-- CSS variable-based theming for easy customization
-
----
-
-## [0.3.0] — 2024-05-06
-
-### Added
-- CSS transition animations on item render and update
-- `animation` setting to toggle transitions
-- `setView(n)` — dynamic zoom, changes visible day range
-- `setData(data)` — replace dataset at runtime without page reload
-
----
-
-## [0.2.0] — 2024-03-19
-
-### Added
-- Progress bar rendering inside items (completion fill)
-- Item text label rendering with overflow clipping
-- `resourceHeight` and `resourceWidth` settings
-- Horizontal scroll on the timeline grid
-
-### Changed
-- Rendering engine moved from absolute positioning to SVG-based layout for precision
-
----
-
-## [0.1.0] — 2024-01-11
-
-### Added
-- Initial SVG template infrastructure — timeline grid, resource rows, item shapes
-- Core rendering loop: `init()`, `refresh()`
-- `SchedulaCore` constructor with `elementId`, `data`, `settings`
-- `SchedulaSettings` configuration object
-- `Offset` and `Width` fields for item positioning (minutes from reference date)
-- Basic `Resources` / `Items` data model
+- Gro
