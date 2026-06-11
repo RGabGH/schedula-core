@@ -5,6 +5,24 @@ Features marked **(PRO)** require a commercial license key.
 
 ---
 
+## [1.4.0] — 2026-06-11
+
+### Added
+- **Official framework wrappers** — three thin, typed, MIT-licensed component packages published alongside the core:
+  - [`schedula-core-react`](https://www.npmjs.com/package/schedula-core-react) (React 17+)
+  - [`schedula-core-vue`](https://www.npmjs.com/package/schedula-core-vue) (Vue 3)
+  - [`schedula-core-angular`](https://www.npmjs.com/package/schedula-core-angular) (Angular 16+)
+
+  All expose the same declarative surface (`data`, `settings`, `view`, `gStyle`, `theme`, `locale`, `filter`, `editMode` + item events + imperative `getInstance()`). `schedula-core` and the framework are peer dependencies, so each wrapper works with both the Free and PRO editions.
+- **Runnable demo apps** for React, Vue and Angular (Free edition) under `integrations/examples/`.
+- **`exports` map** in `package.json` — clean subpath imports: `import 'schedula-core/css'`, `'schedula-core/css/popup'`, `'schedula-core/css/themes'`, `'schedula-core/data'`, plus conditional `import`/`require`/`types` resolution for modern bundlers.
+- **PRO ESM build** (`schedula-core-pro.esm.js`) — lets bundler-based projects `import` PRO plugins instead of relying on the `<script>` global.
+
+### Changed
+- `INTEGRATION.md` now leads with the official wrappers for React/Vue/Angular; the manual DOM snippets are kept as a fallback. CDN examples pinned to `@1.4.0`.
+
+---
+
 ## [1.3.0] — 2026-06-10
 
 ### Added

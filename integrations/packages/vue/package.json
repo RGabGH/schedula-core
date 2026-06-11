@@ -1,0 +1,56 @@
+{
+  "name": "schedula-core-vue",
+  "version": "1.4.0",
+  "description": "Official Vue 3 wrapper for SchedulaCore — fast, lightweight Gantt chart & resource scheduler component.",
+  "keywords": [
+    "gantt",
+    "gantt-chart",
+    "scheduler",
+    "resource-scheduler",
+    "timeline",
+    "vue",
+    "vue3",
+    "vue-component",
+    "schedula-core"
+  ],
+  "homepage": "https://rgabgh.github.io/schedula-core/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RGabGH/schedula-core.git",
+    "directory": "public/integrations/packages/vue"
+  },
+  "license": "MIT",
+  "author": "Raffaele Gabrielli <gabriraf@gmail.com>",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "typecheck": "vue-tsc --noEmit"
+  },
+  "peerDependencies": {
+    "schedula-core": ">=1.4.0",
+    "vue": ">=3.2"
+  },
+  "devDependencies": {
+    "schedula-core": "file:../../..",
+    "typescript": "^5.4.5",
+    "vite": "^5.3.1",
+    "vite-plugin-dts": "^3.9.1",
+    "vue": "^3.4.31",
+    "vue-tsc": "^2.0.24"
+  }
+}

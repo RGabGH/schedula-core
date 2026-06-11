@@ -1,0 +1,20 @@
+{
+  "name": "schedula-integrations",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Dev workspace for the official SchedulaCore framework wrappers and runnable demos. Not published to npm.",
+  "workspaces": [
+    "packages/react",
+    "packages/vue",
+    "examples/react",
+    "examples/vue"
+  ],
+  "scripts": {
+    "build:wrappers": "npm run build -w schedula-core-react && npm run build -w schedula-core-vue",
+    "dev:react": "npm run dev -w example-react",
+    "dev:vue": "npm run dev -w example-vue"
+  },
+  "dependencies": {
+    "schedula-core": "file:.."
+  }
+}

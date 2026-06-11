@@ -1,10 +1,15 @@
 # SchedulaCore
 
-A fast, lightweight Gantt/scheduler component for the web. No framework dependencies — works with vanilla JavaScript or any frontend stack.
+A fast, lightweight Gantt/scheduler component for the web. No framework dependencies — works with vanilla JavaScript or any frontend stack. And when you do use a framework, there's an **official wrapper for React, Vue 3 and Angular**, so you can drop it in as a native component (`<SchedulaGantt … />`) with declarative props, typed APIs and reactive updates — no manual DOM wiring.
 
 ![SchedulaCore Blue Theme](images/schedula-core-theme-blue.png)
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Free%20Version-38bdf8?style=for-the-badge&logo=github)](https://rgabgh.github.io/schedula-core/)
+
+[![npm](https://img.shields.io/npm/v/schedula-core?label=schedula-core&logo=npm)](https://www.npmjs.com/package/schedula-core)
+[![React](https://img.shields.io/npm/v/schedula-core-react?label=React&logo=react&color=61dafb)](https://www.npmjs.com/package/schedula-core-react)
+[![Vue](https://img.shields.io/npm/v/schedula-core-vue?label=Vue&logo=vuedotjs&color=42b883)](https://www.npmjs.com/package/schedula-core-vue)
+[![Angular](https://img.shields.io/npm/v/schedula-core-angular?label=Angular&logo=angular&color=dd0031)](https://www.npmjs.com/package/schedula-core-angular)
 
 **[Open live demo](https://rgabgh.github.io/schedula-core/)**
 
@@ -19,6 +24,7 @@ A fast, lightweight Gantt/scheduler component for the web. No framework dependen
 - **Event notifications** — intercept every action via `window.SchedulaHandlers`
 - **Plugin architecture** — extend via `ISchedulaPlugin`
 - **IIFE bundle** — drop a single `<script>` tag, no build step needed
+- **Official React / Vue / Angular wrappers** — native component, declarative props, reactive updates (`schedula-core-react`, `schedula-core-vue`, `schedula-core-angular`)
 
 ### Free vs PRO
 
@@ -51,10 +57,22 @@ npm install schedula-core
 
 ```js
 import { SchedulaCore, SchedulaSettings } from 'schedula-core';
-import 'schedula-core/css/schedula-core.css';
+import 'schedula-core/css';        // core styles
+import 'schedula-core/css/popup';  // task popup
+// optional themes: import 'schedula-core/css/themes';
 ```
 
 Bundled TypeScript types are included — no `@types` package needed.
+
+**React / Vue / Angular** — use the official wrappers (declarative, typed components):
+
+| Framework | Package |
+|---|---|
+| React 17+ | `npm i schedula-core schedula-core-react` |
+| Vue 3 | `npm i schedula-core schedula-core-vue` |
+| Angular 16+ | `npm i schedula-core schedula-core-angular` |
+
+See **[INTEGRATION.md](INTEGRATION.md)** for full examples, plus Next.js, Nuxt, Svelte and Blazor.
 
 **Or via a `<script>` tag** (no build step, no npm):
 

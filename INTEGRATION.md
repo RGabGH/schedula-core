@@ -1,6 +1,11 @@
 # SchedulaCore — Framework Integration Guide
 
-SchedulaCore ships as an IIFE bundle (no build step required). It exposes globals on `window` — making it easy to integrate with any framework.
+SchedulaCore works two ways:
+
+1. **Official wrappers** (recommended for React / Vue / Angular) — declarative, typed components published on npm.
+2. **Vanilla / script tag** — the IIFE bundle exposes globals on `window`, so it drops into any framework or plain HTML with no build step.
+
+It exposes globals on `window` — making it easy to integrate with any framework.
 
 **Required files:**
 
@@ -17,6 +22,7 @@ schedula-core-pro.min.js   <!-- PRO bundle (alternative) -->
 ## Table of Contents
 
 - [Installation](#installation)
+- [Official wrappers & live demos](#official-wrappers--live-demos)
 - [Vanilla JavaScript](#vanilla-javascript)
 - [React](#react)
 - [Angular](#angular)
@@ -48,12 +54,42 @@ npm install schedula-core
 ### CDN (jsDelivr)
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/schedula-core@1.1.1/dist/css/schedula-core.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/schedula-core@1.1.1/dist/css/popup.css">
-<script src="https://cdn.jsdelivr.net/npm/schedula-core@1.1.1/dist/js/schedula-core.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/schedula-core@1.4.0/css/schedula-core.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/schedula-core@1.4.0/css/popup.css">
+<script src="https://cdn.jsdelivr.net/npm/schedula-core@1.4.0/js/schedula-core.min.js"></script>
 ```
 
 > For PRO, replace `schedula-core.min.js` with `schedula-core-pro.min.js`.
+
+---
+
+## Official wrappers & live demos
+
+For React, Vue and Angular, install the matching wrapper package — a thin, typed,
+MIT-licensed component around `SchedulaCore`. All three expose the same declarative
+surface: props for `data`, `settings`, `view`, `gStyle`, `theme`, `filter`,
+`editMode`, plus an imperative `getInstance()` and item events.
+
+| Framework | Package | `npm install` |
+|---|---|---|
+| React 17+ | [`schedula-core-react`](https://www.npmjs.com/package/schedula-core-react) | `npm i schedula-core schedula-core-react` |
+| Vue 3 | [`schedula-core-vue`](https://www.npmjs.com/package/schedula-core-vue) | `npm i schedula-core schedula-core-vue` |
+| Angular 16+ | [`schedula-core-angular`](https://www.npmjs.com/package/schedula-core-angular) | `npm i schedula-core schedula-core-angular` |
+
+`schedula-core` and the framework are **peer dependencies** — you install only what you use.
+The wrapper works the same with the Free and PRO editions: pass PRO plugins through
+`settings.plugins`.
+
+> Runnable demos for each framework live in
+> [`integrations/examples/`](integrations/examples) in the repository.
+
+Styles are exposed through the package `exports` map:
+
+```js
+import 'schedula-core/css';        // core
+import 'schedula-core/css/popup';  // task popup
+import 'schedula-core/css/themes'; // optional themes (dark, blue, soft)
+```
 
 ---
 
@@ -89,7 +125,46 @@ npm install schedula-core
 
 ## React
 
-SchedulaCore manipulates the DOM directly, so we use a `ref` for the container and initialize in `useEffect`.
+Use the official [`schedula-core-react`](https://www.npmjs.com/package/schedula-core-react) wrapper.
+
+```bash
+npm i schedula-core schedula-core-react
+```
+
+```tsx
+import { SchedulaGantt } from 'schedula-core-react';
+import 'schedula-core/css';
+import 'schedula-core/css/popup';
+
+const data = {
+  Resources: [
+    { Id: '1', Name: 'Alice', Items: [
+      { Id: 't1', Text: 'Design', Offset: 0, Width: 2880, Color1: '#2043D9' },
+    ]},
+  ],
+};
+
+export default function App() {
+  return <SchedulaGantt data={data} view={30} theme="theme-dark" />;
+}
+```
+
+Props: `data`, `settings`, `view`, `gStyle`, `theme`, `locale`, `filter`, `editMode`,
+plus `onReady` / `onItemChanged` / `onItemAdded` / `onItemDeleted`. Reach the raw
+`SchedulaCore` instance through a ref:
+
+```tsx
+const ref = useRef(null);
+<SchedulaGantt ref={ref} data={data} />;
+// later:
+ref.current?.getInstance()?.setView(60);
+```
+
+For PRO, pass plugin instances via `settings.plugins` — see [PRO with Plugins](#pro-with-plugins) below.
+
+### Without the wrapper (manual DOM)
+
+If you prefer not to add a dependency, SchedulaCore manipulates the DOM directly, so you can use a `ref` for the container and initialize in `useEffect`.
 
 ### Basic Component
 
@@ -204,6 +279,46 @@ useEffect(() => {
 
 ## Angular
 
+Use the official [`schedula-core-angular`](https://www.npmjs.com/package/schedula-core-angular) wrapper.
+
+```bash
+npm i schedula-core schedula-core-angular
+```
+
+Add the styles globally (e.g. in `angular.json` `styles[]` or a global stylesheet):
+
+```css
+@import 'schedula-core/css';
+@import 'schedula-core/css/popup';
+```
+
+```typescript
+import { Component } from '@angular/core';
+import { SchedulaGanttComponent } from 'schedula-core-angular';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [SchedulaGanttComponent],
+  template: `<schedula-gantt [data]="data" theme="theme-dark" [view]="30"></schedula-gantt>`,
+})
+export class AppComponent {
+  data = { Resources: [
+    { Id: '1', Name: 'Alice', Items: [
+      { Id: 't1', Text: 'Design', Offset: 0, Width: 2880, Color1: '#2043D9' },
+    ]},
+  ]};
+}
+```
+
+Inputs: `data`, `settings`, `view`, `gStyle`, `theme`, `locale`, `filter`, `editMode`.
+Outputs: `ready`, `itemChanged`, `itemAdded`, `itemDeleted`. Reach the raw instance
+via `@ViewChild(SchedulaGanttComponent).getInstance()`.
+
+### Without the wrapper (manual interop)
+
+If you prefer to load the IIFE bundle via `angular.json` `scripts[]` instead:
+
 ### Component
 
 ```typescript
@@ -261,11 +376,11 @@ Add the scripts and styles to `angular.json`:
     "build": {
       "options": {
         "styles": [
-          "node_modules/schedula-core/dist/css/schedula-core.css",
-          "node_modules/schedula-core/dist/css/popup.css"
+          "node_modules/schedula-core/css/schedula-core.css",
+          "node_modules/schedula-core/css/popup.css"
         ],
         "scripts": [
-          "node_modules/schedula-core/dist/js/schedula-core-pro.min.js"
+          "node_modules/schedula-core/js/schedula-core-pro.min.js"
         ]
       }
     }
@@ -334,6 +449,40 @@ private initScheduler(): void {
 ---
 
 ## Vue 3
+
+Use the official [`schedula-core-vue`](https://www.npmjs.com/package/schedula-core-vue) wrapper.
+
+```bash
+npm i schedula-core schedula-core-vue
+```
+
+```vue
+<script setup>
+import { SchedulaGantt } from 'schedula-core-vue';
+import 'schedula-core/css';
+import 'schedula-core/css/popup';
+
+const data = {
+  Resources: [
+    { Id: '1', Name: 'Alice', Items: [
+      { Id: 't1', Text: 'Design', Offset: 0, Width: 2880, Color1: '#2043D9' },
+    ]},
+  ],
+};
+</script>
+
+<template>
+  <SchedulaGantt :data="data" :view="30" theme="theme-dark" />
+</template>
+```
+
+Props: `data`, `settings`, `view`, `gStyle`, `theme`, `locale`, `filter`, `editMode`.
+Events: `ready`, `item-changed`, `item-added`, `item-deleted`. Reach the raw instance
+with a template ref: `gantt.value.getInstance()`.
+
+### Without the wrapper (manual DOM)
+
+If you prefer not to add a dependency:
 
 ### Composable Component
 

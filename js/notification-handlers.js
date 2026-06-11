@@ -59,6 +59,7 @@ window.SchedulaHandlers = {
      * @param {Element}  element  SVG element of the task bar (may be undefined).
      */
     onItemChanged(item, element) {
+        _hideResizeTooltip();
         console.log('[Scheduler] onItemChanged', {
             id: item?.Id,
             text: item?.Text,
@@ -125,6 +126,17 @@ window.SchedulaHandlers = {
     },
 
     /**
+     * Called on every mousemove during a resize operation (PRO).
+     * Use this to show live duration feedback (e.g. a tooltip near the cursor).
+     * @param {object}  item          Task data object being resized.
+     * @param {number}  widthMinutes  Current width in minutes (snapped to gridStep).
+     * @param {Element} element       SVG element being resized.
+     */
+    onItemResizing(item, widthMinutes, element) {
+        _showResizeTooltip(item, widthMinutes);
+    },
+
+    /**
      * Called after a calendar exception is added or removed.
      * @param {object} rule    Exception rule: { Capacity, DateFrom, DateTo, ResourceId? }
      * @param {string} action  'add' or 'remove'.
@@ -133,3 +145,37 @@ window.SchedulaHandlers = {
         console.log('[Scheduler] onCalendarChanged', { action, rule });
     },
 };
+
+// ── Resize tooltip (demo) ───────────────────────────────────────────────────
+
+var _resizeTooltip = null;
+
+function _showResizeTooltip(item, widthMinutes) {
+    if (!_resizeTooltip) {
+        _resizeTooltip = document.createElement('div');
+        _resizeTooltip.style.cssText =
+            'position:fixed;z-index:9999;' +
+            'background:#333;color:#fff;' +
+            'padding:4px 10px;border-radius:4px;' +
+            'font-size:13px;font-weight:600;' +
+            'pointer-events:none;white-space:nowrap;' +
+            'box-shadow:0 2px 8px rgba(0,0,0,0.3);';
+        document.body.appendChild(_resizeTooltip);
+    }
+    var hh = Math.floor(widthMinutes / 60);
+    var mm = Math.round(widthMinutes % 60);
+    _resizeTooltip.textContent = hh + 'h ' + String(mm).padStart(2, '0') + 'm';
+
+    var e = window.event || {};
+    if (e.clientX !== undefined) {
+        _resizeTooltip.style.left = (e.clientX + 14) + 'px';
+        _resizeTooltip.style.top = (e.clientY - 30) + 'px';
+    }
+    _resizeTooltip.style.display = 'block';
+}
+
+function _hideResizeTooltip() {
+    if (_resizeTooltip) {
+        _resizeTooltip.style.display = 'none';
+    }
+}

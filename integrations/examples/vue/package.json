@@ -1,0 +1,22 @@
+{
+  "name": "example-vue",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "schedula-core": "file:../../..",
+    "schedula-core-vue": "*",
+    "vue": "^3.4.31"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.5",
+    "typescript": "^5.4.5",
+    "vite": "^5.3.1",
+    "vue-tsc": "^2.0.24"
+  }
+}
