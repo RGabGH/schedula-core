@@ -258,7 +258,6 @@ Licensing is **per project, not per developer** — one license covers your whol
 |---------|-------|----------------|
 | **Single Project** | **€499** | Use in one application. Ship it to unlimited end users — internal or commercial. |
 | **Unlimited Projects** | **€1,990** | Use in any number of applications within your company. Unlimited end users. |
-| **+ Source Code** | **€2,900** | Unlimited Projects, plus the full TypeScript source code for customization and self-maintenance. |
 | **OEM / Redistribution** | **Contact us** | Required only if SchedulaCore PRO is redistributed as a component, or embedded in a product or SaaS that is resold or sublicensed to third parties. |
 
 > For comparison, comparable commercial Gantt components are priced at **$700–900 per developer**. SchedulaCore PRO is licensed per project, so one license covers your entire team.
