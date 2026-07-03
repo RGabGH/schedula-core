@@ -61,8 +61,8 @@
     stroke: #444;
 }
 
-.theme-dark .monthbox:hover,
-.theme-dark .week-element:hover {
+.theme-dark .monthbox.interactive:hover,
+.theme-dark .week-element.interactive:hover {
     fill: #677ee4;
 }
 
@@ -146,8 +146,8 @@
     stroke: #334155;
 }
 
-.theme-blue .monthbox:hover,
-.theme-blue .week-element:hover {
+.theme-blue .monthbox.interactive:hover,
+.theme-blue .week-element.interactive:hover {
     fill: #3b82f6;
 }
 
@@ -210,8 +210,8 @@
     fill: #666;
 }
 
-.theme-soft .monthbox:hover,
-.theme-soft .week-element:hover {
+.theme-soft .monthbox.interactive:hover,
+.theme-soft .week-element.interactive:hover {
     fill: #818cf8;
 }
 

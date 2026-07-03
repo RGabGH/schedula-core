@@ -53,6 +53,22 @@ export declare class SchedulaSettings {
     date: Date;
     groupFilter: number;
     hilightSunday: boolean;
+    /**
+     * If true, clicking a day cell in the header switches to Day view (redraw).
+     * When false, day cells are neither clickable nor highlighted on hover.
+     * Note: the external `timeMouseClick` callback still fires regardless of this setting.
+     */
+    canClickDays: boolean;
+    /**
+     * If true, clicking a week box in the header switches to Week view (redraw).
+     * When false, week boxes are neither clickable nor highlighted on hover.
+     */
+    canClickWeeks: boolean;
+    /**
+     * If true, clicking a month box in the header switches to Month view (redraw).
+     * When false, month boxes are neither clickable nor highlighted on hover.
+     */
+    canClickMonths: boolean;
     logo: string;
     dropEnable: boolean;
     itemsLinks: boolean;

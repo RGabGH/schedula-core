@@ -153,7 +153,13 @@ text {
     transition: fill 0.2s;
 }
 
-.monthbox:hover {
+.monthbox.interactive,
+.week-element.interactive,
+.time-unit.interactive {
+    cursor: pointer;
+}
+
+.monthbox.interactive:hover {
     fill: #818cf8;
 }
 
@@ -177,7 +183,7 @@ text {
     stroke-width: 1;
 }
 
-.week-element:hover {
+.week-element.interactive:hover {
     fill: #677ee4;
 }
 
@@ -222,7 +228,7 @@ text {
     fill-opacity: 0;
 }
 
-.time-unit:hover {
+.time-unit.interactive:hover {
     fill-opacity: 0.7;
     fill: #677ee4;
 }

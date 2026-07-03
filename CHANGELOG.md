@@ -5,6 +5,16 @@ Features marked **(PRO)** require a commercial license key.
 
 ---
 
+## [1.5.0] — 2026-07-03
+
+### Added
+- **`canClickDays` / `canClickWeeks` / `canClickMonths` settings** — control whether clicking a day, week or month cell in the header switches the view (redraw). When a flag is `false` the matching cells are no longer clickable and lose both their hover highlight and pointer cursor. All default to `true`, so existing behaviour is unchanged. The external `timeMouseClick` callback still fires for day cells regardless of `canClickDays`.
+
+### Fixed
+- **Timezone off-by-one in the month header** — `drawMonths` read UTC date getters (`getUTCDate`/`getUTCMonth`) while the day labels used local getters. In positive-offset timezones (e.g. Europe/Rome) the month box shifted one cell to the right after the first redraw, once `processData` re-normalized the base date to local midnight. Month boxes now use local getters, consistent with the day labels.
+
+---
+
 ## [1.4.1] — 2026-06-11
 
 ### Changed
