@@ -5,6 +5,13 @@ Features marked **(PRO)** require a commercial license key.
 
 ---
 
+## [1.5.1] — 2026-07-03
+
+### Fixed
+- **Regression from 1.5.0: month boxes collapsed to one-day width.** The 1.5.0 timezone fix in `drawMonths` also converted the days-in-month calculation from UTC to local getters, but that calculation relied on a UTC quirk (`new Date(y, m+1, 1).getUTCDate()` returned the last day of the current month only in positive-offset timezones). Under local getters it returned `1`, so every month box spanned a single day. Replaced it with the timezone-safe idiom `new Date(y, m+1, 0).getDate()`, which correctly yields the number of days in the month.
+
+---
+
 ## [1.5.0] — 2026-07-03
 
 ### Added
