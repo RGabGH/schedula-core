@@ -121,6 +121,13 @@ text {
     user-select: none;
 }
 
+/* Root SVG: fills the width of its container; its height is pinned in JS to the
+   viewport height so resource rows scroll vertically instead of the SVG growing. */
+#main-svg {
+    display: block;
+    width: 100%;
+}
+
 
 /* background */
 
@@ -605,49 +612,18 @@ rect.item.completed {
 
 /***************************************** calendar shifters */
 
+/* Shifters are SVG overlays inside the component (positioned by draw() in the
+   calendar header). Size/position come from x/y/width/height attributes. */
 .shifter {
-    opacity: 0.25;
+    opacity: 0.35;
     fill: white;
-    transition: 0.6s;
+    cursor: pointer;
+    transition: opacity 0.4s;
+    filter: drop-shadow(0px 0px 3px rgb(0 0 0 / 0.35));
 }
 
 .shifter:hover {
-    opacity: 0.9;
-}
-
-.shifter.svg-overlay.right {
-    transition: 1s;
-    z-index: 100;
-    position: fixed;
-    top: 50%;
-    float: right;
-    opacity: 0.35;
-    left: 90%;
-    width: 70px;
-    height: 70px;
-}
-
-.shifter.svg-overlay.right:hover {
     opacity: 1;
-}
-
-.shifter.svg-overlay.left {
-    transition: 0.5s;
-    z-index: 100;
-    position: fixed;
-    top: 50%;
-    opacity: 0.35;
-    width: 70px;
-    height: 70px;
-    left: 15%;
-}
-
-.shifter.svg-overlay.left:hover {
-    opacity: 1;
-}
-
-.shifter.svg-overlay {
-    filter: drop-shadow(0px 0px 6px rgb(0 0 0 / 0.25));
 }
 
 #popupsvg {

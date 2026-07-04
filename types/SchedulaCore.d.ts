@@ -28,6 +28,10 @@ export declare class SchedulaCore implements ISchedulaCore {
     private actionMemoPos;
     private ratio;
     private zoom;
+    /** Current vertical scroll offset (<= 0). Applied to #scheduler-vscroll and #scheduler-resources-scroll. */
+    private scrollY;
+    /** Most-negative allowed scrollY for the current content/viewport (0 = no vertical scroll). */
+    private maxScrollY;
     private schedulerSVG;
     private schedulerItems;
     private schedulerContainer;
@@ -180,6 +184,18 @@ export declare class SchedulaCore implements ISchedulaCore {
     private hideLinkpoints;
     private showLinkpoints;
     private splitterBarMouseDown;
+    /**
+     * Creates/updates the clip band applied to #scheduler-vclip so vertically
+     * scrolled content is clipped to [headerHeight .. viewport bottom] and never
+     * overlaps the fixed header. The band is defined in the (X-shifted, non-Y)
+     * coordinate space of #scheduler-vclip, so it stays fixed while the inner
+     * #scheduler-vscroll translates in Y.
+     */
+    private updateVScrollClip;
+    /** Applies the current vertical scroll offset to content and resource rows. */
+    private applyVScroll;
+    /** Mouse-wheel vertical scrolling (header stays fixed). */
+    private handleWheel;
     private shift;
     private itemMouseDown;
     private itemMouseUp;

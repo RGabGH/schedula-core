@@ -54,6 +54,23 @@ export declare class SchedulaSettings {
     groupFilter: number;
     hilightSunday: boolean;
     /**
+     * Enables vertical scrolling of resource rows/items with a fixed header.
+     * When false (default) the component keeps the legacy behaviour: the SVG grows
+     * to its full content height and scrolling is handled natively by the page.
+     * When true, the viewport is capped (see `height`) and the rows/items scroll
+     * vertically via the mouse wheel while the header stays fixed.
+     */
+    verticalScroll: boolean;
+    /**
+     * Visible height (in px) of the scheduler viewport, used only when
+     * `verticalScroll` is true. When the total content (header + resources) is
+     * taller than this value, the rows/items scroll vertically.
+     * 0 (default) = auto: use the container's bounded CSS height as the viewport.
+     */
+    height: number;
+    /** Multiplier applied to the mouse-wheel delta when scrolling vertically. */
+    verticalScrollStep: number;
+    /**
      * If true, clicking a day cell in the header switches to Day view (redraw).
      * When false, day cells are neither clickable nor highlighted on hover.
      * Note: the external `timeMouseClick` callback still fires regardless of this setting.

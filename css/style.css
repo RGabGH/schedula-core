@@ -3,6 +3,15 @@ body {
     padding: 0;
     overflow: hidden;
   }
+
+  /* Bound the scheduler viewport so tall content (many resources) scrolls
+     vertically inside the component while the header stays fixed.
+     A fixed height (rather than max-height) keeps the measured viewport stable
+     across dataset changes. Integrators can instead pass `settings.height`. */
+  #scheduler {
+    height: 520px;
+    overflow: hidden;
+  }
   
   .split-container {
     display: flex;
