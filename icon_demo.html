@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SchedulaCore — Icone disponibili</title>
+  <style>
+    :root { --bg:#0f172a; --panel:#1e293b; --border:#334155; --text:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family:Arial, sans-serif; }
+    header { position:sticky; top:0; background:var(--bg); border-bottom:1px solid var(--border); padding:14px 18px; z-index:10; }
+    h1 { font-size:1.05rem; margin:0 0 8px; }
+    h1 small { color:var(--muted); font-weight:normal; font-size:0.8rem; margin-left:8px; }
+    .controls { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+    input[type=search] { background:var(--panel); border:1px solid var(--border); color:var(--text); padding:7px 10px; border-radius:6px; min-width:220px; font-size:0.9rem; }
+    .swatch-btn { background:var(--panel); border:1px solid var(--border); color:var(--text); padding:6px 10px; border-radius:6px; cursor:pointer; font-size:0.82rem; }
+    .swatch-btn.active { border-color:var(--accent); color:var(--accent); }
+    #count { color:var(--muted); font-size:0.82rem; }
+    #grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(96px,1fr)); gap:10px; padding:16px 18px; }
+    .card { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:10px 6px 8px; text-align:center; cursor:pointer; transition:border-color .15s, transform .05s; }
+    .card:hover { border-color:var(--accent); }
+    .card:active { transform:scale(0.97); }
+    .card svg { display:block; margin:0 auto 8px; width:30px; height:30px; }
+    .card .name { font:11px/1.25 monospace; color:var(--muted); word-break:break-all; }
+    .card.copied .name { color:var(--accent); }
+    #empty { padding:40px 18px; color:var(--muted); }
+    /* icon fill follows theme swatch */
+    .fill-blue  svg use { fill:#93c5fd; }
+    .fill-dark  svg use { fill:#1e293b; }
+    .fill-white svg use { fill:#f8fafc; }
+    body.bg-light { --bg:#f8fafc; --panel:#ffffff; --border:#e2e8f0; --text:#1e293b; --muted:#64748b; }
+  </style>
+</head>
+<body class="fill-blue">
+  <header>
+    <h1>Icone disponibili <small>fonte: <code>src/icons.js</code> — aggiungi/togli lì e ricarica</small></h1>
+    <div class="controls">
+      <input id="q" type="search" placeholder="Filtra per nome… (es. bed, calendar, plane)">
+      <span id="count"></span>
+      <span style="color:var(--muted);font-size:.82rem;">Colore:</span>
+      <button class="swatch-btn active" data-fill="fill-blue">Blu</button>
+      <button class="swatch-btn" data-fill="fill-white">Bianco</button>
+      <button class="swatch-btn" data-fill="fill-dark">Scuro</button>
+      <button class="swatch-btn" id="bgtoggle">Sfondo chiaro</button>
+    </div>
+  </header>
+
+  <!-- Definizioni icone: nascoste, referenziate via <use>. Popolate a runtime da iconssvg. -->
+  <svg id="defs-host" width="0" height="0" style="position:absolute" aria-hidden="true"></svg>
+
+  <div id="grid"></div>
+  <div id="empty" style="display:none">Nessuna icona corrisponde al filtro.</div>
+
+  <!-- Fonte unica: il file sorgente delle icone. -->
+  <script src="../src/icons.js"></script>
+  <script>
+    (function () {
+      var NS = "http://www.w3.org/2000/svg";
+      var grid = document.getElementById("grid");
+      var empty = document.getElementById("empty");
+      var countEl = document.getElementById("count");
+
+      if (typeof iconssvg === "undefined") {
+        grid.innerHTML = '<p style="color:#f87171">Impossibile caricare <code>src/icons.js</code> (variabile <code>iconssvg</code> non trovata).</p>';
+        return;
+      }
+
+      // Inietta tutte le icone nel <defs> host (stesso meccanismo di IconsPlugin).
+      var host = document.getElementById("defs-host");
+      var defs = document.createElementNS(NS, "defs");
+      var doc = new DOMParser().parseFromString('<svg xmlns="' + NS + '">' + iconssvg + '</svg>', "image/svg+xml");
+      var names = [];
+      Array.from(doc.documentElement.childNodes).forEach(function (n) {
+        if (n.nodeType === 1) {
+          defs.appendChild(document.importNode(n, true));
+          var id = n.getAttribute && n.getAttribute("id");
+          if (id) names.push(id);
+        }
+      });
+      host.appendChild(defs);
+      names.sort();
+
+      // Costruisci una card per ogni icona.
+      names.forEach(function (name) {
+        var card = document.createElement("div");
+        card.className = "card";
+        card.dataset.name = name;
+        card.title = "Click per copiare il nome";
+        card.innerHTML =
+          '<svg viewBox="0 0 24 24"><use href="#' + name + '" width="24" height="24"></use></svg>' +
+          '<div class="name">' + name + '</div>';
+        card.addEventListener("click", function () {
+          if (navigator.clipboard) navigator.clipboard.writeText(name).catch(function(){});
+          card.classList.add("copied");
+          setTimeout(function () { card.classList.remove("copied"); }, 700);
+        });
+        grid.appendChild(card);
+      });
+
+      function applyFilter() {
+        var q = document.getElementById("q").value.trim().toLowerCase();
+        var shown = 0;
+        Array.from(grid.children).forEach(function (c) {
+          var match = !q || c.dataset.name.indexOf(q) !== -1;
+          c.style.display = match ? "" : "none";
+          if (match) shown++;
+        });
+        empty.style.display = shown ? "none" : "block";
+        countEl.textContent = shown + " / " + names.length + " icone";
+      }
+      document.getElementById("q").addEventListener("input", applyFilter);
+      applyFilter();
+
+      // Swatch colore
+      Array.from(document.querySelectorAll(".swatch-btn[data-fill]")).forEach(function (b) {
+        b.addEventListener("click", function () {
+          document.body.classList.remove("fill-blue", "fill-white", "fill-dark");
+          document.body.classList.add(b.dataset.fill);
+          document.querySelectorAll(".swatch-btn[data-fill]").forEach(function (x) { x.classList.remove("active"); });
+          b.classList.add("active");
+        });
+      });
+      document.getElementById("bgtoggle").addEventListener("click", function () {
+        document.body.classList.toggle("bg-light");
+        this.textContent = document.body.classList.contains("bg-light") ? "Sfondo scuro" : "Sfondo chiaro";
+      });
+    })();
+  </script>
+</body>
+</html>
