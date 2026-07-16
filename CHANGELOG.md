@@ -5,6 +5,13 @@ Features marked **(PRO)** require a commercial license key.
 
 ---
 
+## [1.7.0] — 2026-07-16
+
+### Added
+- **Context menu on resources** — `ContextMenuPlugin` now supports a fourth context, `resource`, triggered by right-clicking a resource in the sidebar (its row, name, image or icons). New public `resourceMenuItems` array (default: *Edit resource*, *Add task*, *Delete resource*). `delete-resource` is handled internally (removes the resource from the data set and redraws); every resource action also dispatches a `schedularesource:action` DOM event (`detail: { action, label, resourceId, resource }`) and fires `NotificationPlugin.onMenuAction(id, resource, ctx)`, so consumers can implement `edit-resource`, `add-task` or custom actions. Resource rows are now tagged with `class="resource-row"` and `data-res` so the whole row is a reliable right-click target.
+
+---
+
 ## [1.6.1] — 2026-07-16
 
 ### Fixed
