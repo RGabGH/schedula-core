@@ -5,6 +5,28 @@ Features marked **(PRO)** require a commercial license key.
 
 ---
 
+## [1.6.1] — 2026-07-16
+
+### Fixed
+- **Elements pushed outside the component when resizing the window with `verticalScroll` enabled.** With vertical scroll on, the SVG height is pinned to the viewport, so — unlike the legacy (auto-height) mode — it can no longer scale responsively with its width. `resized()` only refreshed the drag/scroll `ratio`, leaving a stale `viewBox` width; the default `preserveAspectRatio` then scaled and offset the content past the component edges. On resize (vertical scroll on), the component now redraws to recompute the width-dependent geometry (`timeWidth`, `viewBox`), preserving the vertical scroll offset and the horizontal shift, with redraws coalesced via `requestAnimationFrame`. Legacy mode (`verticalScroll` off) is unchanged.
+
+---
+
+## [1.6.0] — 2026-07-04
+
+### Added
+- **Vertical scrolling with a fixed header** — new `verticalScroll` setting (default `false`, so existing behaviour is unchanged). When enabled, the resource rows and items scroll vertically (mouse wheel) inside a capped viewport while the calendar/month/day header and the resource-column header stay fixed. Companion settings: `height` (viewport height in px; `0` = use the container's bounded CSS height) and `verticalScrollStep` (wheel-delta multiplier).
+- **67 new hospitality/booking icons** in `icons.js` (Font Awesome Free *Solid*), e.g. `bed`, `key`, `right-to-bracket`/`right-from-bracket` (check-in/out), `bell-concierge`, `utensils`, `wifi`, `car`, `square-parking`, `plane`, `suitcase-rolling`, `person-swimming`, `dumbbell`, `wheelchair`, `elevator`, `dog`/`paw`, `euro-sign`, `cash-register`, `location-dot`, `phone`, `ban-smoking`, `triangle-exclamation`. Total icons: 164 → 231.
+- **`icon_demo.html`** — reference gallery that lists every available icon with its name, reading dynamically from `icons.js` (adding/removing icons there updates the page). Includes name filter, colour/background toggles, and click-to-copy of the icon name.
+
+### Changed
+- **Shifter buttons moved inside the component** — the horizontal navigation arrows now render inside the SVG in the header band, vertically centered: the back (`<`) button over the resource column near the left margin, the forward (`>`) button at the right edge of the calendar. Previously they were viewport-fixed overlays.
+
+### Fixed
+- **Resource sidebar hidden behind its background** — the resource rows are now painted on top of the opaque `.sb-rbg` background (its CSS `fill: lightgray` overrides the inline transparent fill), so the resource list is always visible.
+
+---
+
 ## [1.5.1] — 2026-07-03
 
 ### Fixed

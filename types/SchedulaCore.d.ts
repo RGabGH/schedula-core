@@ -32,6 +32,8 @@ export declare class SchedulaCore implements ISchedulaCore {
     private scrollY;
     /** Most-negative allowed scrollY for the current content/viewport (0 = no vertical scroll). */
     private maxScrollY;
+    /** Pending requestAnimationFrame handle used to coalesce resize redraws (0 = none). */
+    private resizeRaf;
     private schedulerSVG;
     private schedulerItems;
     private schedulerContainer;
