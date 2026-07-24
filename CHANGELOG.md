@@ -5,6 +5,17 @@ Features marked **(PRO)** require a commercial license key.
 
 ---
 
+## [1.8.0] — 2026-07-18
+
+### Added
+- **Proportional event bars** — `EventsPlugin.drawEvents` now honours `event.Percent` (0-100): the marker width is `Percent / 100 × timeWidth`, i.e. the fraction of the day/column the bar fills (clamped to `[0,100]`; falls back to a full column when absent). Enables occupancy-style bars (e.g. green `<70` / yellow `<90` / red `≥90` via `event.Color`).
+
+### Fixed
+- **Event markers drawn over the day row instead of their own strip** — the Y position was computed as `monthBoxHeight + timeElementHeight`, which collided with the day row. Events are now placed in the reserved info band just above the day row (`headerHeight − timeElementHeight − infoElementHeight`), correct whether or not the weeks band is shown.
+- **Event markers not rendered when the template has no `#scheduler-events` group** — `drawEvents` returned early if the group was missing. It now creates the group on demand (inserted after `#scheduler-header`, outside the vertical-scroll group so it stays fixed), so events render without any template change.
+
+---
+
 ## [1.7.0] — 2026-07-16
 
 ### Added

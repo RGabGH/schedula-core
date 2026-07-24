@@ -1,6 +1,6 @@
 {
   "name": "schedula-core",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "Fast, lightweight Gantt chart & resource scheduler component in vanilla JavaScript. Zero dependencies, framework-agnostic, single <script> tag. MIT core with optional PRO plugins (drag & drop, resize, dependency links, calendar).",
   "keywords": [
     "gantt",
