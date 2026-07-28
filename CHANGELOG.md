@@ -5,6 +5,17 @@ Features marked **(PRO)** require a commercial license key.
 
 ---
 
+## [1.8.1] — 2026-07-18
+
+### Fixed
+- **Antivirus false positive on the PRO bundle** (`JS:Trojan.Formbook`) — removed `control-flow-flattening` and `dead-code-injection` from the PRO obfuscation step. Those inject randomized junk and malware-like control flow that heuristic AV engines flag; string-array obfuscation is kept, so the commercial code stays protected. PRO bundle is also ~56% smaller.
+- **Repository URL in the MIT bundle banner** — corrected the placeholder `github.com/tuonome/...` to `github.com/RGabGH/schedula-core`.
+
+### Changed
+- **MIT bundles shipped minified, not obfuscated** — `schedula-core.min.js` and `notification-plugin.min.js` are now only minified (esbuild `--minify`). Obfuscation gave the open-source (MIT) bundles no real protection while its patterns caused antivirus false positives; the published package is also much smaller (core `~476 KB → ~114 KB`).
+
+---
+
 ## [1.8.0] — 2026-07-18
 
 ### Added
