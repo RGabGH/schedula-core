@@ -5,6 +5,13 @@ Features marked **(PRO)** require a commercial license key.
 
 ---
 
+## [1.8.3] — 2026-07-18
+
+### Added
+- **Immediate (non-animated) shift** — the public shift methods (`shiftBy`, `shiftToUnit`, `shiftToDate`, `shiftToStart`, `shiftToEnd`) now take an optional trailing `animate` argument (default `true`, unchanged behaviour). Pass `false` for an instant jump with no slide — e.g. to restore the view after a data reload (`shiftToDate(info.firstVisibleDate, false)`). The immediate path also neutralises the frozen `animateTransform` (`fill="freeze"`), so a jump right after an animated shift lands correctly instead of being overridden by the leftover animation.
+
+---
+
 ## [1.8.2] — 2026-07-18
 
 ### Added

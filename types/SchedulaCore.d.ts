@@ -252,15 +252,15 @@ export declare class SchedulaCore implements ISchedulaCore {
     /** Internal shifter-button handler: `step` is in columns (legacy sign; + scrolls back). */
     private shift;
     /** Shifts by `units` columns relative to the current position. `+` = forward in time. */
-    shiftBy(units: number): void;
+    shiftBy(units: number, animate?: boolean): void;
     /** Scrolls so `index` (0-based column) becomes the left-most visible column. */
-    shiftToUnit(index: number): void;
+    shiftToUnit(index: number, animate?: boolean): void;
     /** Scrolls so `date` becomes the left-most visible column (rounded to the nearest column). */
-    shiftToDate(date: Date | string): void;
+    shiftToDate(date: Date | string, animate?: boolean): void;
     /** Scrolls to the first loaded column. */
-    shiftToStart(): void;
+    shiftToStart(animate?: boolean): void;
     /** Scrolls to the last loaded column. */
-    shiftToEnd(): void;
+    shiftToEnd(animate?: boolean): void;
     /** Returns the current shift-info payload on demand (same shape as the event/callback). */
     getShiftInfo(): any;
     private itemMouseDown;
