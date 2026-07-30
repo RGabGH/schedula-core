@@ -34,6 +34,21 @@ export declare class SchedulaCore implements ISchedulaCore {
     private maxScrollY;
     /** Pending requestAnimationFrame handle used to coalesce resize redraws (0 = none). */
     private resizeRaf;
+    /**
+     * Selected grid cells, keyed by "resourceId|data-date". Kept as data (not DOM state)
+     * so the selection survives redraws, which recreate every box-element.
+     */
+    private selectedBoxes;
+    /**
+     * Current horizontal shift (translate X, <= 0) — the single source of truth for the
+     * scroll position. Read from here, not the DOM: during `animateTransform` the element's
+     * `transform` attribute is not reliable.
+     */
+    private currentShiftPos;
+    /** True while a shift notification is queued for the current microtask (coalescing flag). */
+    private shiftNotifyScheduled;
+    /** Direction of the pending shift notification (+1 forward, -1 back, 0 redraw/init). */
+    private pendingShiftDirection;
     private schedulerSVG;
     private schedulerItems;
     private schedulerContainer;
@@ -125,6 +140,24 @@ export declare class SchedulaCore implements ISchedulaCore {
     private processData;
     private storeData;
     private drawBackGroud;
+    private boxKey;
+    /** Toggles the selection of a grid cell, then notifies listeners. */
+    private toggleBoxSelection;
+    /** Re-applies the stored selection to the box-elements currently in the DOM. */
+    private applyBoxSelection;
+    /**
+     * Returns the selected grid cells: one entry per cell with the resource Id and the
+     * day it belongs to, in selection order. Empty when nothing is selected.
+     */
+    getSelectedBoxElements(): {
+        resourceId: string;
+        date: Date;
+    }[];
+    /**
+     * Deselects every grid cell (clears both the stored state and the `selected` class)
+     * and notifies listeners with an empty selection. No-op when nothing is selected.
+     */
+    clearSelectedBoxElements(): void;
     filterItems(filter: string): void;
     private drawResBg;
     private initSplitter;
@@ -198,7 +231,38 @@ export declare class SchedulaCore implements ISchedulaCore {
     private applyVScroll;
     /** Mouse-wheel vertical scrolling (header stays fixed). */
     private handleWheel;
+    /** Most-negative allowed shift position (identical formula to the legacy code). */
+    private shiftMaxPos;
+    /**
+     * Single source of truth for the horizontal shift. Clamps to [maxpos, 0], stores the
+     * position in `currentShiftPos`, applies it to `#scheduler-items` (animated when asked
+     * and an animateTransform exists), persists it, and schedules the shift notification.
+     */
+    private applyShiftPos;
+    /**
+     * Coalesces shift notifications into a single one per synchronous burst so it carries
+     * the final position (e.g. refresh() + applyShiftPos(), or draw() + restoreShiftPos()).
+     * Uses a microtask rather than requestAnimationFrame: it fires reliably even when the
+     * tab is not painting (e.g. setData in a hidden tab), which a data notification needs.
+     */
+    private scheduleShiftNotify;
+    private emitShiftNotify;
+    /** Builds the shift-info payload shared by the DOM event, the callback and getShiftInfo(). */
+    private buildShiftInfo;
+    /** Internal shifter-button handler: `step` is in columns (legacy sign; + scrolls back). */
     private shift;
+    /** Shifts by `units` columns relative to the current position. `+` = forward in time. */
+    shiftBy(units: number): void;
+    /** Scrolls so `index` (0-based column) becomes the left-most visible column. */
+    shiftToUnit(index: number): void;
+    /** Scrolls so `date` becomes the left-most visible column (rounded to the nearest column). */
+    shiftToDate(date: Date | string): void;
+    /** Scrolls to the first loaded column. */
+    shiftToStart(): void;
+    /** Scrolls to the last loaded column. */
+    shiftToEnd(): void;
+    /** Returns the current shift-info payload on demand (same shape as the event/callback). */
+    getShiftInfo(): any;
     private itemMouseDown;
     private itemMouseUp;
     private itemClick;

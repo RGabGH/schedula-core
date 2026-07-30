@@ -103,13 +103,41 @@ export declare class SchedulaSettings {
     viewYear: boolean;
     viewShifters: boolean;
     shifterStep: number;
+    /**
+     * How many time units from the edge of the loaded range `nearStart` / `nearEnd` turn on
+     * in the shift notification (`schedulashift` event / `onShiftChanged`). Use it to tune
+     * when the consumer should pre-load the next data window.
+     * `null` (default) = one full viewport (`timeUnitsView`).
+     * Note: `nearEnd` fires *before* the edge on purpose — the shift is clamped at the end,
+     * so waiting for `atEnd` means the user is already stuck against the wall.
+     */
+    shiftPreloadThreshold: number | null;
     viewEvents: boolean;
     viewEventExtended: boolean;
     canMoveEvents: boolean;
     viewStars: boolean;
+    /**
+     * Fill direction of proportional event bars (events carrying `Percent`, 0-100):
+     *   'sxdx'   — left to right (horizontal, legacy behaviour)
+     *   'dxsx'   — right to left (horizontal, anchored to the right edge)
+     *   'updown' — top to bottom (vertical, anchored to the top of the strip)
+     *   'downup' — bottom to top (vertical, anchored to the bottom of the strip)
+     * `null` (default) keeps the legacy left-to-right fill. Events without `Percent`
+     * always fill the whole cell, whatever the direction.
+     */
+    eventFillDirection: 'sxdx' | 'dxsx' | 'updown' | 'downup' | null;
     progressBar: boolean;
     progressBarAnimation: boolean;
     drawBoxElements: boolean;
+    /**
+     * Enables click-to-select on grid cells (`rect.box-element`). When true, clicking a
+     * cell toggles the `selected` CSS class on it (style it via `.box-element.selected`)
+     * and the selection is preserved across redraws. Read it back with
+     * `getSelectedBoxElements()` — each entry carries the resource Id and the day.
+     * Default `false`, so existing behaviour is unchanged; the `gridMouseClick`
+     * callback still fires regardless of this setting.
+     */
+    canSelectBoxElements: boolean;
     theme: string;
     template: string;
     /**

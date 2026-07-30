@@ -144,6 +144,32 @@ window.SchedulaHandlers = {
     onCalendarChanged(rule, action) {
         console.log('[Scheduler] onCalendarChanged', { action, rule });
     },
+
+    /**
+     * Called whenever the horizontal shift changes (arrows, shift API, view switch, redraw).
+     * Use `nearEnd` to pre-load the next window BEFORE the user hits the clamped edge.
+     * @param {object} info  { pos, minpos, maxpos, step, timeWidth, atStart, atEnd,
+     *                         nearStart, nearEnd, nextShiftReachesEnd, unitsToStart, unitsToEnd,
+     *                         firstVisibleDate, lastVisibleDate, firstLoadedDate, lastLoadedDate,
+     *                         firstUnit, visibleUnits, totalUnits, scrollable, direction }
+     */
+    onShiftChanged(info) {
+        console.log('[Scheduler] onShiftChanged', {
+            firstVisible: info.firstVisibleDate,
+            lastVisible: info.lastVisibleDate,
+            nearEnd: info.nearEnd,
+            unitsToEnd: Math.round(info.unitsToEnd),
+        });
+
+        // Example: pre-load the next data window when approaching the end.
+        // `scrollable` guards the "everything fits in view" case; `direction > 0` = forward.
+        // if (info.scrollable && info.nearEnd && info.direction >= 0) {
+        //     const from = info.lastLoadedDate;                  // extend from the current edge
+        //     const to = new Date(from.getTime() + 30 * 864e5);  // +30 days, say
+        //     loadMore(from, to);   // your fetch; then extend timeUnitsCount, refresh(),
+        //                           // and scheduler.shiftToDate(info.firstVisibleDate) to keep the view.
+        // }
+    },
 };
 
 // ── Resize tooltip (demo) ───────────────────────────────────────────────────

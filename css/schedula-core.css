@@ -274,6 +274,18 @@ text {
     fill: rgba(0, 0, 0, 0.06);
 }
 
+/* Cell selection — enabled by settings.canSelectBoxElements.
+   Declared after :hover so it wins at equal specificity. */
+.box-element.selected {
+    fill: rgba(92, 56, 252, 0.25);
+    stroke: #5c38fc;
+    stroke-width: 1;
+}
+
+.box-element.selected:hover {
+    fill: rgba(92, 56, 252, 0.38);
+}
+
 .daybox-element {
     fill: white;
     transition: 0.3s;

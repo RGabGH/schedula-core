@@ -5,6 +5,15 @@ Features marked **(PRO)** require a commercial license key.
 
 ---
 
+## [1.8.2] — 2026-07-18
+
+### Added
+- **Selectable grid cells** — new `canSelectBoxElements` setting (default `false`): when enabled, clicking a grid cell toggles the `selected` class on its `rect.box-element`, styled by the new `.box-element.selected` CSS rule. The selection is kept as data, so it survives redraws (view changes, resize, filters). Read it back with `getSelectedBoxElements()`, which returns one entry per selected cell as `{ resourceId, date }` (resource + day), and deselect everything with `clearSelectedBoxElements()`. Every selection change — single toggle or full clear — dispatches a `schedulabox:selection` DOM event (`detail: { resourceId, date, selected, selection }`; `resourceId`/`date` are `null` on a clear). The `gridMouseClick` callback keeps firing regardless of the setting.
+- **Event bar fill direction** — new `eventFillDirection` setting controlling how proportional event bars (`Percent`) fill their cell: `'sxdx'` left→right, `'dxsx'` right→left, `'updown'` top→bottom, `'downup'` bottom→top (histogram style). `null` (default) keeps the legacy left→right fill. Events without `Percent` always fill the whole cell.
+- **Public shift API + position/end-of-data notification** — the horizontal shift is now driveable and observable, for infinite-scroll-style data loading. New methods `shiftBy(units)` (relative, `+` = forward in time), `shiftToUnit(index)`, `shiftToDate(date)`, `shiftToStart()`, `shiftToEnd()` and `getShiftInfo()`. On every position change and after every redraw the scheduler fires a `schedulashift` DOM event and `NotificationPlugin.onShiftChanged(info)`, coalesced to one notification per burst. The payload reports position (`pos`/`minpos`/`maxpos`), the visible window in **dates** (`firstVisibleDate`/`lastVisibleDate`) and loaded range (`firstLoadedDate`/`lastLoadedDate`), and edge flags — notably `nearEnd`, which fires *before* the clamped edge so the consumer can pre-load in time (threshold configurable via the new `shiftPreloadThreshold` setting, default = one viewport), plus `nextShiftReachesEnd`, `unitsToEnd`, `scrollable` and `direction`.
+
+---
+
 ## [1.8.1] — 2026-07-18
 
 ### Fixed
