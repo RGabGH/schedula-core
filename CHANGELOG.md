@@ -5,6 +5,13 @@ Features marked **(PRO)** require a commercial license key.
 
 ---
 
+## [1.8.4] — 2026-07-18
+
+### Fixed
+- **Shifter arrows ignored runtime changes to `shifterStep`** — the click listeners are bound once (`_bound` guard) and had captured `shifterStep` in a closure at the first draw, so later changes (e.g. adjusting the step when switching view) had no effect and the arrows kept scrolling by the original amount. The listeners now read `settings.shifterStep` at click time, making it fully runtime-configurable.
+
+---
+
 ## [1.8.3] — 2026-07-18
 
 ### Added

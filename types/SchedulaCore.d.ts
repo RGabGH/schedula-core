@@ -234,6 +234,16 @@ export declare class SchedulaCore implements ISchedulaCore {
     /** Most-negative allowed shift position (identical formula to the legacy code). */
     private shiftMaxPos;
     /**
+     * Date shown by column `i`, DST-safe. For the daily granularity (`timeUnitVal == 1440`)
+     * it increments by *calendar days* (a wall-clock day is not always 1440 minutes: DST
+     * transitions make it 1380/1500), so day numbers and month boundaries stay correct across
+     * an autumn/spring switch. Sub-day granularities (e.g. hourly, `timeUnitVal == 60`) keep the
+     * original millisecond arithmetic. Column geometry (`x = i * timeWidth`) is unaffected.
+     */
+    private columnDate;
+    /** Inverse of columnDate: the column index whose date matches `date` (DST-safe for days). */
+    private columnIndexForDate;
+    /**
      * Single source of truth for the horizontal shift. Clamps to [maxpos, 0], stores the
      * position in `currentShiftPos`, applies it to `#scheduler-items` (animated when asked
      * and an animateTransform exists), persists it, and schedules the shift notification.
