@@ -5,10 +5,22 @@ Features marked **(PRO)** require a commercial license key.
 
 ---
 
+## [1.8.5] — 2026-07-18
+
+### Added
+- **Left accent bar on tasks** — an optional coloured vertical strip on the left edge of a task bar (follows the rounded corner). Off by default; enable globally with the new `viewItemBar` setting, style it with `itemBarColor` (default blue) and `itemBarWidth` (default `5`px). Per task it can be forced on/off with `item.ViewBar` and recoloured with `item.BarColor`. The task text shifts right by the bar width so it doesn't overlap.
+- **Finish→Start link anchoring** — new `linkAnchor` setting (`'center'` default = legacy behaviour, `'fs'`). In `'fs'` mode dependency links attach to the task *edges*: the line leaves the right edge (finish) of the earlier task and enters the left edge (start) of the later one, at each task's vertical centre, for both same-row and cross-row links — the hotel "guest moves room" style. Curve vs. orthogonal stays controlled by `linkSpline` (the spline uses horizontal tangents at both ends).
+
+### Fixed
+- **Crash in `initSplitter` aborted the first draw when the SVG was detached** — `initSplitter` used a non-null assertion on `#scheduler-sidebar` (`sidebar!.setAttribute`), unlike the other three sidebar accessors which use `?.`. If `getElementById` returned `null` (e.g. the host framework replaced the container after `init`, leaving the instance's SVG orphaned), it threw inside `draw()` *before* `drawItems()`/`drawResources()`, so tasks and resources were never drawn (they only appeared after a later successful redraw). Now null-safe (`sidebar?.setAttribute`), and `refresh()` bails out early when `schedulerSVG` is no longer connected to the document, so a detached instance goes quiet instead of throwing.
+
+---
+
 ## [1.8.4] — 2026-07-18
 
 ### Fixed
 - **Shifter arrows ignored runtime changes to `shifterStep`** — the click listeners are bound once (`_bound` guard) and had captured `shifterStep` in a closure at the first draw, so later changes (e.g. adjusting the step when switching view) had no effect and the arrows kept scrolling by the original amount. The listeners now read `settings.shifterStep` at click time, making it fully runtime-configurable.
+- **Daylight-saving drift in the day/month header** — day numbers and month boxes are computed from a per-column date that used a fixed `+24h` increment (`date.getTime() + i·86400000`). Across a DST transition a wall-clock day is 23/25 h long, so from that day on the dates slipped by an hour and then a day: e.g. October's month box ended on the 30th and the 31st was orphaned before November. Daily-granularity columns now advance by *calendar days* (DST-safe); sub-day granularities (hourly) keep the original arithmetic and the column geometry (`x = i·timeWidth`) is unchanged. The shift API's reported dates (`firstVisibleDate`, `shiftToDate`, …) use the same DST-safe mapping, staying consistent with the header.
 
 ---
 

@@ -91,12 +91,31 @@ export declare class SchedulaSettings {
     itemsLinks: boolean;
     drawLinks: boolean;
     linkSpline: boolean;
+    /**
+     * Where dependency links attach to the tasks:
+     *   'center' (default) — legacy: same-row links go end→start at row centre, cross-row
+     *                        links join the horizontal centre of each task.
+     *   'fs'     — Finish→Start anchored to the task edges: the line leaves the right edge
+     *              (finish) of the earlier task and enters the left edge (start) of the later
+     *              one, at each task's vertical centre, for both same-row and cross-row links
+     *              (hotel style). Curve vs. orthogonal is still controlled by `linkSpline`.
+     */
+    linkAnchor: 'center' | 'fs';
     itemsPadding: number;
     itemsText: boolean;
     itemTextOffestX: number;
     itemTextOffestY: number;
     itemTextFont: string;
     itemTextSize: string;
+    /**
+     * Left accent bar on task bars (a colored vertical strip on the left edge, following the
+     * rounded corner). Global default `viewItemBar` (off by default). Per task it can be
+     * overridden with `item.ViewBar` (boolean) and recolored with `item.BarColor`; when no
+     * per-item colour is set, `itemBarColor` is used. `itemBarWidth` is the width in px.
+     */
+    viewItemBar: boolean;
+    itemBarColor: string;
+    itemBarWidth: number;
     gStyle: string;
     arrowSize: number;
     perfectMatch: boolean;
