@@ -47,12 +47,25 @@ export declare class SchedulaSettings {
     infoElementHeight: number;
     viewMonthLogo: boolean;
     logoTitle: string;
+    /**
+     * Repeat the month/year label along wide month boxes so it stays visible when a single
+     * month is wider than the viewport (wide time-unit / zoomed-in views). Labels are placed
+     * one viewport-width apart, so at least one is always in view at any scroll position; a
+     * month box narrower than the viewport shows a single label (no redundancy).
+     * `false` = legacy single left-anchored label.
+     */
+    monthLabelRepeat: boolean;
     splitterWidth: number;
     sidebarMaxWidth: number;
     sidebarMinWidth: number;
     date: Date;
     groupFilter: number;
     hilightSunday: boolean;
+    /**
+     * Append the weekday initial after the day number in the day header (locale-aware, e.g.
+     * IT: "3 L", "4 M"), for the multi-day view (timeUnitsView > 7). Default `false`.
+     */
+    viewWeekdayInitial: boolean;
     /**
      * Enables vertical scrolling of resource rows/items with a fixed header.
      * When false (default) the component keeps the legacy behaviour: the SVG grows
@@ -92,6 +105,15 @@ export declare class SchedulaSettings {
     drawLinks: boolean;
     linkSpline: boolean;
     /**
+     * Terminator shape drawn at both ends of each dependency link, bulging toward the line
+     * (styled by the `.link-terminator` CSS class):
+     *   'none' (default) — no terminators
+     *   'semicircle'     — rounded half-disc
+     *   'triangle'       — triangle pointing along the line
+     *   'square'         — protruding half-square tab
+     */
+    linkTerminators: 'none' | 'semicircle' | 'triangle' | 'square';
+    /**
      * Where dependency links attach to the tasks:
      *   'center' (default) — legacy: same-row links go end→start at row centre, cross-row
      *                        links join the horizontal centre of each task.
@@ -116,6 +138,29 @@ export declare class SchedulaSettings {
     viewItemBar: boolean;
     itemBarColor: string;
     itemBarWidth: number;
+    /**
+     * Optional interactive status column in the resource sidebar (e.g. hotel housekeeping).
+     * Handled by ResourceStatusPlugin. `resourceStatusColumn` turns it on; `resourceStatuses`
+     * is the data-driven palette of selectable states; `resource.Status` holds each resource's
+     * current state id; `resourceStatusEditable` allows changing it (click → dropdown → API);
+     * `resourceStatusWidth` is the reserved column width in px.
+     */
+    resourceStatusColumn: boolean;
+    resourceStatusEditable: boolean;
+    /** Diameter (px) of the status dot. */
+    resourceStatusSize: number;
+    /**
+     * Where the status dot sits in the resource row:
+     *   'left'  — before the name/image (name, image and icons shift right to make room)
+     *   'right' — just after the resource name (no reflow)
+     * For 'left', register ResourceStatusPlugin *after* IconsPlugin so the icons row is shifted too.
+     */
+    resourceStatusPosition: 'left' | 'right';
+    resourceStatuses: {
+        id: string;
+        label: string;
+        color: string;
+    }[];
     gStyle: string;
     arrowSize: number;
     perfectMatch: boolean;

@@ -5,6 +5,15 @@ Features marked **(PRO)** require a commercial license key.
 
 ---
 
+## [1.8.6] — 2026-09-19
+
+- **Repeated month label on wide month boxes** — new `monthLabelRepeat` setting (default `true`). When a month doesn't fully fit in the view, its month/year label is repeated every `timeUnitsView − 4` columns (a little tighter than one viewport, so a label reappears just before the previous one scrolls off); when the whole month fits (`timeUnitsView` ≥ days in month) a single label is shown. Each label is measured (`getComputedTextLength`) and kept **fully inside its month box**: a label that would spill past the right edge is translated left so it stays entirely visible (never clipped), but that edge label is added only when the preceding one would already have scrolled off before the month's right edge — otherwise it's redundant and skipped, so two labels are never crammed together near a month boundary. `false` restores the legacy single left-anchored label.
+- **Link terminators** — new `linkTerminators` setting: `'none'` (default), `'semicircle'`, `'triangle'` or `'square'`. When set, a small marker of that shape is drawn at both ends of each dependency link, bulging toward the line, styled by the new `.link-terminator` CSS class (defaults to the link colour).
+- **Resource status column (`ResourceStatusPlugin`)** — optional, data-driven interactive status indicator in the resource sidebar (e.g. hotel housekeeping). Enable with `resourceStatusColumn = true`; define the palette in `resourceStatuses` (`[{ id, label, color }]`) and set each resource's `resource.Status`. A small coloured dot (diameter `resourceStatusSize`, default 10px) is drawn per resource row, positioned via `resourceStatusPosition`: `'left'` (before the name/image, which shift right) or `'right'` (just after the name). When `resourceStatusEditable` is true, clicking it opens a dropdown of the configured states; picking one updates `resource.Status`, fires a `schedularesourcestatus:change` DOM event and `NotificationPlugin.onResourceStatusChanged(resource, statusId, prevStatusId)` (with an `onBeforeResourceStatusChange` veto for pending API confirmation), so the app can persist it. Styled by `.resource-status-dot` / `.schedula-status-menu`; the plugin injects into the existing `.resource-row` rows (register it **after** `IconsPlugin` so the icon row is shifted too when positioned left).
+- **Weekday initial in the day header** — new `viewWeekdayInitial` setting (default `false`). When enabled, the multi-day view (`timeUnitsView > 7`) appends the locale-aware weekday initial after the day number, e.g. IT `3 M`, `4 G` (via `Intl` `weekday: 'narrow'`).
+
+---
+
 ## [1.8.5] — 2026-07-18
 
 ### Added
